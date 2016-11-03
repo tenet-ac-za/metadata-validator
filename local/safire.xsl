@@ -103,6 +103,12 @@
 		<xsl:apply-templates/>
 	</xsl:template>
 
+	<xsl:template match="md:IDPSSODescriptor[contains(@protocolSupportEnumeration, 'urn:oasis:names:tc:SAML:1.1:protocol')]|md:SPSSODescriptor[contains(@protocolSupportEnumeration, 'urn:oasis:names:tc:SAML:1.1:protocol')]">
+		<xsl:call-template name="warning">
+			<xsl:with-param name="m">Metadata contains unused Shib/SAML1 bindings</xsl:with-param>
+		</xsl:call-template>
+	</xsl:template>
+
 	<xsl:template match="md:ContactPerson[not(descendant::md:EmailAddress)]">
 		<xsl:call-template name="error">
 			<xsl:with-param name="m">
