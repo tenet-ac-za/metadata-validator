@@ -98,10 +98,10 @@ function xslCheckCertSelfSigned($cert)
         return true;
     }
     $pem = "-----BEGIN CERTIFICATE-----\n" . wordwrap(trim($cert), 64, "\n", true) . "\n-----END CERTIFICATE-----\n";
-    $x509 = openssl_x509_read($pem);
+    $x509 = @openssl_x509_read($pem);
     if ($x509 === false)
         return false;
-    $x509data = openssl_x509_parse($x509);
+    $x509data = @openssl_x509_parse($x509);
     if (empty($x509data))
         return false;
     if (array_diff_assoc($x509data['subject'], $x509data['issuer']))
@@ -120,7 +120,7 @@ function xslCheckBase64($data)
         error_log('xslCheckBase64 needs URL functions');
         return true;
     }
-    if (base64_decode(preg_replace('/\s+/', '', $data), true) === false)
+    if (@base64_decode(preg_replace('/\s+/', '', $data), true) === false)
         return false;
     else
         return true;
