@@ -10,9 +10,13 @@
  * @copyright Copyright (c) 2016, SAFIRE - South African Identity Federation
  * @license https://github.com/safire-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
- 
+
 /** @var array $SUPPORTED_SCHEMES Array of URI schemes to allow */
 $SUPPORTED_SCHEMES = array('http', 'https');
+
+/** @var array $SUPPORTED_CONTENT_TYPES Array of content types to allow */
+$SUPPORTED_CONTENT_TYPES = array ('application/samlmetadata+xml', 'application/xml', 'text/xml', 'text/plain');
+
 /** @var int FETCH_MAX_SIZE Maximum size of a download in bytes */
 define('FETCH_MAX_SIZE', 1024 * 1024);
 
@@ -26,9 +30,9 @@ function badGateway($message)
     header('HTTP/1.0 502 Bad Gateway');
     header('Status: 502 Bad Gateway');
     print trim($message) . "\n";
-    exit(1);    
+    exit(1);
 }
- 
+
 if (empty($_REQUEST['url']))
     badGateway('A URL must be given');
 
@@ -50,11 +54,14 @@ curl_setopt($curl, CURLOPT_URL, $_REQUEST['url']);
 curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
 curl_setopt($curl, CURLOPT_HTTPHEADER, array(
     'Via: ' . $_SERVER['SERVER_NAME'],
-    'Accept: text/xml',
+    'Accept: ' . implode(', ', $SUPPORTED_CONTENT_TYPES),
     'Cache-Control: no-cache',
 ));
 curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($curl, CURLOPT_MAXREDIRS, 10);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($curl, CURLOPT_HEADER, true);
 /* break the connection if FETCH_MAX_SIZE reached */
 curl_setopt($curl, CURLOPT_BUFFERSIZE, 128);
 curl_setopt($curl, CURLOPT_NOPROGRESS, false);
@@ -66,7 +73,12 @@ $data = curl_exec($curl);
 if ($data === false)
     badGateway(curl_error($curl));
 
+if (!in_array(curl_getinfo($curl, CURLINFO_CONTENT_TYPE), $SUPPORTED_CONTENT_TYPES))
+    badGateway('Got unsupported content type. Only accept: ' . implode(', ', $SUPPORTED_CONTENT_TYPES));
+
+header(strtok($data, "\n")); /* return the same status code */
 header('Status: ' . curl_getinfo($curl, CURLINFO_HTTP_CODE));
-header('Content-Type: text/plain');
-header('Content-Length: ' . strlen($data));
-print $data;
+header('Content-Type: text/plain'); /* edit wants plain text, not DOM */
+header('Content-Length: ' . curl_getinfo($curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD));
+print substr($data, curl_getinfo($curl, CURLINFO_HEADER_SIZE));
+curl_close($curl);
