@@ -1,0 +1,46 @@
+/**
+ * CSS for metadata-validator
+ *
+ * @author Guy Halse http://orcid.org/0000-0002-9388-8592
+ * @copyright Copyright (c) 2016, SAFIRE - South African Identity Federation
+ * @license https://github.com/safire-ac-za/metadata-validator/blob/master/LICENSE MIT License
+ */
+#validator {
+	border: 2px solid transparent;
+	padding: 0.5em;
+	margin: -0.5em;
+}
+#validator #metadata, #validator #buttons, #validator #results { 
+	width: 100%;
+}
+#validator #metadata {
+	height: 30em;
+}
+#validator #progress {
+	margin: 0.2em 0;
+	height: 0.5em;
+}
+#validator #buttons {
+	margin: 1em 0;
+}
+#validator #results ul {
+	font-family: monospace;
+}
+/* trick to skin the input[type=file] ui */
+#validator #mdfile {
+   opacity: 0;
+   position: absolute;
+   z-index: -1;
+}
+#validator label[for=mdfile] {
+	float: right;
+}
+.valid {
+	border: 2px solid green !important;
+}
+.invalid {
+	border: 2px solid red !important;
+}
+.hidden {
+	display: none;
+}
