@@ -92,7 +92,7 @@
 	<xsl:template match="ds:X509Certificate">
 		<xsl:if test="php:functionString('xslCheckBase64', text()) = 0">
 			<xsl:call-template name="error">
-				<xsl:with-param name="m">X509Certificate should be BASE64 encoded</xsl:with-param>
+				<xsl:with-param name="m">X509Certificate MUST be BASE64 encoded</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
 		<xsl:if test="php:functionString('xslCheckCertSelfSigned',text()) = 0">
@@ -104,9 +104,10 @@
 	</xsl:template>
 
 	<xsl:template match="md:IDPSSODescriptor[contains(@protocolSupportEnumeration, 'urn:oasis:names:tc:SAML:1.1:protocol')]|md:SPSSODescriptor[contains(@protocolSupportEnumeration, 'urn:oasis:names:tc:SAML:1.1:protocol')]">
-		<xsl:call-template name="warning">
+		<xsl:call-template name="info">
 			<xsl:with-param name="m">Metadata contains unused Shib/SAML1 bindings</xsl:with-param>
 		</xsl:call-template>
+		<xsl:apply-templates/>
 	</xsl:template>
 
 	<xsl:template match="md:ContactPerson[not(descendant::md:EmailAddress)]">
