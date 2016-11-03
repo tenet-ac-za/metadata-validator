@@ -58,7 +58,7 @@ function validationResults(data)
 }
 
 /**
- * Send the XML to the server for validation 
+ * Send the XML to the server for validation
  */
 function sendForValidation()
 {
@@ -117,7 +117,7 @@ function fetchFromURL(url) {
 }
 
 /**
- * Create a dialog for to get the metadata URL 
+ * Create a dialog for to get the metadata URL
  */
 function createFetchURLDialog() {
 	$('#validator').append(
@@ -131,7 +131,7 @@ function createFetchURLDialog() {
 	  width: 400,
       modal: true,
       buttons: {
-        Fetch: function() { 
+        Fetch: function() {
 			var url = $( this ).find('input#mdaddress').val();
 			$( this ).dialog('close');
 			fetchFromURL(url);
@@ -172,11 +172,11 @@ $(document).ready(function ()
 			};
 		}
 	});
-	
+
 	$('#validator #mdurl').click(function() {
 		createFetchURLDialog();
 	});
-	
+
 	$('#validator #validate').click(function() {
 		sendForValidation();
 	});
