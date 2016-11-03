@@ -12,7 +12,7 @@
  * @license https://github.com/safire-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
 
-/* SAML namespaces lookup table */
+/** @var array $namespaces SAML namespaces lookup table */
 $namespaces = array(
     'urn:oasis:names:tc:SAML:2.0:protocol' => 'samlp',
     'urn:oasis:names:tc:SAML:2.0:assertion' => 'saml',
