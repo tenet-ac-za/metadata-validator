@@ -8,6 +8,8 @@
 	xmlns:set="http://exslt.org/sets"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:shibmd="urn:mace:shibboleth:metadata:1.0"
+	xmlns:mdrpi="urn:oasis:names:tc:SAML:metadata:rpi"
+	xmlns:php="http://php.net/xsl"
 	xmlns="urn:oasis:names:tc:SAML:2.0:metadata">
 
 	<!--
@@ -47,6 +49,12 @@
 		</xsl:call-template>
 	</xsl:template>
 
+	<xsl:template match="md:SingleLogoutService">
+		<xsl:call-template name="info">
+			<xsl:with-param name="m">SingleLogoutService is not supported properly :-(</xsl:with-param>
+		</xsl:call-template>
+	</xsl:template>
+
 	<!-- Checks for SPs -->
 	<xsl:template match="md:SPSSODescriptor/md:Extensions/mdui:UIInfo[not(descendant::mdui:DisplayName)]">
 		<xsl:call-template name="error">
@@ -75,6 +83,26 @@
 	</xsl:template>
 
 	<!-- Common checks -->
+	<xsl:template match="mdrpi:RegistrationInfo">
+		<xsl:call-template name="warning">
+			<xsl:with-param name="m">RegistrationInfo should not be set by Participants</xsl:with-param>
+		</xsl:call-template>
+	</xsl:template>
+
+	<xsl:template match="ds:X509Certificate">
+		<xsl:if test="php:functionString('xslCheckBase64', text()) = 0">
+			<xsl:call-template name="error">
+				<xsl:with-param name="m">X509Certificate should be BASE64 encoded</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
+		<xsl:if test="php:functionString('xslCheckCertSelfSigned',text()) = 0">
+			<xsl:call-template name="warning">
+				<xsl:with-param name="m">X509Certificate should be self-signed</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
+		<xsl:apply-templates/>
+	</xsl:template>
+
 	<xsl:template match="md:ContactPerson[not(descendant::md:EmailAddress)]">
 		<xsl:call-template name="error">
 			<xsl:with-param name="m">
