@@ -11,6 +11,9 @@
 var editor;
 var passes = 6; /* must match validate.php */
 
+/**
+ * reset the results pane
+ */
 function resetUI()
 {
 	/* reset the UI */
@@ -22,6 +25,9 @@ function resetUI()
 	$('#validator #progress').progressbar('option', 'value', 0);
 }
 
+/**
+ * callback to handle the AJAX response from validation
+ */
 function validationResults(data)
 {
 	if (data['errors'] == null || data['success'] != false) {
@@ -49,6 +55,9 @@ function validationResults(data)
 	}
 }
 
+/**
+ * Send the XML to the server for validation 
+ */
 function sendForValidation()
 {
 	resetUI();
@@ -65,9 +74,82 @@ function sendForValidation()
 	});
 }
 
+/*
+ * Fetch metata from a URL (via a proxy)
+ */
+function fetchFromURL(url) {
+	console.log('Fetching metadata from ' + url);
+	$.ajax({
+		method: 'GET',
+		url: 'fetchmetadata.php',
+		data: { url: url },
+		success: function(data) {
+			editor.setValue(data);
+			resetUI();
+		},
+		error: function(jqxhr) {
+			console.log(jqxhr);
+			if (jqxhr.status == 502) {
+				error = jqxhr.responseText;
+			} else {
+				error = jqxhr.statusText;
+			}
+			$('#validator').append(
+				'<div id="validator-dialog-error" title="An error has occurred">' +
+				'<p>An error occurred fetching data from &quot;' + url + '&quot;</p>' +
+				'<p>' + error + '</p>' +
+				'</div>'
+			);
+			$('#validator-dialog-error').dialog({
+				modal: true,
+				buttons: {
+					Ok: function() {
+						$( this ).dialog('close');
+						$( this ).remove();
+					}
+				}
+			});
+		},
+		dataType: 'text'
+	});
+}
+
+/**
+ * Create a dialog for to get the metadata URL 
+ */
+function createFetchURLDialog() {
+	$('#validator').append(
+		'<div id="validator-dialog-form" title="Enter address of metadata server"><form>' +
+		'<input type="url" name="mdaddress" id="mdaddress" placeholder="https://..." class="text ui-widget-content ui-corner-all" size="40">' +
+		/* Allow form submission with keyboard without duplicating the dialog button */
+		'<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">' +
+		'</form></div>'
+	);
+	$('#validator-dialog-form').dialog({
+	  width: 400,
+      modal: true,
+      buttons: {
+        Fetch: function() { 
+			var url = $( this ).find('input#mdaddress').val();
+			$( this ).dialog('close');
+			fetchFromURL(url);
+			$( this ).remove();
+		},
+        Cancel: function() {
+          $( this ).dialog('close');
+		  $( this ).remove();
+        }
+      },
+      close: function() {
+        $( this ).find('form')[0].reset();
+      }
+    });
+}
+
 $(document).ready(function ()
 {
 	$('#validator input[type=button]').button();
+	$('#validator #validate').focus();
 	$('#validator label[for=mdfile]').button();
 	$('#validator #progress').progressbar({ disabled: true, max: passes });
 
@@ -87,7 +169,11 @@ $(document).ready(function ()
 			};
 		}
 	});
-
+	
+	$('#validator #mdurl').click(function() {
+		createFetchURLDialog();
+	});
+	
 	$('#validator #validate').click(function() {
 		sendForValidation();
 	});
