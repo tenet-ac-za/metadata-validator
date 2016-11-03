@@ -13,7 +13,7 @@
 	<!--
 		Common support functions.
 	-->
-	<xsl:import href="rules/check_framework.xsl"/>
+	<xsl:import href="../rules/check_framework.xsl"/>
 	
 	<!-- Checks for IdPs -->
 	<xsl:template match="shibmd:Scope[.='ac.za']">
