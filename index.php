@@ -21,8 +21,11 @@ Then click the [Validate!] button to begin.</p>
     <div id="progress"></div>
     <div id="buttons">
         <input id="validate" type="button" value="Validate!" class="button">
-        <label for="mdfile">Upload metadata file...</label>
-        <input id="mdfile" type="file" multiple="">
+        <div class="right">
+            <input id="mdurl" type="button" value="Fetch URL..." class="button">
+            <label for="mdfile">Upload file...</label>
+            <input id="mdfile" type="file" multiple="">
+        </div>
     </div>
     <div id="results" class="hidden"></div>
 </div>
