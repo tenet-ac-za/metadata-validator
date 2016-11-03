@@ -23,7 +23,6 @@ function resetUI()
 	$('#validator #results').addClass('hidden');
 	$('#validator #progress').progressbar('option', 'disabled', 'true');
 	$('#validator #progress').progressbar('option', 'value', 0);
-	editor.gotoLine(1, 0);
 }
 
 /**
@@ -36,6 +35,7 @@ function validationResults(data)
 		resetUI();
 		$('#validator').addClass('valid');
 		$('#validator #progress').progressbar('option', 'value', passes);
+		editor.gotoLine(1, 0);
 	} else {
 		console.log(data);
 		var firstError = true;
@@ -48,6 +48,15 @@ function validationResults(data)
 				firstError = false;
 			}
 			var msg = err['message'];
+			if (msg.match(/\[ERROR\]/)) {
+				msg = '<span class="mesg-error">' + msg + '</span>';
+			}
+			if (msg.match(/\[WARN\]/)) {
+				msg = '<span class="mesg-warn">' + msg + '</span>';
+			}
+			if (msg.match(/\[INFO\]/)) {
+				msg = '<span class="mesg-info">' + msg + '</span>';
+			}
 			if (err['line'] > 0) {
 				msg = msg + ' [<a href="#" onclick="editor.gotoLine(' + err['line'] + ',' + err['column'] + ')">' + err['line'] + ', ' + err['column'] + '</a>]';
 			}
@@ -169,6 +178,7 @@ $(document).ready(function ()
 			reader.onload = function(e) {
 				editor.setValue(e.target.result);
 				resetUI();
+				editor.gotoLine(1, 0);
 			};
 		}
 	});

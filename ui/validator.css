@@ -38,6 +38,15 @@
 .invalid {
 	border: 2px solid red !important;
 }
+.mesg-warn {
+	color: orange;
+}
+.mesg-info {
+	color: green;
+}
+.mesg-error {
+	color: red;
+}
 .hidden {
 	display: none;
 }
