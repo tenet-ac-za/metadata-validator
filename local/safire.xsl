@@ -14,13 +14,13 @@
 		Common support functions.
 	-->
 	<xsl:import href="../rules/check_framework.xsl"/>
-	
+
 	<!-- Checks for IdPs -->
 	<xsl:template match="shibmd:Scope[.='ac.za']">
 		<xsl:call-template name="error">
 			<xsl:with-param name="m">bare 'ac.za' scope not permitted</xsl:with-param>
 		</xsl:call-template>
-	</xsl:template>	
+	</xsl:template>
 	<xsl:template match="shibmd:Scope[not(contains(., 'ac.za'))]">
 		<xsl:call-template name="warning">
 			<xsl:with-param name="m">
@@ -73,7 +73,7 @@
 			<xsl:with-param name="m">ServiceName MUST be set for service providers</xsl:with-param>
 		</xsl:call-template>
 	</xsl:template>
-	
+
 	<!-- Common checks -->
 	<xsl:template match="md:ContactPerson[not(descendant::md:EmailAddress)]">
 		<xsl:call-template name="error">
@@ -88,7 +88,7 @@
 			<xsl:call-template name="error">
 				<xsl:with-param name="m">Organization details MUST be set</xsl:with-param>
 			</xsl:call-template>
-		</xsl:if>	
+		</xsl:if>
 		<xsl:if test="count(md:ContactPerson[@contactType='technical'])=0">
 			<xsl:call-template name="error">
 				<xsl:with-param name="m">ContactPerson of type technical MUST be set</xsl:with-param>
