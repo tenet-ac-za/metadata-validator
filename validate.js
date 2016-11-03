@@ -23,6 +23,7 @@ function resetUI()
 	$('#validator #results').addClass('hidden');
 	$('#validator #progress').progressbar('option', 'disabled', 'true');
 	$('#validator #progress').progressbar('option', 'value', 0);
+	editor.gotoLine(1, 0);
 }
 
 /**
@@ -46,10 +47,11 @@ function validationResults(data)
 				editor.gotoLine(err['line'], err['column'], true);
 				firstError = false;
 			}
-			$('#validator #results ul').append('<li>' +
-				err['message'] +
-				' [<a href="#" onclick="editor.gotoLine(' + err['line'] + ',' + err['column'] + ')">' +
-				err['line'] + ', ' + err['column'] + '</a>]</li>');
+			var msg = err['message'];
+			if (err['line'] > 0) {
+				msg = msg + ' [<a href="#" onclick="editor.gotoLine(' + err['line'] + ',' + err['column'] + ')">' + err['line'] + ', ' + err['column'] + '</a>]';
+			}
+			$('#validator #results ul').append('<li>' + msg + '</li>');
 		});
 		$('#validator #results').removeClass('hidden');
 	}
@@ -156,6 +158,7 @@ $(document).ready(function ()
 	editor = ace.edit("metadata");
     editor.setTheme("ace/theme/xcode");
     editor.getSession().setMode("ace/mode/xml");
+	editor.$blockScrolling = Infinity;
 	editor.on('paste', function() { resetUI(); });
 
 	$('#validator #mdfile').change(function() {
