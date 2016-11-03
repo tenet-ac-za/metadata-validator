@@ -19,7 +19,7 @@ function resetUI()
 	$('#validator #results').html('<ul></ul>');
 	$('#validator #results').addClass('hidden');
 	$('#validator #progress').progressbar('option', 'disabled', 'true');
-	$('#validator #progress').progressbar('option', 'value', 0);			
+	$('#validator #progress').progressbar('option', 'value', 0);
 }
 
 function validationResults(data)
@@ -40,9 +40,9 @@ function validationResults(data)
 				editor.gotoLine(err['line'], err['column'], true);
 				firstError = false;
 			}
-			$('#validator #results ul').append('<li>' + 
-				err['message'] + 
-				' [<a href="#" onclick="editor.gotoLine(' + err['line'] + ',' + err['column'] + ')">' + 
+			$('#validator #results ul').append('<li>' +
+				err['message'] +
+				' [<a href="#" onclick="editor.gotoLine(' + err['line'] + ',' + err['column'] + ')">' +
 				err['line'] + ', ' + err['column'] + '</a>]</li>');
 		});
 		$('#validator #results').removeClass('hidden');
@@ -56,7 +56,7 @@ function sendForValidation()
 	var editorData = editor.getValue();
 	$.ajax({
 		type: 'POST',
-		url: "validate.php", 
+		url: "validate.php",
 		data: editorData,
 		contentType: 'text/xml',
 		processData: false,
@@ -87,7 +87,7 @@ $(document).ready(function ()
 			};
 		}
 	});
-		
+
 	$('#validator #validate').click(function() {
 		sendForValidation();
 	});

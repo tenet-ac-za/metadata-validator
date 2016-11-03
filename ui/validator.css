@@ -10,7 +10,7 @@
 	padding: 0.5em;
 	margin: -0.5em;
 }
-#validator #metadata, #validator #buttons, #validator #results { 
+#validator #metadata, #validator #buttons, #validator #results {
 	width: 100%;
 }
 #validator #metadata {

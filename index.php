@@ -9,10 +9,10 @@
 include_once('ui/header.inc');
 ?>
 <h2>SAML Metadata Validator</h2>
-<p>This validator applys very similar rules to SAFIRE's 
+<p>This validator applys very similar rules to SAFIRE's
 <a href="https://phph.<?php echo $domain ?>">metadata aggregator</a>. It
 is intended to allow people to check their own metadata before submitting
-it for inclusion in the federation registry. To test your metadata, 
+it for inclusion in the federation registry. To test your metadata,
 copy-and-paste it into the box below (or upload your metadata file).
 Then click the [Validate!] button to begin.</p>
 
