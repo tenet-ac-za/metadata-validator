@@ -48,17 +48,17 @@ function validationResults(data)
 				firstError = false;
 			}
 			var msg = err['message'];
-			if (msg.match(/\[ERROR\]/)) {
+			if (msg.match(/\[ERROR\]/) || (err['code'] != 1 && err['level'] > 1)) {
 				msg = '<span class="mesg-error">' + msg + '</span>';
 			}
-			if (msg.match(/\[WARN\]/)) {
+			if (msg.match(/\[WARN\]/) || (err['code'] != 1 && err['level'] == 1)) {
 				msg = '<span class="mesg-warn">' + msg + '</span>';
 			}
 			if (msg.match(/\[INFO\]/)) {
 				msg = '<span class="mesg-info">' + msg + '</span>';
 			}
 			if (err['line'] > 0) {
-				msg = msg + ' [<a href="#" onclick="editor.gotoLine(' + err['line'] + ',' + err['column'] + ')">' + err['line'] + ', ' + err['column'] + '</a>]';
+				msg = msg + ' <span class="linenum">[<a href="#" onclick="editor.gotoLine(' + err['line'] + ',' + err['column'] + ')">' + err['line'] + ', ' + err['column'] + '</a>]</span>';
 			}
 			$('#validator #results ul').append('<li>' + msg + '</li>');
 		});
