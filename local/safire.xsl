@@ -90,12 +90,12 @@
 	</xsl:template>
 
 	<xsl:template match="ds:X509Certificate">
-		<xsl:if test="php:functionString('xslCheckBase64', text()) = 0">
+		<xsl:if test="php:functionString('xsltfunc::checkBase64', text()) = 0">
 			<xsl:call-template name="error">
 				<xsl:with-param name="m">X509Certificate MUST be BASE64 encoded</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
-		<xsl:if test="php:functionString('xslCheckCertSelfSigned',text()) = 0">
+		<xsl:if test="php:functionString('xsltfunc::checkCertSelfSigned',text()) = 0">
 			<xsl:call-template name="warning">
 				<xsl:with-param name="m">X509Certificate should be self-signed</xsl:with-param>
 			</xsl:call-template>
