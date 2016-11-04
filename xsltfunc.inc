@@ -7,6 +7,28 @@
  * @license https://github.com/safire-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
 class xsltfunc {
+    /**
+     * Take a PEM representation of a certificate and return the x509 structure
+     *
+     * @param string $x509certdata
+     * @return x509cert|false $x509cert
+     */
+    static private function _pemToX509($x509certdata)
+    {
+		if (!function_exists('openssl_x509_read')) {
+			error_log('_pemToX509 needs OpenSSL functions');
+			return false;
+		}
+        $pem = trim($x509certdata);
+        if (!preg_match('/^-----BEGIN CERTIFICATE/',$pem)) {
+            $pem = "-----BEGIN CERTIFICATE-----\n" . wordwrap($pem, 64, "\n", true) . "\n-----END CERTIFICATE-----\n";
+        }
+		$x509cert = @openssl_x509_read($pem);
+		if ($x509cert === false)
+			return false;
+        return $x509cert;
+    }
+
 	/**
 	 * For use in XSLT, checks a cert is self-signed
 	 *
@@ -15,15 +37,7 @@ class xsltfunc {
 	 */
 	static public function checkCertSelfSigned($cert)
 	{
-		if (!function_exists('openssl_x509_read')) {
-			error_log('xslCheckCertSelfSigned needs OpenSSL functions');
-			return true;
-		}
-		$pem = "-----BEGIN CERTIFICATE-----\n" . wordwrap(trim($cert), 64, "\n", true) . "\n-----END CERTIFICATE-----\n";
-		$x509 = @openssl_x509_read($pem);
-		if ($x509 === false)
-			return false;
-		$x509data = @openssl_x509_parse($x509);
+        $x509data = @openssl_x509_parse(self::_pemToX509($cert));
 		if (empty($x509data))
 			return false;
 		if (array_diff_assoc($x509data['subject'], $x509data['issuer']))
