@@ -17,7 +17,11 @@
 	-->
 	<xsl:import href="../rules/check_framework.xsl"/>
 
-	<!-- Checks for IdPs -->
+	<!--
+		Checks for IdPs
+	-->
+
+	<!-- Check scope -->
 	<xsl:template match="shibmd:Scope[.='ac.za']">
 		<xsl:call-template name="error">
 			<xsl:with-param name="m">bare 'ac.za' scope not permitted</xsl:with-param>
@@ -33,6 +37,7 @@
 		</xsl:call-template>
 	</xsl:template>
 
+	<!-- Check mdui recommendations -->
 	<xsl:template match="md:IDPSSODescriptor/md:Extensions/mdui:UIInfo[not(descendant::mdui:DisplayName)]">
 		<xsl:call-template name="warning">
 			<xsl:with-param name="m">mdui:DisplayName should be set for identity providers</xsl:with-param>
@@ -49,13 +54,19 @@
 		</xsl:call-template>
 	</xsl:template>
 
+	<!-- Note about SingleLogoutService -->
 	<xsl:template match="md:SingleLogoutService">
 		<xsl:call-template name="info">
 			<xsl:with-param name="m">SingleLogoutService is not supported properly :-(</xsl:with-param>
 		</xsl:call-template>
 	</xsl:template>
 
-	<!-- Checks for SPs -->
+
+	<!--
+		Checks for SPs
+	-->
+
+	<!-- Check mdui requirements -->
 	<xsl:template match="md:SPSSODescriptor/md:Extensions/mdui:UIInfo[not(descendant::mdui:DisplayName)]">
 		<xsl:call-template name="error">
 			<xsl:with-param name="m">mdui:DisplayName MUST be set for service providers</xsl:with-param>
@@ -82,13 +93,18 @@
 		</xsl:call-template>
 	</xsl:template>
 
-	<!-- Common checks -->
+	<!--
+		Common checks for both IdPs and SPs
+	-->
+
+	<!-- Check that there is no RegistrationInfo (note we have to disable Ian's check for this) -->
 	<xsl:template match="mdrpi:RegistrationInfo">
 		<xsl:call-template name="warning">
 			<xsl:with-param name="m">RegistrationInfo should not be set by Participants</xsl:with-param>
 		</xsl:call-template>
 	</xsl:template>
 
+	<!-- Check the metadata certificates -->
 	<xsl:template match="ds:X509Certificate">
 		<xsl:if test="php:functionString('xsltfunc::checkBase64', text()) = 0">
 			<xsl:call-template name="error">
@@ -100,9 +116,20 @@
 				<xsl:with-param name="m">X509Certificate should be self-signed</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
+		<xsl:if test="php:functionString('xsltfunc::checkCertValid',text(),'from') = 0">
+			<xsl:call-template name="warning">
+				<xsl:with-param name="m">X509Certificate is not yet valid</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
+		<xsl:if test="php:functionString('xsltfunc::checkCertValid',text(),'to') = 0">
+			<xsl:call-template name="warning">
+				<xsl:with-param name="m">X509Certificate has expired or expires within 30 days</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
 		<xsl:apply-templates/>
 	</xsl:template>
 
+	<!-- Note about SAML1 (hub doesn't support it) -->
 	<xsl:template match="md:IDPSSODescriptor[contains(@protocolSupportEnumeration, 'urn:oasis:names:tc:SAML:1.1:protocol')]|md:SPSSODescriptor[contains(@protocolSupportEnumeration, 'urn:oasis:names:tc:SAML:1.1:protocol')]">
 		<xsl:call-template name="info">
 			<xsl:with-param name="m">Metadata contains unused Shib/SAML1 bindings</xsl:with-param>
@@ -110,6 +137,7 @@
 		<xsl:apply-templates/>
 	</xsl:template>
 
+	<!-- Check ContactPerson email addresses -->
 	<xsl:template match="md:ContactPerson[not(descendant::md:EmailAddress)]">
 		<xsl:call-template name="error">
 			<xsl:with-param name="m">
@@ -118,12 +146,26 @@
 			</xsl:with-param>
 		</xsl:call-template>
 	</xsl:template>
+	<xsl:template match="md:EmailAddress[php:functionString('xsltfunc::checkEmailAddress', text()) = 0]">
+		<xsl:call-template name="error">
+			<xsl:with-param name="m">
+				<xsl:value-of select='text()'/>
+				<xsl:text> is not a valid EmailAddress for ContactPerson of type </xsl:text>
+				<xsl:value-of select='ancestor::md:ContactPerson/@contactType'/>
+			</xsl:with-param>
+		</xsl:call-template>
+	</xsl:template>
+
+
 	<xsl:template match="md:EntityDescriptor">
+		<!-- Organization must be set (Ian's rules do the rest once it is set) -->
 		<xsl:if test="not(descendant::md:Organization)">
 			<xsl:call-template name="error">
 				<xsl:with-param name="m">Organization details MUST be set</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
+
+		<!-- Check ContactPerson requirements -->
 		<xsl:if test="count(md:ContactPerson[@contactType='technical'])=0">
 			<xsl:call-template name="error">
 				<xsl:with-param name="m">ContactPerson of type technical MUST be set</xsl:with-param>
@@ -144,6 +186,38 @@
 				<xsl:with-param name="m">More than one ContactPerson of type support</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
+		<xsl:apply-templates/>
+	</xsl:template>
+
+
+	<!-- Check @Location uses a valid certificate -->
+	<xsl:template match="md:*[@Location and starts-with(@Location, 'https:') and php:functionString('xsltfunc::checkURLCert', @Location) = 0]">
+		<xsl:call-template name="error">
+			<xsl:with-param name="m">
+				<xsl:value-of select='local-name()'/>
+				<xsl:text> Location does not use a valid SSL certificate</xsl:text>
+			</xsl:with-param>
+		</xsl:call-template>
+	</xsl:template>
+
+	<!-- Check that @Location point at web servers that exist -->
+	<xsl:template match="md:*[@Location and php:functionString('xsltfunc::checkURL', @Location) = 0]">
+		<xsl:call-template name="error">
+			<xsl:with-param name="m">
+				<xsl:value-of select='local-name()'/>
+				<xsl:text> Location is not a valid URL</xsl:text>
+			</xsl:with-param>
+		</xsl:call-template>
+	</xsl:template>
+
+	<!-- Check entityID  -->
+	<xsl:template match="md:EntityDescriptor[php:functionString('xsltfunc::checkURL', @entityID) = 0]">
+		<xsl:call-template name="warning">
+			<xsl:with-param name="m">
+				<xsl:value-of select='@entityID'/>
+				<xsl:text> entityID is not a valid URL (should use well-known location scheme)</xsl:text>
+			</xsl:with-param>
+		</xsl:call-template>
 		<xsl:apply-templates/>
 	</xsl:template>
 
