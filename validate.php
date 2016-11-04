@@ -151,8 +151,12 @@ if ($errors) {
 }
 
 /* 6 - use local SAML metadata testing rules */
-include_once('xsltfunc.inc');
-$xslt->registerPHPFunctions();
+if (file_exists('local/xsltfunc.inc.php')) {
+    include_once('local/xsltfunc.inc.php');
+    $xslt->registerPHPFunctions(
+        array_map(function($n) { return 'xsltfunc::' . $n; }, get_class_methods('xsltfunc'))
+    );
+}
 libxml_clear_errors();
 $localrules = glob('./local/*.xsl');
 foreach ($localrules as $rule) {
