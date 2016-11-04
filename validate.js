@@ -97,6 +97,7 @@ function fetchFromURL(url) {
 		success: function(data) {
 			editor.setValue(data);
 			resetUI();
+			editor.gotoLine(1, 0);
 		},
 		error: function(jqxhr) {
 			console.log(jqxhr);
@@ -130,14 +131,15 @@ function fetchFromURL(url) {
  */
 function createFetchURLDialog() {
 	$('#validator').append(
-		'<div id="validator-dialog-form" title="Enter address of metadata server"><form>' +
-		'<input type="url" name="mdaddress" id="mdaddress" placeholder="https://..." class="text ui-widget-content ui-corner-all" size="40">' +
+		'<div id="validator-dialog-form" title="Enter address of metadata server:" style="overflow:hidden;text-align:center;"><form>' +
+		'<input type="url" name="mdaddress" id="mdaddress" placeholder="https://..." class="ui-corner-all" size="40" style="margin:0 auto;padding:0;width: 98%">' +
 		/* Allow form submission with keyboard without duplicating the dialog button */
 		'<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">' +
 		'</form></div>'
 	);
 	$('#validator-dialog-form').dialog({
 	  width: 400,
+	  height: 'auto',
       modal: true,
       buttons: {
         Fetch: function() {
