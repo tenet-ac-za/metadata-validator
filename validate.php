@@ -39,6 +39,17 @@ $namespaces = array(
 );
 $secapseman = array_flip($namespaces);
 
+/** @var array $passes Descriptive names for the various passes */
+$passes = array(
+    'pre-flight checks',
+    'valid XML (parser)',
+    'valid namespaces (parser)',
+    'verify SAML metadata schema',
+    'verify local metadata schemas',
+    'metadata testing rules',
+    'local metadata testing rules',
+);
+
 /**
  * array_filter function to exclude certain libXMLError errors
  *
@@ -64,6 +75,7 @@ function filter_libxml_errors()
  */
 function sendResponse ($response, $pass = 0)
 {
+    global $passes;
     header('Content-Type: application/json');
     if (is_string($response)) {
         // emulate libXMLError
@@ -85,6 +97,8 @@ function sendResponse ($response, $pass = 0)
     // error_log(var_export($response, true));
     print json_encode(array(
         'pass' => $pass,
+        'passdescr' => $passes[$pass],
+        'passes' => count($passes) - 1,
         'success' => $success,
         'errors' => $response
     ));
@@ -177,7 +191,7 @@ if ($errors) {
 
 /* we got this far, so everything is okay! */
 print json_encode(array(
-    'pass' => 6,
+    'pass' => count($passes),
     'success' => true,
     'errors' => null
 ));

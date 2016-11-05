@@ -9,7 +9,6 @@
  * @requires ace.js
  */
 var editor;
-var passes = 6; /* must match validate.php */
 
 /**
  * reset the results pane
@@ -32,7 +31,11 @@ function populateResultsPane(data)
 {
 	console.log(data);
 	var firstError = true;
-	$('#validator #results').html('<h3>Results from validation pass ' + data['pass'] + '/' + passes + ':</h3><ul></ul>');
+	$('#validator #results').html(
+		'<h3>Results from validation pass ' + data['pass'] + '/' + data['passes'] +
+		'<span class="passdescr"> (' + data['passdescr'] + ')</span>' +
+		':</h3><ul></ul>'
+	);
 	$.each(data['errors'], function (k, err) {
 		if (firstError == true && err['line'] > 0) {
 			editor.gotoLine(err['line'], err['column'], true);
@@ -69,12 +72,12 @@ function validationResults(data)
 			resetUI();
 		}
 		$('#validator').addClass('valid');
-		$('#validator #progress').progressbar('option', 'value', passes);
+		$('#validator #progress').progressbar('option', 'value', 100);
 		editor.gotoLine(1, 0);
 	} else {
 		populateResultsPane(data);
 		$('#validator').addClass('invalid');
-		$('#validator #progress').progressbar('option', 'value', data['pass']);
+		$('#validator #progress').progressbar('option', 'value', (data['pass'] / data['passes']) * 100);
 	}
 }
 
@@ -176,7 +179,7 @@ $(document).ready(function ()
 	$('#validator input[type=button]').button();
 	$('#validator #validate').focus();
 	$('#validator label[for=mdfile]').button();
-	$('#validator #progress').progressbar({ disabled: true, max: passes });
+	$('#validator #progress').progressbar({ disabled: true });
 
 	editor = ace.edit("metadata");
     editor.setTheme("ace/theme/xcode");
