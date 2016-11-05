@@ -37,6 +37,12 @@ required.  You should review (and possibly delete) the local schemas
 and rules that are contained in the [`local/`](local/) directory. You
 probably also want to re-skin it to match your own look and feel.
 
+If it exists, the file [`local/xsltfunc.inc.php`](local/xsltfunc.inc.php)
+is included. It is expected to define an `xsltfunc` class, and
+any static public functions from this class are registered with
+[XSLTProcessor](http://php.net/manual/en/xsltprocessor.registerphpfunctions.php)
+so that they can be used in local XSLT stylesheets.
+
 Templating/UI
 -------------
 
