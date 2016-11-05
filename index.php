@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2016, SAFIRE - South African Identity Federation
  * @license https://github.com/safire-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
-include_once('ui/header.inc');
+include_once('ui/header.inc.php');
 ?>
 <h2>SAML Metadata Validator</h2>
 <p>This validator applys very similar rules to SAFIRE's
@@ -30,4 +30,4 @@ Then click the [Validate!] button to begin.</p>
     <div id="results" class="hidden"></div>
 </div>
 
-<?php include_once('ui/footer.inc'); ?>
+<?php include_once('ui/footer.inc.php'); ?>

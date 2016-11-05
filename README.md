@@ -40,11 +40,12 @@ probably also want to re-skin it to match your own look and feel.
 Templating/UI
 -------------
 
-There's no real templating system. However, to make skinning
-the application a little simpler, there are [`header.inc`](ui/header.inc) and
-[`footer.inc`](ui/footer.inc) includes in [`ui/`](ui/) director.  The 
-application itself creates a `<div id="validator">` and tries to ensure that
-all jQuery and CSS selectors are locked to within that div.
+There's no real templating system. However, to
+make skinning the application a little simpler,
+there are [`header.inc.php`](ui/header.inc.php) and
+[`footer.inc.php`](ui/footer.inc.php) includes in [`ui/`](ui/) directory.
+The application itself creates a `<div id="validator">` and tries to
+ensure that all jQuery and CSS selectors are locked to within that div.
 
 What's here has been tested and works reasonably consistently with recent
 versions of Chrome, Firefox, Edge & IE11. It makes use of some HTML5
