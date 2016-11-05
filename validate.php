@@ -76,10 +76,16 @@ function sendResponse ($response, $pass = 0)
         $err->line = 0;
         $response = array ($err);
     }
+    /* if this is only info messages, return success */
+    $success = true;
+    foreach ($response as $err) {
+        if ($err->code == 1 and preg_match('/\[INFO\]/', $err->message)) { continue; }
+        $success = false;
+    }
     // error_log(var_export($response, true));
     print json_encode(array(
         'pass' => $pass,
-        'success' => false,
+        'success' => $success,
         'errors' => $response
     ));
     exit;

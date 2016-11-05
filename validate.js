@@ -26,43 +26,55 @@ function resetUI()
 }
 
 /**
+ * construct the results pane from json
+ */
+function populateResultsPane(data)
+{
+	console.log(data);
+	var firstError = true;
+	$('#validator #results').html('<h3>Results from validation pass ' + data['pass'] + '/' + passes + ':</h3><ul></ul>');
+	$.each(data['errors'], function (k, err) {
+		if (firstError == true && err['line'] > 0) {
+			editor.gotoLine(err['line'], err['column'], true);
+			firstError = false;
+		}
+		var msg = err['message'];
+		if (msg.match(/\[ERROR\]/) || (err['code'] != 1 && err['level'] > 1)) {
+			msg = '<span class="mesg-error">' + msg + '</span>';
+		}
+		if (msg.match(/\[WARN\]/) || (err['code'] != 1 && err['level'] == 1)) {
+			msg = '<span class="mesg-warn">' + msg + '</span>';
+		}
+		if (msg.match(/\[INFO\]/)) {
+			msg = '<span class="mesg-info">' + msg + '</span>';
+		}
+		if (err['line'] > 0) {
+			msg = msg + ' <span class="linenum">[<a href="#" onclick="editor.gotoLine(' + err['line'] + ',' + err['column'] + ')">' + err['line'] + ', ' + err['column'] + '</a>]</span>';
+		}
+		$('#validator #results ul').append('<li>' + msg + '</li>');
+	});
+	$('#validator #results').removeClass('hidden');
+}
+
+/**
  * callback to handle the AJAX response from validation
  */
 function validationResults(data)
 {
 	if (data['errors'] == null || data['success'] != false) {
 		console.log("SUCCESS!");
-		resetUI();
+		if (data['errors'] && data['errors'].length) {
+			populateResultsPane(data);
+		} else {
+			resetUI();
+		}
 		$('#validator').addClass('valid');
 		$('#validator #progress').progressbar('option', 'value', passes);
 		editor.gotoLine(1, 0);
 	} else {
-		console.log(data);
-		var firstError = true;
-		$('#validator #progress').progressbar('option', 'value', data['pass']);
+		populateResultsPane(data);
 		$('#validator').addClass('invalid');
-		$('#validator #results').html('<h3>Results from validation pass ' + data['pass'] + '/' + passes + ':</h3><ul></ul>');
-		$.each(data['errors'], function (k, err) {
-			if (firstError == true && err['line'] > 0) {
-				editor.gotoLine(err['line'], err['column'], true);
-				firstError = false;
-			}
-			var msg = err['message'];
-			if (msg.match(/\[ERROR\]/) || (err['code'] != 1 && err['level'] > 1)) {
-				msg = '<span class="mesg-error">' + msg + '</span>';
-			}
-			if (msg.match(/\[WARN\]/) || (err['code'] != 1 && err['level'] == 1)) {
-				msg = '<span class="mesg-warn">' + msg + '</span>';
-			}
-			if (msg.match(/\[INFO\]/)) {
-				msg = '<span class="mesg-info">' + msg + '</span>';
-			}
-			if (err['line'] > 0) {
-				msg = msg + ' <span class="linenum">[<a href="#" onclick="editor.gotoLine(' + err['line'] + ',' + err['column'] + ')">' + err['line'] + ', ' + err['column'] + '</a>]</span>';
-			}
-			$('#validator #results ul').append('<li>' + msg + '</li>');
-		});
-		$('#validator #results').removeClass('hidden');
+		$('#validator #progress').progressbar('option', 'value', data['pass']);
 	}
 }
 
