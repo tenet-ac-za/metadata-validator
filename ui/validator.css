@@ -56,6 +56,21 @@
 .hidden {
 	display: none;
 }
-.right {
-	float: right;
+@media screen and (min-width: 783px) {
+	.right {
+		float: right;
+	}
+}
+@media screen and (max-width: 782px) {
+	.right {
+		padding-top: 0.5em;
+	}
+	.passdescr {
+		display: none;
+	}
+}
+@media print {
+		#validator #buttons, #validator #progress {
+			display: none;
+		}
 }
