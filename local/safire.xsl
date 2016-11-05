@@ -42,6 +42,7 @@
 		<xsl:call-template name="warning">
 			<xsl:with-param name="m">mdui:DisplayName should be set for identity providers</xsl:with-param>
 		</xsl:call-template>
+		<xsl:apply-templates/>
 	</xsl:template>
 	<xsl:template match="md:IDPSSODescriptor/md:Extensions/mdui:UIInfo[not(descendant::mdui:Description)]">
 		<xsl:call-template name="warning">
@@ -52,6 +53,7 @@
 		<xsl:call-template name="warning">
 			<xsl:with-param name="m">mdui:PrivacyStatementURL should be set for identity providers</xsl:with-param>
 		</xsl:call-template>
+		<xsl:apply-templates/>
 	</xsl:template>
 
 	<!-- Note about SingleLogoutService -->
@@ -71,6 +73,7 @@
 		<xsl:call-template name="error">
 			<xsl:with-param name="m">mdui:DisplayName MUST be set for service providers</xsl:with-param>
 		</xsl:call-template>
+		<xsl:apply-templates/>
 	</xsl:template>
 	<xsl:template match="md:SPSSODescriptor/md:Extensions/mdui:UIInfo[not(descendant::mdui:Description)]">
 		<xsl:call-template name="error">
@@ -81,6 +84,7 @@
 		<xsl:call-template name="error">
 			<xsl:with-param name="m">mdui:PrivacyStatementURL MUST be set for service providers</xsl:with-param>
 		</xsl:call-template>
+		<xsl:apply-templates/>
 	</xsl:template>
 	<xsl:template match="md:SPSSODescriptor/md:AttributeConsumingService[not(descendant::md:RequestedAttribute)]">
 		<xsl:call-template name="error">
@@ -93,9 +97,68 @@
 		</xsl:call-template>
 	</xsl:template>
 
+	<xsl:template match="md:EntityDescriptor[md:SPSSODescriptor]">
+		<xsl:variable name="mdui" select="md:SPSSODescriptor/md:Extensions/mdui:UIInfo/mdui:Description[@xml:lang='en']"/>
+		<xsl:variable name="desc" select="md:SPSSODescriptor/md:AttributeConsumingService/md:ServiceDescription[@xml:lang='en']"/>
+		<xsl:if test="$mdui and $desc and $mdui != $desc">
+				<xsl:call-template name="error">
+						<xsl:with-param name="m">
+								<xsl:text>mismatched xml:lang='en' Description: '</xsl:text>
+								<xsl:value-of select="$mdui"/>
+								<xsl:text>' in mdui vs. '</xsl:text>
+								<xsl:value-of select="$odn"/>
+								<xsl:text>' in ServiceDescription</xsl:text>
+						</xsl:with-param>
+				</xsl:call-template>
+		</xsl:if>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="md:EntityDescriptor[md:SPSSODescriptor]">
+		<xsl:variable name="mdui" select="md:SPSSODescriptor/md:Extensions/mdui:UIInfo/mdui:DisplayName[@xml:lang='en']"/>
+		<xsl:variable name="desc" select="md:SPSSODescriptor/md:AttributeConsumingService/md:ServiceName[@xml:lang='en']"/>
+		<xsl:if test="$mdui and $desc and $mdui != $desc">
+				<xsl:call-template name="error">
+						<xsl:with-param name="m">
+								<xsl:text>mismatched xml:lang='en' DisplayName: '</xsl:text>
+								<xsl:value-of select="$mdui"/>
+								<xsl:text>' in mdui vs. '</xsl:text>
+								<xsl:value-of select="$odn"/>
+								<xsl:text>' in ServiceName</xsl:text>
+						</xsl:with-param>
+				</xsl:call-template>
+		</xsl:if>
+		<xsl:apply-templates/>
+	</xsl:template>
+
 	<!--
 		Common checks for both IdPs and SPs
 	-->
+
+	<!-- Check length of description of purpose -->
+	<xsl:template match="mdui:Description">
+		<xsl:if test="string-length(text()) > 140">
+			<xsl:choose>
+				<xsl:when test="string-length(text()) > 160">
+					<xsl:call-template name="error">
+						<xsl:with-param name="m">
+							<xsl:text>mdui:Description MUST be 160 chars or less (currently </xsl:text>
+							<xsl:value-of select="string-length(text())"/>
+							<xsl:text> characters)</xsl:text>
+						</xsl:with-param>
+					</xsl:call-template>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="warning">
+						<xsl:with-param name="m">
+							<xsl:text>mdui:Description should be 140 chars or less (currently </xsl:text>
+							<xsl:value-of select="string-length(text())"/>
+							<xsl:text> characters)</xsl:text>
+						</xsl:with-param>
+					</xsl:call-template>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:template>
 
 	<!-- Check that there is no RegistrationInfo (note we have to disable Ian's check for this) -->
 	<xsl:template match="mdrpi:RegistrationInfo">
