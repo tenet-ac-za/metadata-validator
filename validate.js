@@ -3,7 +3,7 @@
  *
  * @author Guy Halse http://orcid.org/0000-0002-9388-8592
  * @copyright Copyright (c) 2016, SAFIRE - South African Identity Federation
- * @license https://opensource.org/licenses/MIT MIT License
+ * @license https://github.com/safire-ac-za/metadata-validator/blob/master/LICENSE MIT License
  * @requires jQuery
  * @requires jquery-ui.js
  * @requires ace.js
