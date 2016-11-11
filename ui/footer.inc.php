@@ -11,15 +11,15 @@
  * @license https://github.com/safire-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
 ?>
-	</div><!-- #content -->
-	<div id="footer">
-		<hr>
-		<span><a href="https://<?php echo $domain ?>/safire/policy/privacy/">Privacy statement</a></span>
-		<span style="float: right"><a href="https://<?php echo $domain ?>/">SAFIRE - South African Identity Federation</a></span>
+    </div><!-- #content -->
+    <div id="footer">
+        <hr>
+        <span><a href="https://<?php echo $domain ?>/safire/policy/privacy/">Privacy statement</a></span>
+        <span style="float: right"><a href="https://<?php echo $domain ?>/">SAFIRE - South African Identity Federation</a></span>
 
-		<br style="clear: right">
+        <br style="clear: right">
 
-	</div><!-- #footer -->
+    </div><!-- #footer -->
 
 </div><!-- #wrap -->
 
