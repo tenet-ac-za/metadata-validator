@@ -41,10 +41,10 @@ $url = parse_url($_REQUEST['url']);
 if (!in_array(strtolower($url['scheme']), $SUPPORTED_SCHEMES))
     badGateway('The following schemes are supported: ' . implode(', ', $SUPPORTED_SCHEMES));
 
-if ($url['user'] or $url['pass'])
+if (array_key_exists('user', $url) or array_key_exists('pass', $url))
     badGateway('Cannot fetch a password protected resource');
 
-if (strtolower($url['hostname']) == 'localhost' or in_array('127.0.0.1', gethostbynamel($url['hostname'])))
+if (strtolower($url['host']) == 'localhost' or in_array('127.0.0.1', gethostbynamel($url['host'])))
     badGateway('Please don\'t fetch local resources :-(');
 
 /* set up a cURL object to try fetch this for us */

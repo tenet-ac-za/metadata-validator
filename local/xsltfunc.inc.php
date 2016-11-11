@@ -15,35 +15,38 @@ class xsltfunc {
      */
     static private function _pemToX509($x509certdata)
     {
-		if (!function_exists('openssl_x509_read')) {
-			error_log('_pemToX509 needs OpenSSL functions');
-			return false;
-		}
+        if (!function_exists('openssl_x509_read')) {
+            error_log('_pemToX509 needs OpenSSL functions');
+            return false;
+        }
         $pem = trim($x509certdata);
         if (!preg_match('/^-----BEGIN CERTIFICATE/',$pem)) {
             $pem = "-----BEGIN CERTIFICATE-----\n" . wordwrap($pem, 64, "\n", true) . "\n-----END CERTIFICATE-----\n";
         }
-		$x509cert = @openssl_x509_read($pem);
-		if ($x509cert === false)
-			return false;
+        $x509cert = @openssl_x509_read($pem);
+        if ($x509cert === false)
+            return false;
         return $x509cert;
     }
 
-	/**
-	 * For use in XSLT, checks a cert is self-signed
-	 *
-	 * @param string $cert
-	 * @return bool
-	 */
-	static public function checkCertSelfSigned($cert)
-	{
+    /**
+     * For use in XSLT, checks a cert is self-signed
+     *
+     * @param string $cert
+     * @return bool
+     */
+    static public function checkCertSelfSigned($cert)
+    {
         $x509data = @openssl_x509_parse(self::_pemToX509($cert));
-		if (empty($x509data))
-			return false;
-		if (array_diff_assoc($x509data['subject'], $x509data['issuer']))
-			return false;
-		return true;
-	}
+        if (empty($x509data))
+            return false;
+        if (!array_key_exists('subject', $x509data) or
+            !array_key_exists('issuer', $x509data))
+            return false;
+        if (array_diff_assoc($x509data['subject'], $x509data['issuer']))
+            return false;
+        return true;
+    }
 
     /**
      * Check the certificate expiry
@@ -78,10 +81,10 @@ class xsltfunc {
      */
     static public function checkURL($url)
     {
-		if (!function_exists('curl_init')) {
-			error_log('checkURL needs cURL functions');
-			return false;
-		}
+        if (!function_exists('curl_init')) {
+            error_log('checkURL needs cURL functions');
+            return false;
+        }
         if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED) === false)
             return false;
         $curl = curl_init();
@@ -108,10 +111,10 @@ class xsltfunc {
      */
     static public function checkURLCert($url)
     {
-		if (!function_exists('curl_init')) {
-			error_log('checkURLCert needs cURL functions');
-			return false;
-		}
+        if (!function_exists('curl_init')) {
+            error_log('checkURLCert needs cURL functions');
+            return false;
+        }
         if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED) === false)
             return false;
         $curl = curl_init();
@@ -141,10 +144,10 @@ class xsltfunc {
      */
     static public function checkEmailAddress($email)
     {
-		if (!function_exists('checkdnsrr')) {
-			error_log('checkEmailAddress needs Network functions');
-			return false;
-		}
+        if (!function_exists('checkdnsrr')) {
+            error_log('checkEmailAddress needs Network functions');
+            return false;
+        }
         $email = preg_replace('/^mailto:/', '', trim($email));
         if (filter_var($email, FILTER_VALIDATE_EMAIL) === false)
             return false;
@@ -154,21 +157,21 @@ class xsltfunc {
         return true;
     }
 
-	/**
-	 * For use in XSLT, check the string is base64 encoded
-	 * @param string $data
-	 * @return bool
-	 */
-	static public function checkBase64($data)
-	{
-		if (!function_exists('base64_decode')) {
-			error_log('checkBase64 needs URL functions');
-			return true;
-		}
-		if (@base64_decode(preg_replace('/\s+/', '', $data), true) === false)
-			return false;
-		else
-			return true;
-	}
+    /**
+     * For use in XSLT, check the string is base64 encoded
+     * @param string $data
+     * @return bool
+     */
+    static public function checkBase64($data)
+    {
+        if (!function_exists('base64_decode')) {
+            error_log('checkBase64 needs URL functions');
+            return true;
+        }
+        if (@base64_decode(preg_replace('/\s+/', '', $data), true) === false)
+            return false;
+        else
+            return true;
+    }
 
 }
