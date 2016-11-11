@@ -171,8 +171,8 @@ if ($errors) {
 }
 
 /* 6 - use local SAML metadata testing rules */
-if (file_exists('local/xsltfunc.inc.php')) {
-    include_once('local/xsltfunc.inc.php');
+if (file_exists(__DIR__ . '/local/xsltfunc.inc.php')) {
+    include_once(__DIR__ . '/local/xsltfunc.inc.php');
     $xslt->registerPHPFunctions(
         array_map(function($n) { return 'xsltfunc::' . $n; }, get_class_methods('xsltfunc'))
     );
