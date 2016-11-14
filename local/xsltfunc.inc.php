@@ -174,4 +174,17 @@ class xsltfunc {
             return true;
     }
 
+    /**
+     * Check that the string is blank (i.e. empty or contains only whitespace)
+     * @param string $data
+     * @return bool
+     */
+    static public function checkStringIsBlank($data)
+    {
+        if (trim($data) == '')
+            return true;
+        else
+            return false;
+    }
+
 }
