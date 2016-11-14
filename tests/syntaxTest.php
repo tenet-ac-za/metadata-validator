@@ -1,8 +1,6 @@
 <?php
-require_once ('PHPUnit/Autoload.php');
-
 /** @runTestsInSeparateProcesses */
-class syntaxTest extends PHPUnit_Framework_TestCase
+class syntaxTest extends \PHPUnit_Framework_TestCase
 {
     public function testIndex()
     {
@@ -12,7 +10,7 @@ class syntaxTest extends PHPUnit_Framework_TestCase
         $output = ob_get_clean();
         $this->assertContains('!DOCTYPE html', $output);
     }
-    
+
     public function testFetchmetadata()
     {
         $_SERVER['SERVER_NAME'] = 'validator.safire.ac.za';
@@ -20,7 +18,7 @@ class syntaxTest extends PHPUnit_Framework_TestCase
         ob_start();
         include_once(dirname(__DIR__) . '/fetchmetadata.php');
         $output = ob_get_clean();
-        $this->assertContains('<?xml', $output);        
+        $this->assertContains('<?xml', $output);
     }
 
     /* needs work! */
@@ -32,6 +30,6 @@ class syntaxTest extends PHPUnit_Framework_TestCase
         ob_start();
         // include_once(dirname(__DIR__) . '/validate.php');
         $output = ob_get_clean();
-        // $this->assertNotNull(json_decode($output));        
+        // $this->assertNotNull(json_decode($output));
     }
 }

@@ -1,8 +1,7 @@
 <?php
-require_once ('PHPUnit/Autoload.php');
 require_once (dirname(__DIR__) . '/local/xsltfunc.inc.php');
 
-class xsltfuncTest extends PHPUnit_Framework_TestCase
+class xsltfuncTest extends \PHPUnit_Framework_TestCase
 {
     protected $selfsignedcert;
     protected $notselfsignedcert;
