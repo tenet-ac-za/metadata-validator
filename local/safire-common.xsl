@@ -60,38 +60,61 @@
 
 	<!-- Check the metadata certificates -->
 	<xsl:template match="ds:X509Certificate">
+		<xsl:variable name="use" select="ancestor::md:KeyDescriptor/@use"/>
 		<xsl:if test="php:functionString('xsltfunc::checkBase64', text()) = 0">
 			<xsl:call-template name="error">
-				<xsl:with-param name="m">X509Certificate MUST be BASE64 encoded</xsl:with-param>
+				<xsl:with-param name="m">
+					<xsl:text>X509Certificate (use=</xsl:text>
+					<xsl:value-of select="$use"/>
+					<xsl:text>) MUST be BASE64 encoded</xsl:text>
+				</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
 		<xsl:if test="php:functionString('xsltfunc::checkCertSelfSigned',text()) = 0">
 			<xsl:call-template name="warning">
 				<xsl:with-param name="m">
-					<xsl:text>X509Certificate should be self-signed. Got issuer of '</xsl:text>
+					<xsl:text>X509Certificate (use=</xsl:text>
+					<xsl:value-of select="$use"/>
+					<xsl:text>) should be self-signed. Got issuer of '</xsl:text>
 					<xsl:value-of select="php:functionString('xsltfunc::getCertIssuer',text())"/>
 					<xsl:text>'</xsl:text>
 				</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
-		<xsl:if test="php:functionString('xsltfunc::checkCertValid',text(),'from') = 0">
-			<xsl:call-template name="warning">
-				<xsl:with-param name="m">
-					<xsl:text>X509Certificate is not yet valid (begins </xsl:text>
-					<xsl:value-of select="php:functionString('xsltfunc::getCertDates',text(),'from')"/>
-					<xsl:text>)</xsl:text>
-				</xsl:with-param>
-			</xsl:call-template>
-		</xsl:if>
-		<xsl:if test="php:functionString('xsltfunc::checkCertValid',text(),'to') = 0">
-			<xsl:call-template name="warning">
-				<xsl:with-param name="m">
-					<xsl:text>X509Certificate has expired or expires within 30 days (ends </xsl:text>
-					<xsl:value-of select="php:functionString('xsltfunc::getCertDates',text(),'to')"/>
-					<xsl:text>)</xsl:text>
-				</xsl:with-param>
-			</xsl:call-template>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="php:functionString('xsltfunc::checkCertValid',text(),'from') = 0">
+				<xsl:call-template name="warning">
+					<xsl:with-param name="m">
+						<xsl:text>X509Certificate (use=</xsl:text>
+						<xsl:value-of select="$use"/>
+						<xsl:text>)  is not yet valid (begins </xsl:text>
+						<xsl:value-of select="php:functionString('xsltfunc::getCertDates',text(),'from')"/>
+						<xsl:text>)</xsl:text>
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="php:functionString('xsltfunc::checkCertValid',text(),'to') = 0">
+				<xsl:call-template name="warning">
+					<xsl:with-param name="m">
+						<xsl:text>X509Certificate (use=</xsl:text>
+						<xsl:value-of select="$use"/>
+						<xsl:text>)  has expired or expires within 30 days (ends </xsl:text>
+						<xsl:value-of select="php:functionString('xsltfunc::getCertDates',text(),'to')"/>
+						<xsl:text>)</xsl:text>
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="info">
+					<xsl:with-param name="m">
+						<xsl:text>X509Certificate (use=</xsl:text>
+						<xsl:value-of select="$use"/>
+						<xsl:text>)  validity: </xsl:text>
+						<xsl:value-of select="php:functionString('xsltfunc::getCertDates',text(),'both')"/>
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
 		<xsl:apply-templates/>
 	</xsl:template>
 
