@@ -49,6 +49,25 @@ class xsltfunc {
     }
 
     /**
+     * Return the certificate issuer name
+     *
+     * @param string $cert
+     * @return string $issuer
+     */
+    static public function getCertIssuer($cert)
+    {
+        $x509data = @openssl_x509_parse(self::_pemToX509($cert));
+        if (empty($x509data))
+            return false;
+        $issuer = array_key_exists('issuer', $x509data)
+            ? (array_key_exists('CN', $x509data['issuer'])
+                ? $x509data['issuer']['CN']
+                : join('/', $x509data['issuer'])
+            ) : false;
+        return $issuer;
+    }
+
+    /**
      * Check the certificate expiry
      *
      * @param string $cert
@@ -65,6 +84,31 @@ class xsltfunc {
         if ($fromto != 'from' and $x509data['validTo_time_t'] < (time() + 30 * 86400))
             return false;
         return true;
+    }
+
+    /**
+     * Return the certificate dates
+     *
+     * @param string $cert
+     * @param string $fromto
+     * @param string $format per strftime
+     * @return string $date
+     */
+    static public function getCertDates($cert, $fromto = 'both', $format = '%F')
+    {
+        $x509data = @openssl_x509_parse(self::_pemToX509($cert));
+        if (empty($x509data))
+            return false;
+        switch ($fromto) {
+            case 'from':
+                return strftime($format, $x509data['validFrom_time_t']);
+            case 'to':
+                return strftime($format, $x509data['validTo_time_t']);
+            case 'both':
+                return strftime($format, $x509data['validFrom_time_t']) . ' - ' . strftime($format, $x509data['validTo_time_t']);
+            default:
+                return false;
+        }
     }
 
     /**

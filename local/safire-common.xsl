@@ -67,17 +67,29 @@
 		</xsl:if>
 		<xsl:if test="php:functionString('xsltfunc::checkCertSelfSigned',text()) = 0">
 			<xsl:call-template name="warning">
-				<xsl:with-param name="m">X509Certificate should be self-signed</xsl:with-param>
+				<xsl:with-param name="m">
+					<xsl:text>X509Certificate should be self-signed. Got issuer of '</xsl:text>
+					<xsl:value-of select="php:functionString('xsltfunc::getCertIssuer',text())"/>
+					<xsl:text>'</xsl:text>
+				</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
 		<xsl:if test="php:functionString('xsltfunc::checkCertValid',text(),'from') = 0">
 			<xsl:call-template name="warning">
-				<xsl:with-param name="m">X509Certificate is not yet valid</xsl:with-param>
+				<xsl:with-param name="m">
+					<xsl:text>X509Certificate is not yet valid (begins </xsl:text>
+					<xsl:value-of select="php:functionString('xsltfunc::getCertDates',text(),'from')"/>
+					<xsl:text>)</xsl:text>
+				</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
 		<xsl:if test="php:functionString('xsltfunc::checkCertValid',text(),'to') = 0">
 			<xsl:call-template name="warning">
-				<xsl:with-param name="m">X509Certificate has expired or expires within 30 days</xsl:with-param>
+				<xsl:with-param name="m">
+					<xsl:text>X509Certificate has expired or expires within 30 days (ends </xsl:text>
+					<xsl:value-of select="php:functionString('xsltfunc::getCertDates',text(),'to')"/>
+					<xsl:text>)</xsl:text>
+				</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
 		<xsl:apply-templates/>
