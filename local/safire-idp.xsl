@@ -52,6 +52,7 @@
 		<xsl:call-template name="warning">
 			<xsl:with-param name="m">mdui:Description should be set for identity providers</xsl:with-param>
 		</xsl:call-template>
+		<xsl:apply-templates/>
 	</xsl:template>
 	<xsl:template match="md:IDPSSODescriptor/md:Extensions/mdui:UIInfo[not(descendant::mdui:PrivacyStatementURL)]">
 		<xsl:call-template name="info">
