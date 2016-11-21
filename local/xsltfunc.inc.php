@@ -173,7 +173,8 @@ class xsltfunc {
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($curl, CURLOPT_CERTINFO, true);
         /* Try use a modernish version of TLS */
-        curl_setopt($curl, CURLOPT_SSLVERSION, defined('CURL_SSLVERSION_TLSv1_1') ? CURL_SSLVERSION_TLSv1_1 : CURL_SSLVERSION_DEFAULT);
+        if (defined('CURL_SSLVERSION_TLSv1_1'))
+            curl_setopt($curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_1);
         /* Chrome 54's cipher list - try eliminate older, insecure servers */
         curl_setopt($curl, CURLOPT_SSL_CIPHER_LIST, 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305-SHA256:ECDHE-RSA-CHACHA20-POLY1305-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:RSA-AES128-GCM-SHA256:RSA-AES256-GCM-SHA384:RSA-AES128-SHA:RSA-AES256-SHA:RSA-3DES-EDE-SHA');
         /* OSCP stapling check - remote host must support it!
