@@ -172,8 +172,10 @@ class xsltfunc {
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($curl, CURLOPT_CERTINFO, true);
+        /* OSCP stapling check - remote host must support it!
         if (defined('CURLOPT_SSL_VERIFYSTATUS'))
             curl_setopt($curl, CURLOPT_SSL_VERIFYSTATUS, true);
+        */
         return curl_exec($curl);
     }
 
