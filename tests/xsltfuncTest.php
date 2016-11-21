@@ -19,10 +19,22 @@ class xsltfuncTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(xsltfunc::checkCertSelfSigned($this->casigned));
     }
 
+    public function testGetCertIssuer()
+    {
+        $this->assertContains('SWITCHaai', xsltfunc::getCertIssuer($this->casigned));
+    }
+
     public function testCheckCertValid()
     {
         $this->assertTrue(xsltfunc::checkCertValid($this->selfsigned));
         $this->assertFalse(xsltfunc::checkCertValid($this->expired));
+    }
+
+    public function testGetCertDates()
+    {
+        $this->assertEquals('2016-08-26', xsltfunc::getCertDates($this->selfsigned, 'from'));
+        $this->assertEquals('2026-08-29', xsltfunc::getCertDates($this->selfsigned, 'to'));
+        $this->assertEquals('1472202070 - 1787994070', xsltfunc::getCertDates($this->selfsigned, 'both', '%s'));
     }
 
     public function testcheckURL()
@@ -36,7 +48,10 @@ class xsltfuncTest extends \PHPUnit_Framework_TestCase
     public function testCheckURLCert()
     {
         $this->assertTrue(xsltfunc::checkURLCert('https://safire.ac.za/'));
-        $this->assertFalse(xsltfunc::checkURLCert('https://www.pcwebshop.co.uk/'));
+        $this->assertFalse(xsltfunc::checkURLCert('https://expired.badssl.com/'));
+        $this->assertFalse(xsltfunc::checkURLCert('https://wrong.host.badssl.com/'));
+        $this->assertFalse(xsltfunc::checkURLCert('https://untrusted-root.badssl.com/'));
+        $this->assertFalse(xsltfunc::checkURLCert('https://rc4-md5.badssl.com/'));
     }
 
     public function testCheckEmailAddress()
@@ -51,5 +66,20 @@ class xsltfuncTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue(xsltfunc::checkBase64(base64_encode('this string is valid')));
         $this->assertFalse(xsltfunc::checkBase64('#'));
+    }
+
+    public function testCheckStringIsBlank()
+    {
+        $this->assertTrue(xsltfunc::checkStringIsBlank(''));
+        $this->assertTrue(xsltfunc::checkStringIsBlank(' '));
+        $this->assertFalse(xsltfunc::checkStringIsBlank(' a '));
+    }
+
+    public function testCheckJSON()
+    {
+        $this->assertFalse(xsltfunc::checkJSON('{abc123'));
+        $this->assertTrue(xsltfunc::checkJSON(json_encode('abc123')));
+        $this->assertTrue(xsltfunc::checkJSON(json_encode(array('a', 'b')), 'array'));
+        $this->assertFalse(xsltfunc::checkJSON(json_encode(array('a', 'b')), 'string'));
     }
 }
