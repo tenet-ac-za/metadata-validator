@@ -187,4 +187,25 @@ class xsltfunc {
             return false;
     }
 
+    /**
+     * Check that the string is valid JSON
+     * @param string $data
+     * @param string $type type to check against gettype()
+     * @return bool
+     */
+    static public function checkJSON($data, $type = null)
+    {
+        if (!function_exists('json_decode')) {
+            error_log('checkJSON needs JSON functions');
+            return true;
+        }
+        $json = @json_decode(trim($data));
+        if ($json === null)
+            return false;
+        elseif (is_string($type) and gettype($json) != $type)
+            return false;
+        else
+            return true;
+    }
+
 }
