@@ -69,9 +69,7 @@
 						</xsl:with-param>
 				</xsl:call-template>
 		</xsl:if>
-		<xsl:apply-templates/>
-	</xsl:template>
-	<xsl:template match="md:EntityDescriptor[md:SPSSODescriptor]">
+
 		<xsl:variable name="mdui" select="md:SPSSODescriptor/md:Extensions/mdui:UIInfo/mdui:DisplayName[@xml:lang='en']"/>
 		<xsl:variable name="desc" select="md:SPSSODescriptor/md:AttributeConsumingService/md:ServiceName[@xml:lang='en']"/>
 		<xsl:if test="$mdui and $desc and $mdui != $desc">
