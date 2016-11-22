@@ -186,8 +186,8 @@ class xsltfunc {
         }
         $curlresponse = curl_exec($curl);
 
-        if ($curlresponse !== true)
-            error_log(sprintf("checkURLCert(%s, %s) verifypeer returned %s", $url, $modern ? 'true' : 'false',  curl_getinfo($curl, CURLINFO_SSL_VERIFYRESULT));
+        if ($curlresponse !== true) {
+            error_log(sprintf("checkURLCert(%s, %s) verifypeer returned %s", $url, $modern ? 'true' : 'false',  curl_getinfo($curl, CURLINFO_SSL_VERIFYRESULT)));
 
         } elseif ($modern == true) {
             /* check for SHA1 */
@@ -196,7 +196,7 @@ class xsltfunc {
             foreach ($chain as $cert) {
                 error_log($url . " " . $cert['Signature Algorithm']);
                 if (preg_match('/(sha1|md5)/i', $cert['Signature Algorithm'])) {
-                    error_log(sprintf("checkURLCert(%s, %s) signature check found %s", $url, $modern ? 'true' : 'false',  $cert['Signature Algorithm']);
+                    error_log(sprintf("checkURLCert(%s, %s) signature check found %s", $url, $modern ? 'true' : 'false',  $cert['Signature Algorithm']));
                     $curlresponse = false;
                 }
             }
