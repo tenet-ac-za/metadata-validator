@@ -194,7 +194,6 @@ class xsltfunc {
             $chain = curl_getinfo($curl, CURLINFO_CERTINFO);
             $root = array_pop($chain); /* except root cert */
             foreach ($chain as $cert) {
-                error_log($url . " " . $cert['Signature Algorithm']);
                 if (preg_match('/(sha1|md5)/i', $cert['Signature Algorithm'])) {
                     error_log(sprintf("checkURLCert(%s, %s) signature check found %s", $url, $modern ? 'true' : 'false',  $cert['Signature Algorithm']));
                     $curlresponse = false;
