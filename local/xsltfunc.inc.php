@@ -151,6 +151,7 @@ class xsltfunc {
      * list of certificate authorities
      *
      * @param string $url
+     * @param bool $modern do modern browser compat checks
      * @return bool
      */
     static public function checkURLCert($url, $modern = true)
@@ -172,6 +173,7 @@ class xsltfunc {
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
         if ($modern == true) {
+            curl_setopt($curl, CURLOPT_CERTINFO, true);
             /* Try use a modernish version of TLS */
             if (defined('CURL_SSLVERSION_TLSv1_1'))
                 curl_setopt($curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_1);
@@ -183,8 +185,23 @@ class xsltfunc {
             */
         }
         $curlresponse = curl_exec($curl);
-        if ($curlresponse !== true and $modern == true)
-            error_log(sprintf("checkURLCert(%s, %s):\n%s\n", $url, $modern ? 'true' : 'false',  var_export(curl_getinfo($curl), true)));
+
+        if ($curlresponse !== true)
+            error_log(sprintf("checkURLCert(%s, %s) verifypeer returned %s", $url, $modern ? 'true' : 'false',  curl_getinfo($curl, CURLINFO_SSL_VERIFYRESULT));
+
+        } elseif ($modern == true) {
+            /* check for SHA1 */
+            $chain = curl_getinfo($curl, CURLINFO_CERTINFO);
+            $root = array_pop($chain); /* except root cert */
+            foreach ($chain as $cert) {
+                error_log($url . " " . $cert['Signature Algorithm']);
+                if (preg_match('/(sha1|md5)/i', $cert['Signature Algorithm'])) {
+                    error_log(sprintf("checkURLCert(%s, %s) signature check found %s", $url, $modern ? 'true' : 'false',  $cert['Signature Algorithm']);
+                    $curlresponse = false;
+                }
+            }
+        }
+
         return $curlresponse;
     }
 
