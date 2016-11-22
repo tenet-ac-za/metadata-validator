@@ -183,7 +183,7 @@ class xsltfunc {
             */
         }
         $curlresponse = curl_exec($curl);
-        if ($curlresponse !== true)
+        if ($curlresponse !== true and $modern == true)
             error_log(sprintf("checkURLCert(%s, %s):\n%s\n", $url, $modern ? 'true' : 'false',  var_export(curl_getinfo($curl), true)));
         return $curlresponse;
     }

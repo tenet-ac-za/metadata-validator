@@ -178,25 +178,37 @@
 		<xsl:apply-templates/>
 	</xsl:template>
 
+	<xsl:template match="md:*[@Location]">
+		<!-- Check @Location uses a valid certificate -->
+		<xsl:choose>
+			<xsl:when test="starts-with(@Location, 'https:') and php:functionString('xsltfunc::checkURLCert', @Location, 0) = 0">
+				<xsl:call-template name="error">
+					<xsl:with-param name="m">
+						<xsl:value-of select='local-name()'/>
+						<xsl:text> Location SSL certificate verification failed (cURL root cert bundle)</xsl:text>
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="starts-with(@Location, 'https:') and php:functionString('xsltfunc::checkURLCert', @Location, 1) = 0">
+				<xsl:call-template name="warning">
+					<xsl:with-param name="m">
+						<xsl:value-of select='local-name()'/>
+						<xsl:text> Location fails modern-browser SSL tests. See https://www.ssllabs.com/ssltest/?d=</xsl:text>
+						<xsl:value-of select="substring-before(substring-after(@Location, '://'), '/')"/>
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>
+		</xsl:choose>
 
-	<!-- Check @Location uses a valid certificate -->
-	<xsl:template match="md:*[@Location and starts-with(@Location, 'https:') and php:functionString('xsltfunc::checkURLCert', @Location) = 0]">
-		<xsl:call-template name="error">
-			<xsl:with-param name="m">
-				<xsl:value-of select='local-name()'/>
-				<xsl:text> Location does not use a valid SSL certificate</xsl:text>
-			</xsl:with-param>
-		</xsl:call-template>
-	</xsl:template>
-
-	<!-- Check that @Location point at web servers that exist -->
-	<xsl:template match="md:*[@Location and php:functionString('xsltfunc::checkURL', @Location) = 0]">
-		<xsl:call-template name="error">
-			<xsl:with-param name="m">
-				<xsl:value-of select='local-name()'/>
-				<xsl:text> Location is not a valid URL</xsl:text>
-			</xsl:with-param>
-		</xsl:call-template>
+		<!-- Check that @Location point at web servers that exist -->
+		<xsl:if test="php:functionString('xsltfunc::checkURL', @Location) = 0">
+			<xsl:call-template name="error">
+				<xsl:with-param name="m">
+					<xsl:value-of select='local-name()'/>
+					<xsl:text> Location is not a valid URL</xsl:text>
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
 	</xsl:template>
 
 	<!-- Check entityID  -->
