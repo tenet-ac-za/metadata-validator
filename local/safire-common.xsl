@@ -53,9 +53,27 @@
 
 	<!-- Check that there is no RegistrationInfo (note we have to disable Ian's check for this) -->
 	<xsl:template match="mdrpi:RegistrationInfo">
-		<xsl:call-template name="warning">
-			<xsl:with-param name="m">RegistrationInfo should not be set by Participants</xsl:with-param>
-		</xsl:call-template>
+		<xsl:choose>
+			<xsl:when test="@registrationAuthority = 'https://safire.ac.za/'">
+				<xsl:call-template name="info">
+					<xsl:with-param name="m">RegistrationInfo indicates SAFIRE is authority</xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="contains(@registrationAuthority, 'safire.ac.za')">
+				<xsl:call-template name="error">
+					<xsl:with-param name="m">
+						<xsl:text>RegistrationInfo has invalid SAFIRE authority '</xsl:text>
+						<xsl:value-of select="@registrationAuthority"/>
+						<xsl:text>'</xsl:text>
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="error">
+					<xsl:with-param name="m">RegistrationInfo should not be set by Participants</xsl:with-param>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<!-- Check the metadata certificates -->
@@ -85,9 +103,13 @@
 			<xsl:when test="php:functionString('xsltfunc::checkCertValid',text(),'from') = 0">
 				<xsl:call-template name="warning">
 					<xsl:with-param name="m">
-						<xsl:text>X509Certificate (use=</xsl:text>
-						<xsl:value-of select="$use"/>
-						<xsl:text>)  is not yet valid (begins </xsl:text>
+						<xsl:text>X509Certificate </xsl:text>
+						<xsl:if test="$use">
+							<xsl:text>(use=</xsl:text>
+							<xsl:value-of select="$use"/>
+							<xsl:text>) </xsl:text>
+						</xsl:if>
+						<xsl:text>is not yet valid (begins </xsl:text>
 						<xsl:value-of select="php:functionString('xsltfunc::getCertDates',text(),'from')"/>
 						<xsl:text>)</xsl:text>
 					</xsl:with-param>
@@ -96,9 +118,13 @@
 			<xsl:when test="php:functionString('xsltfunc::checkCertValid',text(),'to') = 0">
 				<xsl:call-template name="warning">
 					<xsl:with-param name="m">
-						<xsl:text>X509Certificate (use=</xsl:text>
-						<xsl:value-of select="$use"/>
-						<xsl:text>)  has expired or expires within 30 days (ends </xsl:text>
+						<xsl:text>X509Certificate </xsl:text>
+						<xsl:if test="$use">
+							<xsl:text>(use=</xsl:text>
+							<xsl:value-of select="$use"/>
+							<xsl:text>) </xsl:text>
+						</xsl:if>
+						<xsl:text>has expired or expires within 30 days (ends </xsl:text>
 						<xsl:value-of select="php:functionString('xsltfunc::getCertDates',text(),'to')"/>
 						<xsl:text>)</xsl:text>
 					</xsl:with-param>
@@ -107,9 +133,13 @@
 			<xsl:otherwise>
 				<xsl:call-template name="info">
 					<xsl:with-param name="m">
-						<xsl:text>X509Certificate (use=</xsl:text>
-						<xsl:value-of select="$use"/>
-						<xsl:text>)  validity: </xsl:text>
+						<xsl:text>X509Certificate </xsl:text>
+						<xsl:if test="$use">
+							<xsl:text>(use=</xsl:text>
+							<xsl:value-of select="$use"/>
+							<xsl:text>) </xsl:text>
+						</xsl:if>
+						<xsl:text>validity: </xsl:text>
 						<xsl:value-of select="php:functionString('xsltfunc::getCertDates',text(),'both')"/>
 					</xsl:with-param>
 				</xsl:call-template>
