@@ -17,17 +17,20 @@ class xsltfuncTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue(xsltfunc::checkCertSelfSigned($this->selfsigned));
         $this->assertFalse(xsltfunc::checkCertSelfSigned($this->casigned));
+        $this->assertFalse(xsltfunc::checkCertSelfSigned(''));
     }
 
     public function testGetCertIssuer()
     {
         $this->assertContains('SWITCHaai', xsltfunc::getCertIssuer($this->casigned));
+        $this->assertFalse(xsltfunc::getCertIssuer(''));
     }
 
     public function testCheckCertValid()
     {
         $this->assertTrue(xsltfunc::checkCertValid($this->selfsigned));
         $this->assertFalse(xsltfunc::checkCertValid($this->expired));
+        $this->assertFalse(xsltfunc::checkCertValid(''));
     }
 
     public function testGetCertDates()
@@ -35,6 +38,14 @@ class xsltfuncTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('2016-08-26', xsltfunc::getCertDates($this->selfsigned, 'from'));
         $this->assertEquals('2026-08-29', xsltfunc::getCertDates($this->selfsigned, 'to'));
         $this->assertEquals('1472202070 - 1787994070', xsltfunc::getCertDates($this->selfsigned, 'both', '%s'));
+        $this->assertFalse(xsltfunc::getCertDates(''));
+    }
+
+    public function testGetCertBits()
+    {
+        $this->assertEquals(2048, xsltfunc::getCertBits($this->selfsigned));
+        $this->assertEquals(2048, xsltfunc::getCertBits($this->casigned));
+        $this->assertFalse(xsltfunc::getCertBits(''));
     }
 
     public function testcheckURL()

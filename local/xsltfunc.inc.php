@@ -112,6 +112,23 @@ class xsltfunc {
     }
 
     /**
+     * Return the number of bits used in the certificate
+     *
+     * @param string $cert
+     * @return integer $bits
+     */
+    static public function getCertBits($cert)
+    {
+        $x509key = @openssl_get_publickey(self::_pemToX509($cert));
+        if (empty($x509key))
+            return false;
+        $x509keydetails = @openssl_pkey_get_details($x509key);
+        if (!array_key_exists('bits', $x509keydetails))
+            return false;
+        return (int) $x509keydetails['bits'];
+    }
+
+    /**
      * Check a URL
      *
      * This is a bit simplistic - it merely checks that the web server
