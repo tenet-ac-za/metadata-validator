@@ -230,6 +230,30 @@
 		<xsl:apply-templates/>
 	</xsl:template>
 
+	<xsl:template match="mdui:*[substring(name(), string-length(name()) - 2) = 'URL']">
+		<!-- Check that *URL point at web servers that exist -->
+		<xsl:if test="php:functionString('xsltfunc::checkURL', text()) = 0">
+			<xsl:call-template name="error">
+				<xsl:with-param name="m">
+					<xsl:value-of select='local-name()'/>
+					<xsl:text> is not a valid URL</xsl:text>
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="md:OrganizationURL">
+		<!-- Check that *URL point at web servers that exist -->
+		<xsl:if test="php:functionString('xsltfunc::checkURL', text()) = 0">
+			<xsl:call-template name="error">
+				<xsl:with-param name="m">
+					<xsl:value-of select='local-name()'/>
+					<xsl:text> is not a valid URL</xsl:text>
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+
 	<xsl:template match="md:*[@Location]">
 		<!-- Check @Location uses a valid certificate -->
 		<xsl:choose>
