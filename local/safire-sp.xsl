@@ -56,14 +56,15 @@
 
 	<!-- check that mdui matches service descriptors -->
 	<xsl:template match="md:EntityDescriptor[md:SPSSODescriptor]">
-		<xsl:variable name="mdui" select="md:SPSSODescriptor/md:Extensions/mdui:UIInfo/mdui:Description[@xml:lang='en']"/>
+		<xsl:variable name="mduidesc" select="md:SPSSODescriptor/md:Extensions/mdui:UIInfo/mdui:Description[@xml:lang='en']"/>
 		<xsl:variable name="servicedesc" select="md:SPSSODescriptor/md:AttributeConsumingService/md:ServiceDescription[@xml:lang='en']"/>
+		<xsl:variable name="mduiname" select="md:SPSSODescriptor/md:Extensions/mdui:UIInfo/mdui:DisplayName[@xml:lang='en']"/>
 		<xsl:variable name="servicename" select="md:SPSSODescriptor/md:AttributeConsumingService/md:ServiceName[@xml:lang='en']"/>
-		<xsl:if test="$mdui and $servicedesc and $mdui != $servicedesc">
+		<xsl:if test="$mduidesc and $servicedesc and $mduidesc != $servicedesc">
 				<xsl:call-template name="error">
 						<xsl:with-param name="m">
 								<xsl:text>mismatched xml:lang='en' Description: '</xsl:text>
-								<xsl:value-of select="$mdui"/>
+								<xsl:value-of select="$mduidesc"/>
 								<xsl:text>' in mdui vs. '</xsl:text>
 								<xsl:value-of select="$servicedesc"/>
 								<xsl:text>' in ServiceDescription</xsl:text>
@@ -71,11 +72,11 @@
 				</xsl:call-template>
 		</xsl:if>
 
-		<xsl:if test="$mdui and $servicename and $mdui != $servicename">
+		<xsl:if test="$mduiname and $servicename and $mduiname != $servicename">
 				<xsl:call-template name="error">
 						<xsl:with-param name="m">
 								<xsl:text>mismatched xml:lang='en' DisplayName: '</xsl:text>
-								<xsl:value-of select="$mdui"/>
+								<xsl:value-of select="$mduiname"/>
 								<xsl:text>' in mdui vs. '</xsl:text>
 								<xsl:value-of select="$servicename"/>
 								<xsl:text>' in ServiceName</xsl:text>
