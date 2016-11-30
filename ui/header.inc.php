@@ -28,11 +28,11 @@ if (preg_match('/\.local$/', $_SERVER['SERVER_NAME'])) {
 
     <!-- these are SAFIRE-specific -->
     <title>validator.<?php echo $domain ?></title>
-    <link rel="stylesheet" type="text/css" href="https://discovery.<?php echo $domain ?>/module.php/safire/resources/default.css">
-    <link rel="icon" type="image/icon" href="https://discovery.<?php echo $domain ?>/module.php/safire/resources/favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://discovery.<?php echo $domain ?>/module.php/safire/resources/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://discovery.<?php echo $domain ?>/module.php/safire/resources/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="72x72" href="https://discovery.<?php echo $domain ?>/module.php/safire/resources/favicon-72x72.png">
+    <link rel="stylesheet" type="text/css" href="https://hub.<?php echo $domain ?>/module.php/safire/resources/default.css">
+    <link rel="icon" type="image/icon" href="https://hub.<?php echo $domain ?>/module.php/safire/resources/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://hub.<?php echo $domain ?>/module.php/safire/resources/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://hub.<?php echo $domain ?>/module.php/safire/resources/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="72x72" href="https://hub.<?php echo $domain ?>/module.php/safire/resources/favicon-72x72.png">
     <meta name="theme-color" content="#5da9dd">
 
     <!-- these are the bits you need to keep in a new skin -->
@@ -71,7 +71,7 @@ if (preg_match('/\.local$/', $_SERVER['SERVER_NAME'])) {
 <div id="wrap">
 
     <div id="header">
-        <a title="South African Identity Federation" href="https://safire.ac.za/"><img src="https://discovery.<?php echo $domain ?>/module.php/safire/resources/SAFIRE_P_White_SimpleSAML.svg" alt="SAFIRE" style="float: right; display: inline; height: 72px;"></a>
+        <a title="South African Identity Federation" href="https://safire.ac.za/"><img src="https://hub.<?php echo $domain ?>/module.php/safire/resources/SAFIRE_P_White_SimpleSAML.svg" alt="SAFIRE" style="float: right; display: inline; height: 72px;"></a>
         <h1><a style="text-decoration: none; color: white" href="/">validator.<?php echo $domain ?></a></h1>
     </div>
     <div id="languagebar">&nbsp;</div>  <div id="content">
