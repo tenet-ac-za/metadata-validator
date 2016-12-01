@@ -14,7 +14,7 @@ class syntaxTest extends \PHPUnit_Framework_TestCase
     public function testFetchmetadata()
     {
         $_SERVER['SERVER_NAME'] = 'validator.safire.ac.za';
-        $_REQUEST['url'] = 'https://metadata.safire.ac.za/safire-metadata.xml';
+        $_REQUEST['url'] = 'https://metadata.safire.ac.za/safire-hub-metadata.xml';
         ob_start();
         include_once(dirname(__DIR__) . '/fetchmetadata.php');
         $output = ob_get_clean();
