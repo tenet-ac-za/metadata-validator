@@ -17,10 +17,10 @@ var spinner;
 function resetUI()
 {
     /* reset the UI */
-    $('#validator').removeClass('invalid');
-    $('#validator').removeClass('valid');
+    $('#validator').removeClass('validator-invalid');
+    $('#validator').removeClass('validator-valid');
     $('#validator #results').html('<ul></ul>');
-    $('#validator #results').addClass('hidden');
+    $('#validator #results').addClass('validator-hidden');
     $('#validator #progress').progressbar('option', 'disabled', 'true');
     $('#validator #progress').progressbar('option', 'value', 0);
 }
@@ -34,7 +34,7 @@ function populateResultsPane(data)
     var firstError = true;
     $('#validator #results').html(
         '<h3>Results from validation pass ' + data['pass'] + '/' + data['passes'] +
-        '<span class="passdescr"> (' + data['passdescr'] + ')</span>' +
+        '<span class="validator-passdescr"> (' + data['passdescr'] + ')</span>' +
         ':</h3><ul></ul>'
     );
     $.each(data['errors'], function (k, err) {
@@ -44,20 +44,20 @@ function populateResultsPane(data)
         }
         var msg = err['message'];
         if (msg.match(/\[ERROR\]/) || (err['code'] != 1 && err['level'] > 1)) {
-            msg = '<span class="mesg-error">' + msg + '</span>';
+            msg = '<span class="validator-mesg-error">' + msg + '</span>';
         }
         if (msg.match(/\[WARN\]/) || (err['code'] != 1 && err['level'] == 1)) {
-            msg = '<span class="mesg-warn">' + msg + '</span>';
+            msg = '<span class="validator-mesg-warn">' + msg + '</span>';
         }
         if (msg.match(/\[INFO\]/)) {
-            msg = '<span class="mesg-info">' + msg + '</span>';
+            msg = '<span class="validator-mesg-info">' + msg + '</span>';
         }
         if (err['line'] > 0) {
-            msg = msg + ' <span class="linenum">[<a href="#" onclick="editor.gotoLine(' + err['line'] + ',' + err['column'] + ')">' + err['line'] + ', ' + err['column'] + '</a>]</span>';
+            msg = msg + ' <span class="validator-linenum">[<a href="#" onclick="editor.gotoLine(' + err['line'] + ',' + err['column'] + ')">' + err['line'] + ', ' + err['column'] + '</a>]</span>';
         }
         $('#validator #results ul').append('<li>' + msg + '</li>');
     });
-    $('#validator #results').removeClass('hidden');
+    $('#validator #results').removeClass('validator-hidden');
 }
 
 /**
@@ -72,12 +72,12 @@ function validationResults(data)
         } else {
             resetUI();
         }
-        $('#validator').addClass('valid');
+        $('#validator').addClass('validator-valid');
         $('#validator #progress').progressbar('option', 'value', 100);
         editor.gotoLine(1, 0);
     } else {
         populateResultsPane(data);
-        $('#validator').addClass('invalid');
+        $('#validator').addClass('validator-invalid');
         $('#validator #progress').progressbar('option', 'value', (data['pass'] / data['passes']) * 100);
     }
 }
@@ -185,18 +185,18 @@ function createValidatorDOM()
     return '<div id="metadata"></div>' +
         '<div id="progress"></div>' +
         '<div id="buttons">' +
-            '<input id="validate" type="button" value="Validate!" class="button">' +
-            '<div class="right">' +
-                '<input id="mdurl" type="button" value="Fetch URL..." class="button">' +
+            '<input id="validate" type="button" value="Validate!" class="validator-button">' +
+            '<div class="validator-right">' +
+                '<input id="mdurl" type="button" value="Fetch URL..." class="validator-button">' +
                 '<label for="mdfile">Upload file...</label>' +
                 '<input id="mdfile" type="file" multiple="">' +
             '</div>' +
         '</div>' +
-        '<div id="results" class="hidden"></div>' +
+        '<div id="results" class="validator-hidden"></div>' +
         '<div id="spinner">' +
-            '<div class="bounce1"></div>' +
-            '<div class="bounce2"></div>' +
-            '<div class="bounce3"></div>' +
+            '<div class="validator-bounce1"></div>' +
+            '<div class="validator-bounce2"></div>' +
+            '<div class="validator-bounce3"></div>' +
         '</div>';
 }
 

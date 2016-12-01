@@ -32,40 +32,40 @@
    position: absolute;
    z-index: -1;
 }
-.valid {
+.validator-valid {
     border: 2px solid green !important;
 }
-.invalid {
+.validator-invalid {
     border: 2px solid red !important;
 }
-.mesg-warn {
+.validator-mesg-warn {
     color: orange;
 }
-.mesg-info {
+.validator-mesg-info {
     color: green;
 }
-.mesg-error {
+.validator-mesg-error {
     color: red;
 }
-.linenum {
+.validator-linenum {
     font-size: smaller;
 }
-.linenum a {
+.validator-linenum a {
     color: inherit;
 }
-.hidden {
+.validator-hidden {
     display: none;
 }
 @media screen and (min-width: 783px) {
-    .right {
+    .validator-right {
         float: right;
     }
 }
 @media screen and (max-width: 782px) {
-    .right {
+    .validator-right {
         padding-top: 0.5em;
     }
-    .passdescr {
+    .validator-passdescr {
         display: none;
     }
 }
@@ -95,11 +95,11 @@
   -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
   animation: sk-bouncedelay 1.4s infinite ease-in-out both;
 }
-#validator #spinner .bounce1 {
+#validator #spinner .validator-bounce1 {
   -webkit-animation-delay: -0.32s;
   animation-delay: -0.32s;
 }
-#validator #spinner .bounce2 {
+#validator #spinner .validator-bounce2 {
   -webkit-animation-delay: -0.16s;
   animation-delay: -0.16s;
 }
