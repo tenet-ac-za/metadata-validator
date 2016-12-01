@@ -6,25 +6,25 @@
  * @license https://github.com/safire-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
 #validator {
-	border: 2px solid transparent;
-	padding: 0.5em;
-	margin: -0.5em;
+    border: 2px solid transparent;
+    padding: 0.5em;
+    margin: -0.5em;
 }
 #validator #metadata, #validator #buttons, #validator #results {
-	width: 100%;
+    width: 100%;
 }
 #validator #metadata {
-	height: 30em;
+    height: 30em;
 }
 #validator #progress {
-	margin: 0.2em 0;
-	height: 0.5em;
+    margin: 0.2em 0;
+    height: 0.5em;
 }
 #validator #buttons {
-	margin: 1em 0;
+    margin: 1em 0;
 }
 #validator #results ul {
-	font-family: monospace;
+    font-family: monospace;
 }
 /* trick to skin the input[type=file] ui */
 #validator #mdfile {
@@ -33,57 +33,57 @@
    z-index: -1;
 }
 .valid {
-	border: 2px solid green !important;
+    border: 2px solid green !important;
 }
 .invalid {
-	border: 2px solid red !important;
+    border: 2px solid red !important;
 }
 .mesg-warn {
-	color: orange;
+    color: orange;
 }
 .mesg-info {
-	color: green;
+    color: green;
 }
 .mesg-error {
-	color: red;
+    color: red;
 }
 .linenum {
-	font-size: smaller;
+    font-size: smaller;
 }
 .linenum a {
-	color: inherit;
+    color: inherit;
 }
 .hidden {
-	display: none;
+    display: none;
 }
 @media screen and (min-width: 783px) {
-	.right {
-		float: right;
-	}
+    .right {
+        float: right;
+    }
 }
 @media screen and (max-width: 782px) {
-	.right {
-		padding-top: 0.5em;
-	}
-	.passdescr {
-		display: none;
-	}
+    .right {
+        padding-top: 0.5em;
+    }
+    .passdescr {
+        display: none;
+    }
 }
 @media print {
-		#validator #buttons, #validator #progress {
-			display: none;
-		}
+        #validator #buttons, #validator #progress {
+            display: none;
+        }
 }
 
 /* adapted from http://tobiasahlin.com/spinkit/ */
 #validator #spinner {
-	display: none;
-	position: absolute;
-	top: 0; left: 0; bottom: 0; right: 0;
-	z-index: 100;
-	margin: auto;
-	width: 70px; height: 18px;
-	text-align: center;
+    display: none;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    z-index: 100;
+    margin: auto;
+    width: 70px; height: 18px;
+    text-align: center;
 }
 #validator #spinner > div {
   width: 18px;
