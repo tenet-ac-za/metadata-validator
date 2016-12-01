@@ -16,18 +16,6 @@ it for inclusion in the federation registry. To test your metadata,
 copy-and-paste it into the box below (or upload your metadata file).
 Then click the [Validate!] button to begin.</p>
 
-<div id="validator">
-    <div id="metadata"></div>
-    <div id="progress"></div>
-    <div id="buttons">
-        <input id="validate" type="button" value="Validate!" class="button">
-        <div class="right">
-            <input id="mdurl" type="button" value="Fetch URL..." class="button">
-            <label for="mdfile">Upload file...</label>
-            <input id="mdfile" type="file" multiple="">
-        </div>
-    </div>
-    <div id="results" class="hidden"></div>
-</div>
+<div id="validator"></div>
 
 <?php include_once(__DIR__ . '/ui/footer.inc.php'); ?>

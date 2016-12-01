@@ -9,6 +9,7 @@
  * @requires ace.js
  */
 var editor;
+var spinner;
 
 /**
  * reset the results pane
@@ -103,7 +104,8 @@ function sendForValidation()
 /*
  * Fetch metata from a URL (via a proxy)
  */
-function fetchFromURL(url) {
+function fetchFromURL(url)
+{
     console.log('Fetching metadata from ' + url);
     $.ajax({
         method: 'GET',
@@ -144,7 +146,8 @@ function fetchFromURL(url) {
 /**
  * Create a dialog for to get the metadata URL
  */
-function createFetchURLDialog() {
+function createFetchURLDialog()
+{
     $('#validator').append(
         '<div id="validator-dialog-form" title="Enter address of metadata server:" style="overflow:hidden;text-align:center;"><form>' +
         '<input type="url" name="mdaddress" id="mdaddress" placeholder="https://..." class="ui-corner-all" size="40" style="margin:0 auto;padding:0;width: 98%">' +
@@ -174,8 +177,32 @@ function createFetchURLDialog() {
     });
 }
 
+/**
+ * Create the basic DOM for the application, so users can just use a <div>
+ */
+function createValidatorDOM()
+{
+	return '<div id="metadata"></div>' +
+		'<div id="progress"></div>' +
+		'<div id="buttons">' +
+			'<input id="validate" type="button" value="Validate!" class="button">' +
+			'<div class="right">' +
+				'<input id="mdurl" type="button" value="Fetch URL..." class="button">' +
+				'<label for="mdfile">Upload file...</label>' +
+				'<input id="mdfile" type="file" multiple="">' +
+			'</div>' +
+		'</div>' +
+		'<div id="results" class="hidden"></div>' +
+		'<div id="spinner">' +
+			'<div class="bounce1"></div>' +
+			'<div class="bounce2"></div>' +
+			'<div class="bounce3"></div>' +
+		'</div>';
+}
+
 $(document).ready(function ()
 {
+	$('#validator').html(createValidatorDOM());
     $('#validator input[type=button]').button();
     $('#validator #validate').focus();
     $('#validator label[for=mdfile]').button();
@@ -207,4 +234,14 @@ $(document).ready(function ()
     $('#validator #validate').click(function() {
         sendForValidation();
     });
+
+	/* Ajax global event handlers to display comfort throbber/spinner */
+	$(document).ajaxStart(function() {
+		/* delay starting the spinner, so we don't show it for quick functions */
+		spinner = setTimeout(function() { $('#validator #spinner').show(); }, 350);
+	});
+	$(document).ajaxStop(function() {
+		clearTimeout(spinner);
+		$('#validator #spinner').hide();
+	});
 });
