@@ -32,7 +32,8 @@ if (preg_match('/\.local$/', $_SERVER['SERVER_NAME'])) {
     <link rel="icon" type="image/icon" href="https://iziko.<?php echo $domain ?>/module.php/safire/resources/favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="https://iziko.<?php echo $domain ?>/module.php/safire/resources/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="https://iziko.<?php echo $domain ?>/module.php/safire/resources/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="72x72" href="https://iziko.<?php echo $domain ?>/module.php/safire/resources/favicon-72x72.png">
+    <link rel="icon" type="image/png" sizes="72x72" href="https://iziko.<?php echo $domain ?>/module.php/safire/resources/safire-logo-72x72.png">
+    <link rel="icon" type="image/png" sizes="150x150" href="https://iziko.<?php echo $domain ?>/module.php/safire/resources/safire-logo-150x150.png">
     <meta name="theme-color" content="#5da9dd">
 
     <!-- these are the bits you need to keep in a new skin -->
