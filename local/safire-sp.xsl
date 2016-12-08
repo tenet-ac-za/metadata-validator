@@ -43,6 +43,12 @@
 		</xsl:call-template>
 		<xsl:apply-templates/>
 	</xsl:template>
+	<xsl:template match="md:SPSSODescriptor/md:Extensions/mdui:UIInfo[not(descendant::mdui:Logo)]">
+		<xsl:call-template name="warning">
+			<xsl:with-param name="m">It is strongly recommended that mdui:Logo be set for service providers</xsl:with-param>
+		</xsl:call-template>
+		<xsl:apply-templates/>
+	</xsl:template>
 	<xsl:template match="md:SPSSODescriptor/md:AttributeConsumingService[not(descendant::md:RequestedAttribute)]">
 		<xsl:call-template name="error">
 			<xsl:with-param name="m">RequestedAttributes MUST be set for service providers</xsl:with-param>

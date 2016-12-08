@@ -60,6 +60,12 @@
 		</xsl:call-template>
 		<xsl:apply-templates/>
 	</xsl:template>
+	<xsl:template match="md:IDPSSODescriptor/md:Extensions/mdui:UIInfo[not(descendant::mdui:Logo)]">
+		<xsl:call-template name="warning">
+			<xsl:with-param name="m">It is strongly recommended that mdui:Logo be set for identity providers</xsl:with-param>
+		</xsl:call-template>
+		<xsl:apply-templates/>
+	</xsl:template>
 
 	<!-- Note about SingleLogoutService -->
 	<xsl:template match="md:SingleLogoutService">
