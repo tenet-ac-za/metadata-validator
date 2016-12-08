@@ -94,10 +94,15 @@
 				<xsl:with-param name="m">More than one urn:x-safire.ac.za:organizationName EntityAttribute</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
+		<xsl:if test="count(saml:Attribute[@Name='urn:x-safire.ac.za:purpose-is-to'])>1">
+			<xsl:call-template name="error">
+				<xsl:with-param name="m">More than one urn:x-safire.ac.za:purpose-is-to EntityAttribute</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
 		<!-- now call child elements -->
 		<xsl:apply-templates/>
 	</xsl:template>
-	
+
 	<!-- Some variables only apply to Identity Providers -->
 	<xsl:template match="md:EntityDescriptor[md:SPSSODescriptor]">
 		<xsl:if test="md:Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:schacHomeOrganization']">
@@ -118,12 +123,17 @@
 		<!-- now process child elements -->
 		<xsl:apply-templates/>
 	</xsl:template>
-		
+
 	<!-- Some variables only apply to Service Providers -->
 	<xsl:template match="md:EntityDescriptor[md:IDPSSODescriptor]">
 		<xsl:if test="md:Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:consent-disable']">
 			<xsl:call-template name="error">
 				<xsl:with-param name="m">urn:x-safire.ac.za:consent-disable should not be set for Identity Providers</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
+		<xsl:if test="md:Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:purpose-is-to']">
+			<xsl:call-template name="error">
+				<xsl:with-param name="m">urn:x-safire.ac.za:purpose-is-to should not be set for Identity Providers</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
 		<!-- now process child elements -->

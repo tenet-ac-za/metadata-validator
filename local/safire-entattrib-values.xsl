@@ -82,12 +82,25 @@
 		</xsl:if>
 	</xsl:template>
 
-	<!-- 
-	     These tests both anchor to md:EntityDescriptor, and will both match for 
+	<!-- purpose-is-to has a maximum length -->
+	<xsl:template match="mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:purpose-is-to']">
+		<xsl:if test="string-length(saml:AttributeValue[1]) > 200">
+			<xsl:call-template name="error">
+				<xsl:with-param name="m">
+					<xsl:text>urn:x-safire.ac.za:purpose-is-to should be less than 200 characters (currently </xsl:text>
+					<xsl:value-of select="string-length(saml:AttributeValue[1])"/>
+					<xsl:text> characters)</xsl:text>
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+
+	<!--
+	     These tests both anchor to md:EntityDescriptor, and will both match for
 	     IDPSSODescriptors, so it is easier to do them within one template
 	 -->
 	<xsl:template match="md:EntityDescriptor">
-	
+
 		<!-- organizationName should match Organization -->
 		<xsl:if test="md:Organization">
 			<xsl:variable name="eao" select="md:Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:organizationName']/saml:AttributeValue[1]"/>
@@ -104,7 +117,7 @@
 				</xsl:call-template>
 			</xsl:if>
 		</xsl:if>
-		
+
 		<!-- schacHomeOrganization should match the first scoping element -->
 		<xsl:if test="md:IDPSSODescriptor">
 			<xsl:variable name="sho" select="md:Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:schacHomeOrganization']/saml:AttributeValue[1]"/>
@@ -132,7 +145,7 @@
 				</xsl:when>
 			</xsl:choose>
 		</xsl:if>
-		
+
 		<!-- now process child elements -->
 		<xsl:apply-templates/>
 	</xsl:template>
