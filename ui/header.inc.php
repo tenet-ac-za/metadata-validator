@@ -72,7 +72,7 @@ if (preg_match('/\.local$/', $_SERVER['SERVER_NAME'])) {
 <div id="wrap">
 
     <div id="header">
-        <a title="South African Identity Federation" href="https://safire.ac.za/"><img src="https://iziko.<?php echo $domain ?>/module.php/safire/resources/SAFIRE_P_White_SimpleSAML.svg" alt="SAFIRE" style="float: right; display: inline; height: 72px;"></a>
+        <a title="South African Identity Federation" href="https://safire.ac.za/"><img src="https://iziko.<?php echo $domain ?>/module.php/safire/resources/SAFIRE_P_White_SimpleSAML.svg" alt="SAFIRE" style="float: right; display: inline; width=258px; height: 72px;" width="258" height="72" alt="[SAFIRE]"></a>
         <h1><a style="text-decoration: none; color: white" href="/">validator.<?php echo $domain ?></a></h1>
     </div>
     <div id="languagebar">&nbsp;</div>  <div id="content">
