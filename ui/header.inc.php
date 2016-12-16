@@ -10,7 +10,7 @@
  * @copyright Copyright (c) 2016, SAFIRE - South African Identity Federation
  * @license https://github.com/safire-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
-if (preg_match('/\.local$/', $_SERVER['SERVER_NAME'])) {
+if (strpos($_SERVER['SERVER_NAME'], '.local') !== false) {
     $domain = 'safire.local';
 } else {
     $domain = 'safire.ac.za';
@@ -28,12 +28,12 @@ if (preg_match('/\.local$/', $_SERVER['SERVER_NAME'])) {
 
     <!-- these are SAFIRE-specific -->
     <title>validator.<?php echo $domain ?></title>
-    <link rel="stylesheet" type="text/css" href="https://iziko.<?php echo $domain ?>/module.php/safire/resources/default.css">
-    <link rel="icon" type="image/icon" href="https://iziko.<?php echo $domain ?>/module.php/safire/resources/favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://iziko.<?php echo $domain ?>/module.php/safire/resources/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://iziko.<?php echo $domain ?>/module.php/safire/resources/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="72x72" href="https://iziko.<?php echo $domain ?>/module.php/safire/resources/safire-logo-72x72.png">
-    <link rel="icon" type="image/png" sizes="150x150" href="https://iziko.<?php echo $domain ?>/module.php/safire/resources/safire-logo-150x150.png">
+    <link rel="stylesheet" type="text/css" href="//static.<?php echo $domain ?>/css/ssp-default.css">
+    <link rel="icon" type="image/icon" href="//static.<?php echo $domain ?>/favicons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="//static.<?php echo $domain ?>/favicons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="//static.<?php echo $domain ?>/favicons/safire/resources/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="72x72" href="//static.<?php echo $domain ?>/logos/safire-logo-72x72.png">
+    <link rel="icon" type="image/png" sizes="150x150" href="//static.<?php echo $domain ?>/logos/safire-logo-150x150.png">
     <meta name="theme-color" content="#5da9dd">
 
     <!-- these are the bits you need to keep in a new skin -->
@@ -72,7 +72,7 @@ if (preg_match('/\.local$/', $_SERVER['SERVER_NAME'])) {
 <div id="wrap">
 
     <div id="header">
-        <a title="South African Identity Federation" href="https://safire.ac.za/"><img src="https://iziko.<?php echo $domain ?>/module.php/safire/resources/SAFIRE_P_White_SimpleSAML.svg" alt="SAFIRE" style="float: right; display: inline; width=258px; height: 72px;" width="258" height="72" alt="[SAFIRE]"></a>
+        <a title="South African Identity Federation" href="https://safire.ac.za/"><img src="//static.<?php echo $domain ?>/logos/SAFIRE_P_White_SimpleSAML.svg" alt="SAFIRE" style="float: right; display: inline; width=258px; height: 72px;" width="258" height="72" alt="[SAFIRE]"></a>
         <h1><a style="text-decoration: none; color: white" href="/">validator.<?php echo $domain ?></a></h1>
     </div>
     <div id="languagebar">&nbsp;</div>  <div id="content">
