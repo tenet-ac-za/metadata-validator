@@ -31,9 +31,9 @@ if (strpos($_SERVER['SERVER_NAME'], '.local') !== false) {
     <link rel="stylesheet" type="text/css" href="//static.<?php echo $domain ?>/css/ssp-default.css">
     <link rel="icon" type="image/icon" href="//static.<?php echo $domain ?>/favicons/favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="//static.<?php echo $domain ?>/favicons/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="//static.<?php echo $domain ?>/favicons/safire/resources/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="72x72" href="//static.<?php echo $domain ?>/logos/safire-logo-72x72.png">
-    <link rel="icon" type="image/png" sizes="150x150" href="//static.<?php echo $domain ?>/logos/safire-logo-150x150.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="//static.<?php echo $domain ?>/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="72x72" href="//static.<?php echo $domain ?>/favicons/favicon-72x72.png">
+    <link rel="icon" type="image/png" sizes="150x150" href="//static.<?php echo $domain ?>/favicons/favicon-150x150.png">
     <meta name="theme-color" content="#5da9dd">
 
     <!-- these are the bits you need to keep in a new skin -->
