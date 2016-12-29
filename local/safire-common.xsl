@@ -54,7 +54,7 @@
 	<!-- Check that there is no RegistrationInfo (note we have to disable Ian's check for this) -->
 	<xsl:template match="mdrpi:RegistrationInfo">
 		<xsl:choose>
-			<xsl:when test="@registrationAuthority = 'https://safire.ac.za/'">
+			<xsl:when test="@registrationAuthority = 'https://safire.ac.za'">
 				<xsl:call-template name="info">
 					<xsl:with-param name="m">RegistrationInfo indicates SAFIRE is authority</xsl:with-param>
 				</xsl:call-template>
