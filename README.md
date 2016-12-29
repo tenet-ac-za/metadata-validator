@@ -56,3 +56,10 @@ ensure that all jQuery and CSS selectors are locked to within that div.
 What's here has been tested and works reasonably consistently with recent
 versions of Chrome, Firefox, Edge & IE11. It makes use of some HTML5
 elements and so may not work properly with older browsers.
+
+Demo
+----
+
+A reasonably recent version of this code runs the SAFIRE metadata validator
+at [https://validator.safire.ac.za/](https://validator.safire.ac.za/).
+
