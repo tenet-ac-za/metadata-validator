@@ -61,6 +61,34 @@
 		</xsl:if>
 	</xsl:template>
 
+	<!-- participation-agreement has a controlled vocabulary -->
+	<xsl:template match="mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:participation-agreement']">
+		<xsl:variable name="allowed" select="'yes|no|true|false'"/>
+		<xsl:if test="not(contains(concat('|', $allowed, '|'), concat('|', saml:AttributeValue[1], '|')))">
+			<xsl:call-template name="error">
+				<xsl:with-param name="m">
+					<xsl:text>urn:x-safire.ac.za:participation-agreementn should be true/false, not '</xsl:text>
+					<xsl:value-of select="saml:AttributeValue[1]"/>
+					<xsl:text>'</xsl:text>
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+
+	<!-- hidden has a controlled vocabulary -->
+	<xsl:template match="mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:hidden']">
+		<xsl:variable name="allowed" select="'yes|no|true|false'"/>
+		<xsl:if test="not(contains(concat('|', $allowed, '|'), concat('|', saml:AttributeValue[1], '|')))">
+			<xsl:call-template name="error">
+				<xsl:with-param name="m">
+					<xsl:text>urn:x-safire.ac.za:hidden should be true/false, not '</xsl:text>
+					<xsl:value-of select="saml:AttributeValue[1]"/>
+					<xsl:text>'</xsl:text>
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+
 	<!-- federation-tag -->
 	<xsl:template match="mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:federation-tag']">
 		<!-- TODO -->

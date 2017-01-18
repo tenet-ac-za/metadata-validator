@@ -99,6 +99,16 @@
 				<xsl:with-param name="m">More than one urn:x-safire.ac.za:purpose-is-to EntityAttribute</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
+		<xsl:if test="count(saml:Attribute[@Name='urn:x-safire.ac.za:participation-agreement'])>1">
+			<xsl:call-template name="error">
+				<xsl:with-param name="m">More than one urn:x-safire.ac.za:participation-agreement EntityAttribute</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
+		<xsl:if test="count(saml:Attribute[@Name='urn:x-safire.ac.za:hidden'])>1">
+			<xsl:call-template name="error">
+				<xsl:with-param name="m">More than one urn:x-safire.ac.za:hidden EntityAttribute</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
 		<!-- now call child elements -->
 		<xsl:apply-templates/>
 	</xsl:template>
