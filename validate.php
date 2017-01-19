@@ -31,10 +31,6 @@ $namespaces = array(
     'http://www.w3.org/2000/09/xmldsig#' => 'ds',
     'http://www.w3.org/2001/04/xmlenc#' => 'xenc',
     'urn:oasis:names:tc:SAML:metadata:algsupport' => 'algsupport',
-    'http://ukfederation.org.uk/2006/11/label' => 'ukfedlabel',
-    'http://sdss.ac.uk/2006/06/WAYF' => 'sdss',
-    'http://wayf.dk/2014/08/wayf' => 'wayf',
-    'http://corto.wayf.dk' => 'corto',
     'http://refeds.org/metadata' => 'remd',
 );
 $secapseman = array_flip($namespaces);
@@ -180,7 +176,7 @@ if (file_exists(__DIR__ . '/local/xsltfunc.inc.php')) {
 libxml_clear_errors();
 $localrules = glob('./local/*.xsl');
 foreach ($localrules as $rule) {
-    if (preg_match('/check_framework\.xsl$/', $rule)) { continue; }
+    if (preg_match('/check_framework\.xsl$/', $rule) or preg_match('/ns_norm\.xsl$/', $rule)) { continue; }
     $xslt->importStylesheet(new SimpleXMLElement($rule, 0, true));
     $xslt->transformToDoc($xp->document);
 }

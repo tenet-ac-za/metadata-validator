@@ -101,6 +101,28 @@ function sendForValidation()
     });
 }
 
+/**
+ * Send the XML to the server for normalisation
+ */
+function sendForNormalisation()
+{
+	resetUI();
+    var editorData = editor.getValue();
+    $.ajax({
+        type: 'POST',
+        url: "normalise.php",
+        data: editorData,
+        contentType: 'text/xml',
+        processData: false,
+        cache: false,
+        success: function(data) {
+            editor.setValue(data);
+            resetUI();
+            editor.gotoLine(1, 0);
+        }
+    });
+}
+
 /*
  * Fetch metata from a URL (via a proxy)
  */
@@ -185,11 +207,12 @@ function createValidatorDOM()
     return '<div id="metadata"></div>' +
         '<div id="progress"></div>' +
         '<div id="buttons">' +
-            '<input id="validate" type="button" value="Validate!" class="validator-button">' +
+            '<input id="validate" type="button" value="Validate!" class="validator-button"> ' +
+			'<input id="normalise" type="button" value="Normalise" class="validator-button">' +
             '<div class="validator-right">' +
-                '<input id="mdurl" type="button" value="Fetch URL..." class="validator-button">' +
+                '<input id="mdurl" type="button" value="Fetch URL..." class="validator-button"> ' +
                 '<label for="mdfile">Upload file...</label>' +
-                '<input id="mdfile" type="file" multiple="">' +
+                '<input id="mdfile" type="file" multiple=""> ' +
             '</div>' +
         '</div>' +
         '<div id="results" class="validator-hidden"></div>' +
@@ -234,6 +257,10 @@ $(document).ready(function ()
     $('#validator #validate').click(function() {
         sendForValidation();
     });
+
+	$('#validator #normalise').click(function() {
+		sendForNormalisation();
+	});
 
     /* Ajax global event handlers to display comfort throbber/spinner */
     $(document).ajaxStart(function() {
