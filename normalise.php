@@ -35,6 +35,23 @@ $namespaces = array(
     'http://refeds.org/metadata' => 'remd',
 );
 
+/**
+ * Sort XML namespaces alphabetically with the unqualified space first
+ * @param string $a
+ * @param string $b
+ * @return int
+ */
+function nssort($a, $b)
+{
+    if (substr($a,0,6) == 'xmlns=') {
+        return 0;
+    } elseif(substr($b,0,6) == 'xmlns=') {
+        return 1;
+    } else {
+        return strcmp($a, $b);
+    }
+}
+
 if (substr(PHP_SAPI, 0, 3) === 'cli') {
     if ($argc > 1) {
         $xml = file_get_contents($argv[1]);
@@ -109,4 +126,14 @@ foreach (array('IDPSSODescriptor', 'SPSSODescriptor', 'AASSODescriptor') as $sso
 $doc->preserveWhiteSpace = false;
 $doc->formatOutput = true;
 $doc->normalizeDocument();
-print $doc->saveXML();
+$preoutput = $doc->saveXML();
+
+/* remove whitespace from any certificates */
+$preoutput = preg_replace('/<ds:X509Certificate>\s*([^<>]+)\s*<\/ds:X509Certificate>/m', '<ds:X509Certificate>\1</ds:X509Certificate>', $preoutput);
+
+/* normalise the EntityDescriptor in a SAFIREesque way */
+preg_match('/<(?:md:)?EntityDescriptor\s+([^>]*)\s*(entityID="[^">]+")\s*([^>]*)>/i', $preoutput, $matches);
+$nsout = array_filter(explode(' ', $matches[1]));
+$nsout = array_merge($nsout, array_filter(explode(" ", $matches[3])));
+usort($nsout, 'nssort');
+print preg_replace('/<(md:)?EntityDescriptor[^>]+>/', '<\1EntityDescriptor ' . $matches[2] . "\n  " . implode("\n  ", $nsout) . ">", $preoutput);
