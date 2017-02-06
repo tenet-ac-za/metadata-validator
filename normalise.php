@@ -85,8 +85,10 @@ libxml_clear_errors();
 $xp = new DomXPath($doc);
 foreach($namespaces as $full => $prefix) {
     $xp->registerNamespace($prefix, $full);
-    /* remove namespaces that are not in use */
-    if ($xp->query("//${prefix}:*")->length === 0) {
+    /* remove namespaces that are not in use and are not needed for registration parameters */
+    if (!in_array($prefix, array('mdrpi', 'mdattr', 'saml')) and
+        $xp->query("//${prefix}:*")->length === 0
+    ) {
         $doc->documentElement->removeAttributeNS($full, $prefix);
     }
 }
