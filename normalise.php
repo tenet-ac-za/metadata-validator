@@ -129,7 +129,9 @@ $doc->normalizeDocument();
 $preoutput = $doc->saveXML();
 
 /* remove whitespace from any certificates */
-$preoutput = preg_replace('/<ds:X509Certificate>\s*([^<>]+)\s*<\/ds:X509Certificate>/m', '<ds:X509Certificate>\1</ds:X509Certificate>', $preoutput);
+$preoutput = preg_replace_callback('/<ds:X509Certificate>\s*([^<>]+)\s*<\/ds:X509Certificate>/i', function($m) {
+    return '<ds:X509Certificate>' . preg_replace('/\s+/', '', $m[1]) . '</ds:X509Certificate>';
+}, $preoutput);
 
 /* normalise the EntityDescriptor in a SAFIREesque way */
 preg_match('/<(?:md:)?EntityDescriptor\s+([^>]*)\s*(entityID="[^">]+")\s*([^>]*)>/i', $preoutput, $matches);
