@@ -35,7 +35,7 @@
 
 	<!-- schacHomeOrganizationType has a controlled vocabulary -->
 	<xsl:template match="mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:schacHomeOrganizationType']">
-		<xsl:variable name="allowed" select="'urn:schac:homeOrganizationType:int:university|urn:schac:homeOrganizationType:int:NREN|urn:schac:homeOrganizationType:int:other'"/>
+		<xsl:variable name="allowed" select="'urn:schac:homeOrganizationType:int:university|urn:schac:homeOrganizationType:int:NREN|urn:schac:homeOrganizationType:int:other|urn:schac:homeOrganizationType:za:research-council'"/>
 		<xsl:if test="not(contains(concat('|', $allowed, '|'), concat('|', saml:AttributeValue[1], '|')))">
 			<xsl:call-template name="error">
 				<xsl:with-param name="m">
