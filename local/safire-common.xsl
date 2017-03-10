@@ -82,7 +82,7 @@
 		<xsl:if test="php:functionString('xsltfunc::checkBase64', text()) = 0">
 			<xsl:call-template name="error">
 				<xsl:with-param name="m">
-					<xsl:text>X509Certificate</xsl:text>
+					<xsl:text>X509Certificate </xsl:text>
 					<xsl:if test="$use">
 						<xsl:text>(use=</xsl:text>
 						<xsl:value-of select="$use"/>
@@ -95,7 +95,7 @@
 		<xsl:if test="php:functionString('xsltfunc::checkCertSelfSigned',text()) = 0">
 			<xsl:call-template name="warning">
 				<xsl:with-param name="m">
-					<xsl:text>X509Certificate</xsl:text>
+					<xsl:text>X509Certificate </xsl:text>
 					<xsl:if test="$use">
 						<xsl:text>(use=</xsl:text>
 						<xsl:value-of select="$use"/>
@@ -107,10 +107,23 @@
 				</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
+		<xsl:if test="php:functionString('xsltfunc::checkCertIsCA',text()) = 1">
+			<xsl:call-template name="warning">
+				<xsl:with-param name="m">
+					<xsl:text>X509Certificate </xsl:text>
+					<xsl:if test="$use">
+						<xsl:text>(use=</xsl:text>
+						<xsl:value-of select="$use"/>
+						<xsl:text>) </xsl:text>
+					</xsl:if>
+					<xsl:text>is a certificate authority (basicConstraints=CA:TRUE)</xsl:text>
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
 		<xsl:if test="php:functionString('xsltfunc::getCertBits', text()) &lt; 2048">
 			<xsl:call-template name="error">
 				<xsl:with-param name="m">
-					<xsl:text>X509Certificate</xsl:text>
+					<xsl:text>X509Certificate </xsl:text>
 					<xsl:if test="$use">
 						<xsl:text>(use=</xsl:text>
 						<xsl:value-of select="$use"/>

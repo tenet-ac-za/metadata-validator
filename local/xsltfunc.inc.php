@@ -49,6 +49,23 @@ class xsltfunc {
     }
 
     /**
+     * Check whether basicConstraints has CA:TRUE
+     */
+    static public function checkCertIsCA($cert)
+    {
+        $x509data = @openssl_x509_parse(self::_pemToX509($cert));
+        if (empty($x509data))
+            return false;
+        error_log(var_export($x509data['extensions'], true));
+        if (!array_key_exists('extensions', $x509data) or
+            !array_key_exists('basicConstraints', $x509data['extensions']))
+            return false;
+        if (preg_match('/CA:TRUE/i', $x509data['extensions']['basicConstraints']))
+            return true;
+        return false;
+    }
+
+    /**
      * Return the certificate issuer name
      *
      * @param string $cert
