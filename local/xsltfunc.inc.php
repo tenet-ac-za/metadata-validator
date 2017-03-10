@@ -98,7 +98,7 @@ class xsltfunc {
             return false;
         if ($fromto != 'to' and $x509data['validFrom_time_t'] >= time())
             return false;
-        if ($fromto != 'from' and $x509data['validTo_time_t'] < (time() + 30 * 86400))
+        if ($fromto != 'from' and $x509data['validTo_time_t'] < (time() + 366 * 86400))
             return false;
         return true;
     }
