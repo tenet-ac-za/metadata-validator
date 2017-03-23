@@ -188,7 +188,7 @@ class xsltfunc {
      * @param bool $modern do modern browser compat checks
      * @return bool
      */
-    static public function checkURLCert($url, $modern = true)
+    static public function checkURLCert($url, $modern = true, $verbose = false)
     {
         if (!function_exists('curl_init')) {
             error_log('checkURLCert needs cURL functions');
@@ -219,9 +219,10 @@ class xsltfunc {
             */
         }
         $curlresponse = curl_exec($curl);
+        $curlerror = curl_error($curl);
 
-        if ($curlresponse !== true) {
-            error_log(sprintf("checkURLCert(%s, %s) verifypeer returned %s", $url, $modern ? 'true' : 'false',  curl_getinfo($curl, CURLINFO_SSL_VERIFYRESULT)));
+        if ($curlresponse !== true and !$verbose) {
+            error_log(sprintf("checkURLCert(%s, %s) verifypeer returned %d (%s)", $url, $modern ? 'true' : 'false',  curl_getinfo($curl, CURLINFO_SSL_VERIFYRESULT), $curlerror));
 
         } elseif ($modern == true) {
             /* check for SHA1 */
@@ -230,12 +231,17 @@ class xsltfunc {
             foreach ($chain as $cert) {
                 if (preg_match('/(sha1|md5)/i', $cert['Signature Algorithm'])) {
                     error_log(sprintf("checkURLCert(%s, %s) signature check found %s", $url, $modern ? 'true' : 'false',  $cert['Signature Algorithm']));
+                    $curlerror = sprintf('Signature check found %s', $cert['Signature Algorithm']);
                     $curlresponse = false;
                 }
             }
         }
 
-        return $curlresponse;
+        if ($verbose) {
+            return $curlerror;
+        } else {
+            return $curlresponse;
+        }
     }
 
     /**

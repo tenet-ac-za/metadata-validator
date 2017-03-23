@@ -20,6 +20,12 @@ class xsltfuncTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(xsltfunc::checkCertSelfSigned(''));
     }
 
+    public function testCheckCertIsCA()
+    {
+        $this->assertTrue(xsltfunc::checkCertSelfSigned($this->selfsigned));
+        $this->assertFalse(xsltfunc::checkCertSelfSigned($this->casigned));
+    }
+
     public function testGetCertIssuer()
     {
         $this->assertContains('SWITCHaai', xsltfunc::getCertIssuer($this->casigned));
@@ -61,8 +67,10 @@ class xsltfuncTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(xsltfunc::checkURLCert('https://safire.ac.za/'));
         $this->assertFalse(xsltfunc::checkURLCert('https://expired.badssl.com/'));
         $this->assertFalse(xsltfunc::checkURLCert('https://wrong.host.badssl.com/'));
+        $this->assertFalse(xsltfunc::checkURLCert('https://sha1-2017.badssl.com/', true));
         $this->assertFalse(xsltfunc::checkURLCert('https://untrusted-root.badssl.com/'));
-        /* For some reason Travis can't verify this one 
+        $this->assertStringMatchesFormat('%Sunable to get local issuer certificate', xsltfunc::checkURLCert('https://untrusted-root.badssl.com/', false, true));
+        /* For some reason Travis can't verify this one
         $this->assertFalse(xsltfunc::checkURLCert('https://rc4-md5.badssl.com/'));
         */
     }

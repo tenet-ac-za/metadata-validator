@@ -274,7 +274,8 @@
 				<xsl:call-template name="error">
 					<xsl:with-param name="m">
 						<xsl:value-of select='local-name()'/>
-						<xsl:text> Location SSL certificate verification failed (cURL root cert bundle)</xsl:text>
+						<xsl:text> Location SSL verification with cURL: </xsl:text>
+						<xsl:value-of select="php:functionString('xsltfunc::checkURLCert',@Location, 0, 1)"/>
 					</xsl:with-param>
 				</xsl:call-template>
 			</xsl:when>
@@ -282,7 +283,9 @@
 				<xsl:call-template name="warning">
 					<xsl:with-param name="m">
 						<xsl:value-of select='local-name()'/>
-						<xsl:text> Location fails modern-browser SSL tests. See https://www.ssllabs.com/ssltest/?d=</xsl:text>
+						<xsl:text> Location fails modern-browser SSL tests: </xsl:text>
+						<xsl:value-of select="php:functionString('xsltfunc::checkURLCert',@Location, 1, 1)"/>
+						<xsl:text> See https://www.ssllabs.com/ssltest/?d=</xsl:text>
 						<xsl:value-of select="substring-before(substring-after(@Location, '://'), '/')"/>
 					</xsl:with-param>
 				</xsl:call-template>
