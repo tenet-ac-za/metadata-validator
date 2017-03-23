@@ -62,6 +62,8 @@ curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 curl_setopt($curl, CURLOPT_MAXREDIRS, 10);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($curl, CURLOPT_HEADER, true);
+curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
 /* break the connection if FETCH_MAX_SIZE reached */
 curl_setopt($curl, CURLOPT_BUFFERSIZE, 128);
 curl_setopt($curl, CURLOPT_NOPROGRESS, false);
