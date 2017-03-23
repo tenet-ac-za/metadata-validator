@@ -1,6 +1,12 @@
 <?php
+// Alias the PHPUnit 6.0 ancestor if available, else fall back to legacy ancestor
+if (class_exists('\PHPUnit\Framework\TestCase', true)) {
+  class syntaxTestAncestor extends \PHPUnit\Framework\TestCase {}
+} else {
+  class syntaxTestAncestor extends \PHPUnit_Framework_TestCase {}
+}
 /** @runTestsInSeparateProcesses */
-class syntaxTest extends \PHPUnit_Framework_TestCase
+class syntaxTest extends syntaxTestAncestor
 {
     public function testIndex()
     {

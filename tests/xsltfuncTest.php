@@ -1,9 +1,16 @@
 <?php
+// Alias the PHPUnit 6.0 ancestor if available, else fall back to legacy ancestor
+if (class_exists('\PHPUnit\Framework\TestCase', true)) {
+  class xsltfuncTestAncestor extends \PHPUnit\Framework\TestCase {}
+} else {
+  class xsltfuncTestAncestor extends \PHPUnit_Framework_TestCase {}
+}
+
 /* It seems the OpenSSL functions don't do timezones properly, so the results here vary depending on system timezone */
 // date_default_timezone_set('Africa/Johannesburg');
 require_once (dirname(__DIR__) . '/local/xsltfunc.inc.php');
 
-class xsltfuncTest extends \PHPUnit_Framework_TestCase
+class xsltfuncTest extends xsltfuncTestAncestor
 {
     protected $selfsignedcert;
     protected $notselfsignedcert;
