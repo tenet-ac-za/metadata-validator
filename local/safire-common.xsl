@@ -267,6 +267,29 @@
 		</xsl:if>
 	</xsl:template>
 
+
+	<!-- Check that mdui::Logos point at web servers that exist -->
+	<xsl:template match="mdui:Logo">
+		<xsl:choose>
+			<xsl:when test="not(starts-with(text(),'https://'))">
+				<xsl:call-template name="error">
+					<xsl:with-param name="m">
+						<xsl:value-of select='name()'/>
+						<xsl:text> location does not start with https://</xsl:text>
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="php:functionString('xsltfunc::checkURL', text()) = 0">
+				<xsl:call-template name="error">
+					<xsl:with-param name="m">
+						<xsl:value-of select='name()'/>
+						<xsl:text> location is not a valid URL</xsl:text>
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>
+		</xsl:choose>
+	</xsl:template>
+
 	<xsl:template match="md:*[@Location]">
 		<!-- Check @Location uses a valid certificate -->
 		<xsl:choose>
