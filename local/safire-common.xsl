@@ -159,7 +159,7 @@
 							<xsl:value-of select="$use"/>
 							<xsl:text>) </xsl:text>
 						</xsl:if>
-						<xsl:text>has expired or expires within 30 days (ends </xsl:text>
+						<xsl:text>has expired or expires within a year (ends </xsl:text>
 						<xsl:value-of select="php:functionString('xsltfunc::getCertDates',text(),'to')"/>
 						<xsl:text>)</xsl:text>
 					</xsl:with-param>
