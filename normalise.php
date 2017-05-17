@@ -102,7 +102,7 @@ foreach (array('IDPSSODescriptor', 'SPSSODescriptor', 'AASSODescriptor') as $sso
         $unspecified = $xp->query("//md:KeyDescriptor[not(@use)]/ds:KeyInfo/ds:X509Data/ds:X509Certificate", $e->item(0));
         if ($signing->length == 1 and
             $encryption->length == 1 and
-            $signing->item(0)->nodeValue = $encryption->item(0)->nodeValue and
+            $signing->item(0)->nodeValue == $encryption->item(0)->nodeValue and
             (
                 $unspecified->length == 0 or
                 (
