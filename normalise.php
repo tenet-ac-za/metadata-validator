@@ -125,6 +125,28 @@ foreach (array('IDPSSODescriptor', 'SPSSODescriptor', 'AASSODescriptor') as $sso
     }
 }
 
+/* remove ADFS additions */
+$roledescriptor = $xp->query("//md:EntityDescriptor/md:RoleDescriptor");
+if ($roledescriptor->length) {
+    foreach ($roledescriptor as $e) {
+        $e->parentNode->removeChild($e);
+    }
+}
+$attributes = $xp->query("//md:IDPSSODescriptor/saml:Attribute");
+if ($attributes->length) {
+    foreach ($attributes as $e) {
+    if (preg_match('{http://schemas\.(xmlsoap\.org|microsoft\.com)/}i', $e->getAttribute('Name'))) {
+            $e->parentNode->removeChild($e);
+        }
+    }
+}
+
+/* remove any signature 'cause we've probably broken it */
+$signature = $xp->query("//ds:Signature");
+if ($signature->length) {
+    $signature->item(0)->parentNode->removeChild($signature->item(0));
+}
+
 $doc->preserveWhiteSpace = false;
 $doc->formatOutput = true;
 $doc->normalizeDocument();
