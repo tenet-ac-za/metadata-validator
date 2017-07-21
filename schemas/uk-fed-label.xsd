@@ -2,19 +2,19 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
     xmlns:ukfedlabel="http://ukfederation.org.uk/2006/11/label"
     targetNamespace="http://ukfederation.org.uk/2006/11/label"
-    version="2014-07-22"
+    version="2016-09-15"
     elementFormDefault="qualified">
-    
+
     <annotation>
         <documentation>
             This schema describes the UK federation label namespace.
-            
+
             For additional information, see the Federation Technical Specification.
-            
+
             This version of the schema follows FTS edition 1.1 of 1-June-2007.
         </documentation>
     </annotation>
-    
+
     <complexType name="basicLabel">
         <annotation>
             <documentation>
@@ -28,7 +28,7 @@
             neither text nor nested elements.
         -->
     </complexType>
-    
+
     <complexType name="datedLabel">
         <annotation>
             <documentation>
@@ -43,15 +43,48 @@
         </complexContent>
     </complexType>
 
-    <element name="UKFederationMember" type="ukfedlabel:basicLabel">
+    <simpleType name="orgIDType">
+        <restriction base="string">
+            <annotation>
+                <documentation>
+                    An organization ID is a string constrained to be the string "ukforg"
+                    followed by a numeric code.
+
+                    These codes are defined as IDs in the members.xml database, but
+                    are simple strings in entity metadata.
+                </documentation>
+            </annotation>
+            <pattern value="ukforg\d+"/>
+        </restriction>
+    </simpleType>
+
+    <element name="UKFederationMember">
         <annotation>
             <documentation>
                 Indicates an entity whose owner is a member in good standing
                 of the UK federation.
             </documentation>
         </annotation>
+        <complexType>
+            <complexContent>
+                <extension base="ukfedlabel:basicLabel">
+                    <attribute name="orgID" type="ukfedlabel:orgIDType" use="optional">
+                        <annotation>
+                            <documentation>
+                                The orgID attribute is described as "optional" in this schema
+                                so that it can be omitted in published metadata. However, it
+                                is mandatory in entity fragment files.
+
+                                orgID can become a mandatory attribute if we ever stop
+                                publishing UKFederationMember labels.
+                            </documentation>
+                        </annotation>
+                    </attribute>
+                </extension>
+            </complexContent>
+        </complexType>
     </element>
-    
+
     <element name="AccountableUsers" type="ukfedlabel:basicLabel">
         <annotation>
             <documentation>
@@ -62,7 +95,7 @@
             </documentation>
         </annotation>
     </element>
-    
+
     <element name="Software">
         <annotation>
             <documentation>
@@ -71,7 +104,7 @@
                 version of software used.  This information is added to
                 an entity only if it has been received from the deployer
                 of the entity on the indicated date.
-                
+
                 This information is used in entity fragment files only,
                 and is not included in the metadata published by the
                 UK federation.  Its principal use is in classifying
@@ -91,7 +124,7 @@
                             </documentation>
                         </annotation>
                     </attribute>
-                    
+
                     <attribute name="version" use="optional" type="token">
                         <annotation>
                             <documentation>
@@ -102,7 +135,7 @@
                             </documentation>
                         </annotation>
                     </attribute>
-                    
+
                     <attribute name="fullVersion" use="optional" type="token">
                         <annotation>
                             <documentation>
@@ -114,7 +147,7 @@
             </complexContent>
         </complexType>
     </element>
-    
+
     <element name="ExportOptIn" type="ukfedlabel:datedLabel">
         <annotation>
             <documentation>
@@ -123,7 +156,7 @@
             </documentation>
         </annotation>
     </element>
-    
+
     <element name="ExportOptOut" type="ukfedlabel:datedLabel">
         <annotation>
             <documentation>
@@ -132,5 +165,5 @@
             </documentation>
         </annotation>
     </element>
-    
+
 </schema>
