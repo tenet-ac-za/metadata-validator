@@ -10,10 +10,11 @@ require_once (dirname(__DIR__) . '/local/xsltfunc.inc.php');
 
 class xsltfuncTest extends \PHPUnit_Framework_TestCase
 {
-    protected $selfsignedcert;
-    protected $notselfsignedcert;
+    protected $selfsigned;
+    protected $casigned;
+    protected $expired;
 
-    public function __construct()
+    protected function setUp()
     {
         $this->selfsigned = file_get_contents(__DIR__ . '/selfsigned.pem');
         $this->casigned = file_get_contents(__DIR__ . '/casigned.pem');
