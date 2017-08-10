@@ -20,7 +20,7 @@ if (strpos($_SERVER['SERVER_NAME'], '.local') !== false) {
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <meta name="viewport" content="initial-scale=1.0">
     <meta name="robots" content="index, nofollow">
     <meta name="creator" content="South African Identity Federation">
     <meta name="description" content="A SAML2 metadata validator that checks for both syntactic/schema correctness as well as applying site-specific local checks">
