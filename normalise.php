@@ -86,7 +86,7 @@ $xp = new DomXPath($doc);
 foreach($namespaces as $full => $prefix) {
     $xp->registerNamespace($prefix, $full);
     /* remove namespaces that are not in use and are not needed for registration parameters */
-    if (!in_array($prefix, array('mdrpi', 'mdattr', 'saml')) and
+    if (!in_array($prefix, array('mdrpi', 'mdattr', 'saml', 'remd', 'mdui')) and
         $xp->query("//${prefix}:*")->length === 0
     ) {
         $doc->documentElement->removeAttributeNS($full, $prefix);
