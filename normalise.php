@@ -122,6 +122,13 @@ foreach (array('IDPSSODescriptor', 'SPSSODescriptor', 'AASSODescriptor') as $sso
                 $signing->item(0)->parentNode->parentNode->parentNode->removeAttribute('use');
             }
         }
+        /* remove any legacy ds:KeyName elements */
+        $keyname = $xp->query("//md:KeyDescriptor/ds:KeyInfo/ds:KeyName", $e->item(0));
+        if ($keyname->length) {
+            foreach ($keyname as $k) {
+                $k->parentNode->removeChild($k);
+            }
+        }
     }
 }
 
