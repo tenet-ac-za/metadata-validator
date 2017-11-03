@@ -172,10 +172,10 @@ class xsltfunc {
         curl_setopt($curl, CURLOPT_TIMEOUT, 15);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_MAXREDIRS, 10);
-        curl_setopt($curl, CURLOPT_NOBODY, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-        return curl_exec($curl);
+        return curl_exec($curl) === false ? false : true;
     }
 
     /**
@@ -203,7 +203,7 @@ class xsltfunc {
         curl_setopt($curl, CURLOPT_TIMEOUT, 15);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_MAXREDIRS, 10);
-        curl_setopt($curl, CURLOPT_NOBODY, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
         if ($modern == true) {
@@ -218,7 +218,7 @@ class xsltfunc {
                 curl_setopt($curl, CURLOPT_SSL_VERIFYSTATUS, true);
             */
         }
-        $curlresponse = curl_exec($curl);
+        $curlresponse = curl_exec($curl) === false ? false : true;
         $curlerror = curl_error($curl);
 
         if ($curlresponse !== true and !$verbose) {
