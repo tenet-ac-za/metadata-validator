@@ -122,6 +122,13 @@
 				</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
+		<xsl:if test="contains('|yes|true|', concat('|', saml:AttributeValue[1], '|'))">
+			<xsl:call-template name="info">
+				<xsl:with-param name="m">
+					<xsl:text>SSO Provider is Microsoft AD FS or similar - no support for scoping :-(</xsl:text>
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
 	</xsl:template>
 
 	<!-- purpose-is-to has a maximum length -->
