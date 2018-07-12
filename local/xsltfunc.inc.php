@@ -140,6 +140,7 @@ class xsltfunc {
         if (empty($x509key))
             return false;
         $x509keydetails = @openssl_pkey_get_details($x509key);
+        error_log(var_export($x509keydetails, true));
         if (!array_key_exists('bits', $x509keydetails))
             return false;
         return (int) $x509keydetails['bits'];
@@ -296,27 +297,6 @@ class xsltfunc {
             return true;
         else
             return false;
-    }
-
-    /**
-     * Check that the string is valid JSON
-     * @param string $data
-     * @param string $type type to check against gettype()
-     * @return bool
-     */
-    static public function checkJSON($data, $type = null)
-    {
-        if (!function_exists('json_decode')) {
-            error_log('checkJSON needs JSON functions');
-            return true;
-        }
-        $json = @json_decode(trim($data));
-        if ($json === null)
-            return false;
-        elseif (is_string($type) and gettype($json) != $type)
-            return false;
-        else
-            return true;
     }
 
 }

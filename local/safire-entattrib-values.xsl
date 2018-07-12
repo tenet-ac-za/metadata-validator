@@ -94,20 +94,13 @@
 		<!-- TODO -->
 	</xsl:template>
 
-	<!-- consent-disable has a controlled vocabulary/JSON -->
+	<!-- consent-disable has a controlled vocabulary/scope -->
 	<xsl:template match="mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:consent-disable']">
+	<!-- TODO
 		<xsl:variable name="allowed" select="'yes|no|true|false'"/>
 		<xsl:if test="not(contains(concat('|', $allowed, '|'), concat('|', saml:AttributeValue[1], '|')))">
-			<xsl:if test="php:functionString('xsltfunc::checkJSON',saml:AttributeValue[1],'array') = 0">
-				<xsl:call-template name="error">
-					<xsl:with-param name="m">
-						<xsl:text>urn:x-safire.ac.za:consent-disable should be true/false/JSON array, not '</xsl:text>
-						<xsl:value-of select="saml:AttributeValue[1]"/>
-						<xsl:text>'</xsl:text>
-					</xsl:with-param>
-				</xsl:call-template>
-			</xsl:if>
 		</xsl:if>
+	-->
 	</xsl:template>
 
 	<!-- scoping-disable has a controlled vocabulary -->
