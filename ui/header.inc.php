@@ -39,12 +39,14 @@ if (strpos($_SERVER['SERVER_NAME'], '.local') !== false) {
     <!-- these are the bits you need to keep in a new skin -->
     <link rel="stylesheet" type="text/css" href="ui/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="ui/validator.css">
-    <script src="//code.jquery.com/jquery-3.1.1.min.js"
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"
             integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-    <script src="//code.jquery.com/jquery-migrate-3.0.0.js"></script>
-    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"
-            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.0.1/jquery-migrate.min.js"
+            integrity="sha256-F0O1TmEa4I8N24nY0bya59eP6svWcshqX1uzwaWC4F4=" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-KM512VNnjElC30ehFwehXjx1YCHPiQkOPmqnrWtpccM=" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js"
+            integrity="sha256-xx76EmQ2A+LP9GzPIVjY5UDJJMbR/BSiTvMWi0as4/I=" crossorigin="anonymous"></script>
     <script src="validate.js"></script>
 
     <!-- this is for the github-corners - https://github.com/tholman/github-corners -->
