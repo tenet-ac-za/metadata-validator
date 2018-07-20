@@ -15,9 +15,9 @@
     <div id="footer">
         <hr>
         <span><a href="https://<?php echo $domain ?>/safire/policy/privacy/">Privacy statement</a></span>
-        <span style="float: right"><a href="https://<?php echo $domain ?>/">SAFIRE - South African Identity Federation</a></span>
+        <span class="right"><a href="https://<?php echo $domain ?>/">SAFIRE - South African Identity Federation</a></span>
 
-        <br style="clear: right">
+        <br class="clear-right">
 
     </div><!-- #footer -->
 

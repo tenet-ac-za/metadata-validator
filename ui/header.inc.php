@@ -73,8 +73,8 @@ if (strpos($_SERVER['SERVER_NAME'], '.local') !== false) {
 
 <div id="wrap">
 
-    <div id="header">
-        <a title="South African Identity Federation" href="https://safire.ac.za/"><img src="//static.<?php echo $domain ?>/logos/SAFIRE_P_White_SimpleSAML.svg" alt="SAFIRE" style="float: right; display: inline; width=258px; height: 72px;" width="258" height="72" alt="[SAFIRE]"></a>
-        <h1><a style="text-decoration: none; color: white" href="/">validator.<?php echo $domain ?></a></h1>
+    <div id="header" class="safire-header">
+        <a title="South African Identity Federation" href="https://safire.ac.za/"><img src="//static.<?php echo $domain ?>/logos/SAFIRE_P_White_SimpleSAML.svg" alt="SAFIRE" width="258" height="72" alt="[SAFIRE]"></a>
+        <h1><a href="/">validator.<?php echo $domain ?></a></h1>
     </div>
     <div id="languagebar">&nbsp;</div>  <div id="content">
