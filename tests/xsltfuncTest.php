@@ -103,12 +103,4 @@ class xsltfuncTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(xsltfunc::checkStringIsBlank(' '));
         $this->assertFalse(xsltfunc::checkStringIsBlank(' a '));
     }
-
-    public function testCheckJSON()
-    {
-        $this->assertFalse(xsltfunc::checkJSON('{abc123'));
-        $this->assertTrue(xsltfunc::checkJSON(json_encode('abc123')));
-        $this->assertTrue(xsltfunc::checkJSON(json_encode(array('a', 'b')), 'array'));
-        $this->assertFalse(xsltfunc::checkJSON(json_encode(array('a', 'b')), 'string'));
-    }
 }
