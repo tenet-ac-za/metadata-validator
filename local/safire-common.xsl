@@ -200,10 +200,19 @@
 			</xsl:with-param>
 		</xsl:call-template>
 	</xsl:template>
+	<xsl:template match="md:EmailAddress[not(starts-with(text(), 'mailto:'))]">
+		<xsl:call-template name="error">
+			<xsl:with-param name="m">
+				<xsl:text>EmailAddress for ContactPerson of type </xsl:text>
+				<xsl:value-of select='ancestor::md:ContactPerson/@contactType'/>
+				<xsl:text> must be a URI starting with mailto:</xsl:text>
+			</xsl:with-param>
+		</xsl:call-template>
+	</xsl:template>
 	<xsl:template match="md:EmailAddress[php:functionString('xsltfunc::checkEmailAddress', text()) = 0]">
 		<xsl:call-template name="error">
 			<xsl:with-param name="m">
-				<xsl:value-of select='text()'/>
+				<xsl:value-of select="substring-after(text(), 'mailto:')"/>
 				<xsl:text> is not a valid EmailAddress for ContactPerson of type </xsl:text>
 				<xsl:value-of select='ancestor::md:ContactPerson/@contactType'/>
 			</xsl:with-param>
