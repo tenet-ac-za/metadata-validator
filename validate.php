@@ -60,6 +60,7 @@ function filter_libxml_errors()
         if ($error->code == 1 and preg_match('/xmlXPathCompOpEval: function .+ not found/', $error->message)) { continue; }
         if ($error->code == 1 and preg_match('/entity does not have an mdrpi:RegistrationInfo element/', $error->message)) { continue; }
         if ($error->code == 1 and preg_match('/entity has legacy KeyName element/', $error->message)) { continue; }
+        if ($error->code == 1 and preg_match('/\[ERROR\] regular expression in scope/', $error->message)) { continue; }
         $filteredErrors[] = $error;
     }
     return $filteredErrors;
