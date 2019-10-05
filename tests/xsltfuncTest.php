@@ -77,7 +77,7 @@ class xsltfuncTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(xsltfunc::checkURLCert('https://wrong.host.badssl.com/'));
         $this->assertFalse(xsltfunc::checkURLCert('https://sha1-2017.badssl.com/', true));
         $this->assertFalse(xsltfunc::checkURLCert('https://untrusted-root.badssl.com/'));
-        $this->assertRegExp('(server certificate verification failed|unable to get local issuer certificate)', xsltfunc::checkURLCert('https://untrusted-root.badssl.com/', false, true));
+        $this->assertRegExp('(server certificate verification failed|unable to get local issuer certificate|self signed certificate in certificate chain)', xsltfunc::checkURLCert('https://untrusted-root.badssl.com/', false, true));
         /* For some reason Travis can't verify this one
         $this->assertFalse(xsltfunc::checkURLCert('https://rc4-md5.badssl.com/'));
         */

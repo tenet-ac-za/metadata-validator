@@ -16,7 +16,9 @@ if (strpos($_SERVER['SERVER_NAME'], '.local') !== false) {
     $domain = 'safire.ac.za';
 }
 $nonce = base64_encode(random_bytes(32));
-apache_setenv('CSP_NONCE', $nonce);
+if (function_exists('apache_setenv')) {
+    apache_setenv('CSP_NONCE', $nonce);
+}
 $nonce = sprintf(' nonce="%s"', $nonce);
 ?>
 <!DOCTYPE html>
