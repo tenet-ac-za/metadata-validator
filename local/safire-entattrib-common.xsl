@@ -94,11 +94,6 @@
 				<xsl:with-param name="m">More than one urn:x-safire.ac.za:scoping-disable EntityAttribute</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
-		<xsl:if test="count(saml:Attribute[@Name='urn:x-safire.ac.za:organizationName'])>1">
-			<xsl:call-template name="error">
-				<xsl:with-param name="m">More than one urn:x-safire.ac.za:organizationName EntityAttribute</xsl:with-param>
-			</xsl:call-template>
-		</xsl:if>
 		<xsl:if test="count(saml:Attribute[@Name='urn:x-safire.ac.za:purpose-is-to'])>1">
 			<xsl:call-template name="error">
 				<xsl:with-param name="m">More than one urn:x-safire.ac.za:purpose-is-to EntityAttribute</xsl:with-param>
@@ -133,11 +128,6 @@
 		<xsl:if test="md:Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:schacHomeOrganizationType']">
 			<xsl:call-template name="error">
 				<xsl:with-param name="m">urn:x-safire.ac.za:schacHomeOrganizationType should not be set for Service Providers</xsl:with-param>
-			</xsl:call-template>
-		</xsl:if>
-		<xsl:if test="md:Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:organizationName']">
-			<xsl:call-template name="error">
-				<xsl:with-param name="m">urn:x-safire.ac.za:organizationName should not be set for Service Providers</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
 		<!-- now process child elements -->

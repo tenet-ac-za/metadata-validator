@@ -143,23 +143,6 @@
 	 -->
 	<xsl:template match="md:EntityDescriptor">
 
-		<!-- organizationName should match Organization -->
-		<xsl:if test="md:Organization">
-			<xsl:variable name="eao" select="md:Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:organizationName']/saml:AttributeValue[1]"/>
-			<xsl:variable name="oon" select="md:Organization/md:OrganizationName[@xml:lang='en']"/>
-			<xsl:if test="$eao and $oon and $eao != $oon">
-				<xsl:call-template name="warning">
-					<xsl:with-param name="m">
-						<xsl:text>urn:x-safire.ac.za:organizationName of '</xsl:text>
-						<xsl:value-of select="$eao"/>
-						<xsl:text>' does not match md:OrganizationName of '</xsl:text>
-						<xsl:value-of select="$oon"/>
-						<xsl:text>'</xsl:text>
-					</xsl:with-param>
-				</xsl:call-template>
-			</xsl:if>
-		</xsl:if>
-
 		<!-- schacHomeOrganization should match the first scoping element -->
 		<xsl:if test="md:IDPSSODescriptor">
 			<xsl:variable name="sho" select="md:Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:schacHomeOrganization']/saml:AttributeValue[1]"/>
