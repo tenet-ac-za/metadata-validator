@@ -37,6 +37,7 @@
         and ukf/ukf-meta#157
 
     -->
+    <!--
     <xsl:template match="md:KeyDescriptor[count(md:EncryptionMethod) > 0]">
 
         <xsl:variable name="gcm"
@@ -65,6 +66,7 @@
         </xsl:if>
 
     </xsl:template>
+    -->
 
     <xsl:template match="md:Extensions
         [
