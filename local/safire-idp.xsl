@@ -31,7 +31,7 @@
             <xsl:with-param name="m">bare 'ac.za' scope not permitted</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
-    <xsl:template match="shibmd:Scope[not(contains(., 'ac.za'))]">
+    <xsl:template match="shibmd:Scope[(substring(., string-length(.) - 5) != '.ac.za') and (substring(., string-length(.) - 8) != '\.ac\.za$')]">
         <xsl:call-template name="warning">
             <xsl:with-param name="m">
                 <xsl:text>scope contains a non 'ac.za' domain of '</xsl:text>
