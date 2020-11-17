@@ -6,8 +6,6 @@
     Checking ruleset containing rules that we don't currently implement,
     but which we may implement in the future.
 
-    Author: Ian A. Young <ian@iay.org.uk>
-
 -->
 <xsl:stylesheet version="1.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -22,6 +20,5 @@
         Common support functions.
     -->
     <xsl:import href="check_framework.xsl"/>
-
 
 </xsl:stylesheet>

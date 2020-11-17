@@ -37,9 +37,9 @@
             </xsl:call-template>
         </xsl:if>
 
-        <xsl:variable name="indices_acs" select="md:AssertionConsumerService/@index"/>
-        <xsl:variable name="distinct.indices_acs" select="set:distinct($indices_acs)"/>
-        <xsl:if test="count($indices_acs) != count($distinct.indices_acs)">
+        <xsl:variable name="indices2" select="md:AssertionConsumerService/@index"/>
+        <xsl:variable name="distinct.indices2" select="set:distinct($indices2)"/>
+        <xsl:if test="count($indices2) != count($distinct.indices2)">
             <xsl:call-template name="error">
                 <xsl:with-param name="m">AssertionConsumerService index values not all different</xsl:with-param>
             </xsl:call-template>
@@ -70,6 +70,8 @@
     <!--
         Check for Location attributes that aren't valid URLs.
     -->
+    <!--
+        Breaks PHP's XSL parser :-(
     <xsl:template match="md:*[@Location and mdxURL:invalidURL(@Location)]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">
@@ -79,6 +81,7 @@
             </xsl:with-param>
         </xsl:call-template>
     </xsl:template>
+    -->
 
 
     <!--
