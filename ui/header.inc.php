@@ -7,8 +7,8 @@
  * loosely derived from {@link http://simplesamlphp.org/ SimpleSAMLphp}
  *
  * @author Guy Halse http://orcid.org/0000-0002-9388-8592
- * @copyright Copyright (c) 2016, SAFIRE - South African Identity Federation
- * @license https://github.com/safire-ac-za/metadata-validator/blob/master/LICENSE MIT License
+ * @copyright Copyright (c) 2016, Tertiary Education and Research Network of South Africa
+ * @license https://github.com/tenet-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
 if (strpos($_SERVER['SERVER_NAME'], '.local') !== false) {
     $domain = 'safire.local';
@@ -29,7 +29,7 @@ $nonce = sprintf(' nonce="%s"', $nonce);
     <meta name="robots" content="index, nofollow">
     <meta name="creator" content="South African Identity Federation">
     <meta name="description" content="A SAML2 metadata validator that checks for both syntactic/schema correctness as well as applying site-specific local checks">
-    <link rel="license" href="https://github.com/safire-ac-za/metadata-validator/blob/master/LICENSE">
+    <link rel="license" href="https://github.com/tenet-ac-za/metadata-validator/blob/master/LICENSE">
 
     <!-- these are SAFIRE-specific -->
     <title>validator.<?php echo $domain ?></title>
@@ -69,7 +69,7 @@ $nonce = sprintf(' nonce="%s"', $nonce);
 <body>
 
 <!-- this is for the github-corners - https://github.com/tholman/github-corners -->
-<a href="https://github.com/safire-ac-za/metadata-validator" target="_blank" class="github-corner" aria-label="View source on Github">
+<a href="https://github.com/tenet-ac-za/metadata-validator" target="_blank" class="github-corner" aria-label="View source on Github">
     <svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true">
         <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
         <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" class="octo-arm"></path>

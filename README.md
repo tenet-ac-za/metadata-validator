@@ -1,4 +1,4 @@
-metadata-validator [![Build Status](https://travis-ci.org/safire-ac-za/metadata-validator.svg?branch=master)](https://travis-ci.org/safire-ac-za/metadata-validator)
+metadata-validator [![Build Status](https://travis-ci.org/tenet-ac-za/metadata-validator.svg?branch=master)](https://travis-ci.org/tenet-ac-za/metadata-validator)
 ==================
 
 metadata-validator is a simple web-based application that's intended

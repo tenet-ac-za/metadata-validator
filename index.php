@@ -3,8 +3,8 @@
  * metadata-validator
  *
  * @author Guy Halse http://orcid.org/0000-0002-9388-8592
- * @copyright Copyright (c) 2016, SAFIRE - South African Identity Federation
- * @license https://github.com/safire-ac-za/metadata-validator/blob/master/LICENSE MIT License
+ * @copyright Copyright (c) 2016, Tertiary Education and Research Network of South Africa
+ * @license https://github.com/tenet-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
 include_once(__DIR__ . '/ui/header.inc.php');
 ?>
