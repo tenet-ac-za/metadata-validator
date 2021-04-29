@@ -12,6 +12,10 @@
  * @license https://github.com/tenet-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
 
+if (file_exists(__DIR__ . '/local/config.inc.php')) {
+    include_once(__DIR__ . '/local/config.inc.php');
+}
+
 /** @var array $namespaces SAML namespaces lookup table */
 $namespaces = array(
     'urn:oasis:names:tc:SAML:2.0:protocol' => 'samlp',
@@ -155,15 +159,12 @@ if ($errors) {
 }
 
 /* 5 - use Ian Young's SAML metadata testing rules */
-if (file_exists(__DIR__ . '/local/regauthority.inc.php')) {
-    include_once(__DIR__ . '/local/regauthority.inc.php');
-}
 libxml_clear_errors();
 $xslt = new XSLTProcessor();
 $rules = glob('./rules/*.xsl');
 foreach ($rules as $rule) {
     if (preg_match('/check_framework\.xsl$/', $rule)) { continue; }
-    $xslt->setParameter('', 'expectedAuthority', $expectedAuthority);
+    $xslt->setParameter('', 'expectedAuthority', constant('REGISTRATION_AUTHORITY'));
     $xslt->importStylesheet(new SimpleXMLElement($rule, 0, true));
     $xslt->transformToDoc($xp->document);
 }

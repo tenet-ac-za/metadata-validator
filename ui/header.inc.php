@@ -10,11 +10,10 @@
  * @copyright Copyright (c) 2016, Tertiary Education and Research Network of South Africa
  * @license https://github.com/tenet-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
-if (strpos($_SERVER['SERVER_NAME'], '.local') !== false) {
-    $domain = 'safire.local';
-} else {
-    $domain = 'safire.ac.za';
+if (file_exists(dirname(__DIR__) . '/local/config.inc.php')) {
+    include_once(dirname(__DIR__) . '/local/config.inc.php');
 }
+
 $nonce = base64_encode(random_bytes(32));
 if (function_exists('apache_setenv')) {
     apache_setenv('CSP_NONCE', $nonce);
@@ -32,26 +31,24 @@ $nonce = sprintf(' nonce="%s"', $nonce);
     <link rel="license" href="https://github.com/tenet-ac-za/metadata-validator/blob/master/LICENSE">
 
     <!-- these are SAFIRE-specific -->
-    <title>validator.<?php echo $domain ?></title>
-    <link rel="stylesheet" type="text/css" href="//static.<?php echo $domain ?>/css/ssp-default.css">
-    <link rel="icon" type="image/icon" href="//static.<?php echo $domain ?>/favicons/favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="//static.<?php echo $domain ?>/favicons/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="//static.<?php echo $domain ?>/favicons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="72x72" href="//static.<?php echo $domain ?>/favicons/favicon-72x72.png">
-    <link rel="icon" type="image/png" sizes="150x150" href="//static.<?php echo $domain ?>/favicons/favicon-150x150.png">
+    <title>validator.<?php echo constant('DOMAIN') ?></title>
+    <link rel="stylesheet" type="text/css" href="//static.<?php echo constant('DOMAIN') ?>/css/ssp-default.css">
+    <link rel="icon" type="image/icon" href="//static.<?php echo constant('DOMAIN') ?>/favicons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="//static.<?php echo constant('DOMAIN') ?>/favicons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="//static.<?php echo constant('DOMAIN') ?>/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="72x72" href="//static.<?php echo constant('DOMAIN') ?>/favicons/favicon-72x72.png">
+    <link rel="icon" type="image/png" sizes="150x150" href="//static.<?php echo constant('DOMAIN') ?>/favicons/favicon-150x150.png">
     <meta name="theme-color" content="#5da9dd">
 
     <!-- these are the bits you need to keep in a new skin -->
     <link rel="stylesheet" type="text/css" href="ui/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="ui/validator.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"
-            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.0.1/jquery-migrate.min.js"
-            integrity="sha256-F0O1TmEa4I8N24nY0bya59eP6svWcshqX1uzwaWC4F4=" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+            integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
-            integrity="sha256-KM512VNnjElC30ehFwehXjx1YCHPiQkOPmqnrWtpccM=" crossorigin="anonymous"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js"
-            integrity="sha256-xx76EmQ2A+LP9GzPIVjY5UDJJMbR/BSiTvMWi0as4/I=" crossorigin="anonymous"></script>
+            integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"
+            integrity="sha512-GZ1RIgZaSc8rnco/8CXfRdCpDxRCphenIiZ2ztLy3XQfCbQUSCuk8IudvNHxkRA3oUg6q0qejgN/qqyG1duv5Q==" crossorigin="anonymous"></script>
     <script src="validate.js"></script>
 
     <!-- this is for the github-corners - https://github.com/tholman/github-corners -->
@@ -81,7 +78,7 @@ $nonce = sprintf(' nonce="%s"', $nonce);
 <div id="wrap">
 
     <div id="header" class="safire-header">
-        <a title="South African Identity Federation" href="https://safire.ac.za/"><img src="//static.<?php echo $domain ?>/logos/SAFIRE_P_White_SimpleSAML.svg" alt="SAFIRE" width="258" height="72" alt="[SAFIRE]"></a>
-        <h1><a href="/">validator.<?php echo $domain ?></a></h1>
+        <a title="South African Identity Federation" href="https://safire.ac.za/"><img src="//static.<?php echo constant('DOMAIN') ?>/logos/SAFIRE_P_White_SimpleSAML.svg" alt="SAFIRE" width="258" height="72" alt="[SAFIRE]"></a>
+        <h1><a href="/">validator.<?php echo constant('DOMAIN') ?></a></h1>
     </div>
     <div id="languagebar">&nbsp;</div>  <div id="content">

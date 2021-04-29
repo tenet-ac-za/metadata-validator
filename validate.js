@@ -10,6 +10,7 @@
  */
 var editor;
 var spinner;
+var content;
 
 /**
  * reset the results pane
@@ -106,7 +107,7 @@ function sendForValidation()
  */
 function sendForNormalisation()
 {
-	resetUI();
+    resetUI();
     var editorData = editor.getValue();
     $.ajax({
         type: 'POST',
@@ -119,6 +120,58 @@ function sendForNormalisation()
             editor.setValue(data);
             resetUI();
             editor.gotoLine(1, 0);
+        }
+    });
+}
+
+/**
+ * Send the XML to the server for DCV
+ */
+function sendForDCV()
+{
+    resetUI();
+    var editorData = editor.getValue();
+    var editorXML = $.parseXML(editorData);
+    var editorJSON = { 'entityID' : null, 'scopes' : [] };
+    var entityDescriptor = editorXML.getElementsByTagNameNS('urn:oasis:names:tc:SAML:2.0:metadata', 'EntityDescriptor');
+    if (entityDescriptor) {
+        editorJSON.entityID = entityDescriptor[0].getAttribute('entityID');
+    }
+    var scopesXML = editorXML.getElementsByTagNameNS('urn:mace:shibboleth:metadata:1.0', 'Scope');
+    for (var i = 0; i < scopesXML.length; i++) {
+        editorJSON.scopes.push(scopesXML.item(i).textContent);
+    }
+    $.ajax({
+        url: "dcv.php",
+        data: editorJSON,
+        dataType: 'jsonp',
+        cache: false,
+        success: function(data, textStatus, jqxhr) {
+            $('#validator').append(
+                '<div id="validator-dialog-dcv" title="Domain Control Validation">' +
+                '<p>Domain control validation requirements for &quot;' + data['entityID'] + '&quot;:</p>' +
+                '</div>'
+            );
+        },
+        error: function(jqxhr, textStatus) {
+            var data = jqxhr.responseJSON;
+            $('#validator').append(
+                '<div id="validator-dialog-dcv" title="Domain Control Validation Error">' +
+                '<p>Failed to determine DCV requirements for &quot;' + data['entityID'] + '&quot;:</p>' +
+                (data['error'] ? '<p><strong>' + data['error'] + '</strong></p>' : '') +
+                '</div>'
+            );
+        },
+        complete: function(jqxhr, textStatus) {
+            $('#validator-dialog-dcv').dialog({
+                modal: true,
+                buttons: {
+                    Ok: function() {
+                        $( this ).dialog('close');
+                        $( this ).remove();
+                    }
+                }
+            });
         }
     });
 }
@@ -208,7 +261,8 @@ function createValidatorDOM()
         '<div id="progress"></div>' +
         '<div id="buttons">' +
             '<input id="validate" type="button" value="Validate!" class="validator-button"> ' +
-			'<input id="normalise" type="button" value="Normalise" class="validator-button">' +
+            '<input id="normalise" type="button" value="Normalise" class="validator-button"> ' +
+            '<input id="dcv" type="button" value="DCV" class="validator-button">' +
             '<div class="validator-right">' +
                 '<input id="mdurl" type="button" value="Fetch URL..." class="validator-button"> ' +
                 '<label for="mdfile">Upload file...</label>' +
@@ -230,12 +284,32 @@ $(document).ready(function ()
     $('#validator #validate').focus();
     $('#validator label[for=mdfile]').button();
     $('#validator #progress').progressbar({ disabled: true });
+    $('#validator #validate').attr("disabled", true);
+    $('#validator #normalise').hide();
+    $('#validator #dcv').hide();
+
+    content = false;
 
     editor = ace.edit("metadata");
     editor.setTheme("ace/theme/xcode");
     editor.getSession().setMode("ace/mode/xml");
     editor.$blockScrolling = Infinity;
     editor.on('paste', function() { resetUI(); });
+    editor.on('change', function() {
+        if (editor.getValue().length) {
+            if (! content) {
+                $('#validator #validate').removeAttr("disabled");
+                $('#validator #normalise').show();
+                $('#validator #dcv').show();
+                content = true;
+            }
+        } else {
+            content = false;
+            $('#validator #validate').attr("disabled", true);
+            $('#validator #normalise').hide();
+            $('#validator #dcv').hide();
+        }
+    });
 
     $('#validator #mdfile').change(function() {
         var file = this.files[0];
@@ -258,9 +332,13 @@ $(document).ready(function ()
         sendForValidation();
     });
 
-	$('#validator #normalise').click(function() {
-		sendForNormalisation();
-	});
+    $('#validator #normalise').click(function() {
+        sendForNormalisation();
+    });
+
+    $('#validator #dcv').click(function() {
+        sendForDCV();
+    });
 
     /* Ajax global event handlers to display comfort throbber/spinner */
     $(document).ajaxStart(function() {
