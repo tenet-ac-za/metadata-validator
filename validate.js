@@ -125,6 +125,29 @@ function sendForNormalisation()
 }
 
 /**
+ * Render DCV RR
+ */
+function renderDCVDNS(data, rrtype = 'TXT')
+{
+    var dns = '';
+    if (data['warnings'] && data['warnings'].length) {
+        $.each(data['warnings'], function (i, v) {
+            dns = dns + '# WARNING: ' + v + "\n";
+        });
+    }
+    for (var i = 0; i < data['domains'].length; i++) {
+        dns = dns + data['label'] + '.' + data['domains'][i] + ". IN ";
+        dns = dns + rrtype + ' ';
+        if (rrtype == 'TXT') { dns = dns + '"'; }
+        dns = dns + data['rrset'][rrtype];
+        if (rrtype == 'TXT') { dns = dns + '"'; }
+        dns = dns + "\n";
+    }
+    console.log(dns);
+    return dns;
+}
+
+/**
  * Send the XML to the server for DCV
  */
 function sendForDCV()
@@ -139,7 +162,7 @@ function sendForDCV()
     }
     var scopesXML = editorXML.getElementsByTagNameNS('urn:mace:shibboleth:metadata:1.0', 'Scope');
     for (var i = 0; i < scopesXML.length; i++) {
-        editorJSON.scopes.push(scopesXML.item(i).textContent);
+        editorJSON.scopes.push({ 'scope' : scopesXML.item(i).textContent, 'regexp' : scopesXML.item(i).getAttribute('regexp') });
     }
     $.ajax({
         url: "dcv.php",
@@ -147,24 +170,31 @@ function sendForDCV()
         dataType: 'jsonp',
         cache: false,
         success: function(data, textStatus, jqxhr) {
-            $('#validator').append(
-                '<div id="validator-dialog-dcv" title="Domain Control Validation">' +
-                '<p>Domain control validation requirements for &quot;' + data['entityID'] + '&quot;:</p>' +
-                '</div>'
-            );
+            var msg = '<div id="validator-dialog-dcv" title="Domain Control Validation for &quot;' + data['entityID'] + '&quot;">' +
+                '<p>In order to validate your ownership of this entity, you need to create one of the following sets of DNS records:</p>' +
+                '<div id="validator-dialog-dcv-tabs"><ul>';
+            $.each(data['rrset'], function (i, v) {
+                msg = msg + '<li><a href="#validator-dialog-dcv-rr-' + i + '">' + i + '</a></li>';
+            });
+            msg = msg + '</ul>';
+            $.each(data['rrset'], function (i, v) {
+                msg = msg + '<div id="validator-dialog-dcv-rr-' + i + '"><pre style="text-align: left">' + renderDCVDNS(data, i) + '</pre></div>';
+            });
+            msg = msg + '</div></div>';
+            $('#validator').append(msg);
+            $('#validator-dialog-dcv-tabs').tabs();
         },
         error: function(jqxhr, textStatus) {
             var data = jqxhr.responseJSON;
-            $('#validator').append(
-                '<div id="validator-dialog-dcv" title="Domain Control Validation Error">' +
+            var msg = '<div id="validator-dialog-dcv" title="Domain Control Validation Error">' +
                 '<p>Failed to determine DCV requirements for &quot;' + data['entityID'] + '&quot;:</p>' +
-                (data['error'] ? '<p><strong>' + data['error'] + '</strong></p>' : '') +
-                '</div>'
-            );
+                '<div id="validator-dcv-error" class="validator-mesg-error">' + data['error'] + '</div></div>';
+            $('#validator').append(msg);
         },
         complete: function(jqxhr, textStatus) {
             $('#validator-dialog-dcv').dialog({
                 modal: true,
+                width: 'auto',
                 buttons: {
                     Ok: function() {
                         $( this ).dialog('close');
