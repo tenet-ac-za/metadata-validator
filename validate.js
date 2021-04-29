@@ -167,7 +167,7 @@ function sendForDCV()
     $.ajax({
         url: "dcv.php",
         data: editorJSON,
-        dataType: 'jsonp',
+        dataType: 'json', /* note CSP for jsonp */
         cache: false,
         success: function(data, textStatus, jqxhr) {
             var msg = '<div id="validator-dialog-dcv" title="Domain Control Validation for &quot;' + data['entityID'] + '&quot;">' +
