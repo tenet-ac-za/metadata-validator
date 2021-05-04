@@ -136,7 +136,7 @@ function renderDCVDNS(data, rrtype = 'TXT')
         });
     }
     for (var i = 0; i < data['domains'].length; i++) {
-        dns = dns + data['label'] + '.' + data['domains'][i] + ". IN ";
+        dns = dns + data['label'] + '.' + data['domains'][i] + ". 60 IN ";
         dns = dns + rrtype + ' ';
         if (rrtype == 'TXT') { dns = dns + '"'; }
         dns = dns + data['rrset'][rrtype];
