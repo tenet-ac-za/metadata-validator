@@ -150,20 +150,8 @@ function renderDCVDNS(data, rrtype = 'TXT')
 /**
  * Send the XML to the server for DCV
  */
-function sendForDCV()
+function sendForDCV(editorJSON)
 {
-    resetUI();
-    var editorData = editor.getValue();
-    var editorXML = $.parseXML(editorData);
-    var editorJSON = { 'entityID' : null, 'scopes' : [] };
-    var entityDescriptor = editorXML.getElementsByTagNameNS('urn:oasis:names:tc:SAML:2.0:metadata', 'EntityDescriptor');
-    if (entityDescriptor) {
-        editorJSON.entityID = entityDescriptor[0].getAttribute('entityID');
-    }
-    var scopesXML = editorXML.getElementsByTagNameNS('urn:mace:shibboleth:metadata:1.0', 'Scope');
-    for (var i = 0; i < scopesXML.length; i++) {
-        editorJSON.scopes.push({ 'scope' : scopesXML.item(i).textContent, 'regexp' : scopesXML.item(i).getAttribute('regexp') });
-    }
     $.ajax({
         url: "dcv.php",
         data: editorJSON,
@@ -171,16 +159,18 @@ function sendForDCV()
         cache: false,
         success: function(data, textStatus, jqxhr) {
             var msg = '<div id="validator-dialog-dcv" title="Domain Control Validation for &quot;' + data['entityID'] + '&quot;">' +
-                '<p>In order to validate your ownership of this entity, you need to create one of the following sets of DNS records:</p>' +
+                '<p>In order to validate this entity for reference &quot;' + data['ref'] + '&quot;, you will need to add one of the following sets of DNS records:</p>' +
                 '<div id="validator-dialog-dcv-tabs"><ul>';
             $.each(data['rrset'], function (i, v) {
                 msg = msg + '<li><a href="#validator-dialog-dcv-rr-' + i + '">' + i + '</a></li>';
             });
             msg = msg + '</ul>';
             $.each(data['rrset'], function (i, v) {
-                msg = msg + '<div id="validator-dialog-dcv-rr-' + i + '"><pre style="text-align: left">' + renderDCVDNS(data, i) + '</pre></div>';
+                msg = msg + '<div id="validator-dialog-dcv-rr-' + i + '"><pre style="text-align: left; overflow: auto"><code>' + renderDCVDNS(data, i) + "\n</code></pre></div>";
             });
-            msg = msg + '</div></div>';
+            msg = msg + '</div><br/>';
+            msg = msg + '<p>You may need to let your federation operator know once you have added these records.</p>';
+            msg = msg + '</div>';
             $('#validator').append(msg);
             $('#validator-dialog-dcv-tabs').tabs();
         },
@@ -194,7 +184,7 @@ function sendForDCV()
         complete: function(jqxhr, textStatus) {
             $('#validator-dialog-dcv').dialog({
                 modal: true,
-                width: 'auto',
+                width: 720,
                 buttons: {
                     Ok: function() {
                         $( this ).dialog('close');
@@ -202,6 +192,57 @@ function sendForDCV()
                     }
                 }
             });
+        }
+    });
+}
+
+/*
+ *
+ */
+function createDCVDialog()
+{
+    resetUI();
+    var editorData = editor.getValue();
+    var editorXML = $.parseXML(editorData);
+    var editorJSON = { 'entityID' : null, 'scopes' : [], 'ref': null };
+    var entityDescriptor = editorXML.getElementsByTagNameNS('urn:oasis:names:tc:SAML:2.0:metadata', 'EntityDescriptor');
+    if (entityDescriptor) {
+        editorJSON.entityID = entityDescriptor[0].getAttribute('entityID');
+    }
+    var scopesXML = editorXML.getElementsByTagNameNS('urn:mace:shibboleth:metadata:1.0', 'Scope');
+    for (var i = 0; i < scopesXML.length; i++) {
+        editorJSON.scopes.push({ 'scope' : scopesXML.item(i).textContent, 'regexp' : scopesXML.item(i).getAttribute('regexp') });
+    }
+
+    $('#validator').append(
+        '<div id="validator-dialog-dcv-form" title="Domain Control Validation for &quot;' + editorJSON.entityID + '&quot;" style="overflow:hidden;text-align:center;"><form>' +
+        '<p>Please enter the DCV reference that was given to you by the federation operator. ' +
+        'It is important you enter the reference <em>exactly</em> as supplied &mdash; copy-paste it if necessary.</p>' +
+        '<p><input type="url" name="dcvref" id="dcvref" placeholder="[FED#xxxxxx]" class="ui-corner-all" size="40" style="margin:0 auto;padding:1;width: 98%">' +
+        /* Allow form submission with keyboard without duplicating the dialog button */
+        '<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"></p>' +
+        '<p><em><small>You can use the word &quot;TEST&quot; if you want to see how this functionality works prior to submitting to your federation operator.</small></em></p>' +
+        '</form></div>'
+    );
+    $('#validator-dialog-dcv-form').dialog({
+        modal: true,
+        closeOnEscape: true,
+        width: 450,
+        buttons: {
+            "Continue": function() {
+                editorJSON.ref = $( this ).find('input#dcvref').val();
+                if (editorJSON.ref) {
+                    $( this ).dialog('close');
+                    sendForDCV(editorJSON);
+                }
+            },
+            "Cancel": function() {
+                $( this ).dialog('close');
+            }
+        },
+        close: function( event, ui ) {
+            $( this ).find('form')[0].reset();
+            $( this ).remove();
         }
     });
 }
@@ -239,8 +280,10 @@ function fetchFromURL(url)
                 buttons: {
                     Ok: function() {
                         $( this ).dialog('close');
-                        $( this ).remove();
                     }
+                },
+                close: function( event, ui ) {
+                    $( this ).remove();
                 }
             });
         },
@@ -255,7 +298,7 @@ function createFetchURLDialog()
 {
     $('#validator').append(
         '<div id="validator-dialog-form" title="Enter address of metadata server:" style="overflow:hidden;text-align:center;"><form>' +
-        '<input type="url" name="mdaddress" id="mdaddress" placeholder="https://..." class="ui-corner-all" size="40" style="margin:0 auto;padding:0;width: 98%">' +
+        '<input type="url" name="mdaddress" id="mdaddress" placeholder="https://..." class="ui-corner-all" size="40" style="margin:0 auto;padding:1;width: 98%">' +
         /* Allow form submission with keyboard without duplicating the dialog button */
         '<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">' +
         '</form></div>'
@@ -367,7 +410,7 @@ $(document).ready(function ()
     });
 
     $('#validator #dcv').click(function() {
-        sendForDCV();
+        createDCVDialog();
     });
 
     /* Ajax global event handlers to display comfort throbber/spinner */

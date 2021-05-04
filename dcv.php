@@ -34,7 +34,10 @@ function sendResponse($response, $status = 200) {
         $response = [ 'error' => $response, 'code' => $status, ];
     }
     print json_encode(array_merge(
-        [ 'entityID' => $_REQUEST['entityID'] ?: '[UNKNOWN]', ],
+        [
+            'entityID' => $_REQUEST['entityID'] ?: '[UNKNOWN]',
+            'ref' => $_REQUEST['ref'] ?: null,
+        ],
         $response
     ));
 
@@ -98,6 +101,16 @@ if (!empty($_REQUEST['scopes'])) {
 }
 
 /**
+ * Reference handling
+ */
+if (empty($_REQUEST['ref'])) {
+    sendResponse('Invalid or nonexistent DCV reference', 400);
+} elseif (preg_match('/test/i', $_REQUEST['ref'])) {
+    $_REQUEST['ref'] = 'TEST';
+    $warnings[] = 'These are test values; expect different values when doing this in production';
+}
+
+/**
  * Assemble a DCV result
  */
 $dcv_result = [
@@ -106,7 +119,8 @@ $dcv_result = [
         sha1(
             ceil((date('z') + 1) / 30) . ':' // month-ish number
             . $_REQUEST['entityID'] . ':'
-            . constant('DCV_SECRET')
+            . constant('DCV_SECRET') . ':'
+            . $_REQUEST['ref']
         ),
         0, 10
     ),
