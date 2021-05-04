@@ -69,6 +69,41 @@ function getPublicSuffix ($domain) {
     }
 }
 
+/**
+ * Quick and dirty check that the result is what we expect...
+ */
+function checkDCVResult (&$dcv_result) {
+    foreach ($dcv_result['rrset'] as $rrtype => $rdata) {
+        $valid = true;
+        foreach ($dcv_result['domains'] as $domain) {
+            $dns = dns_get_record($dcv_result['label'] . '.' . $domain, constant('DNS_'.$rrtype));
+            if ($dns === false) {
+                $valid = false;
+            } elseif ($dns[0]['type'] != $rrtype) {
+                $valid = false;
+            } else {
+                switch ($rrtype) {
+                    case 'TXT':
+                        if ($dns[0]['txt'] != $rdata) {
+                            $valid = false;
+                        }
+                        break;
+                    case 'CNAME':
+                        if ($dns[0]['target'] != $rdata) {
+                            $valid = false;
+                        }
+                        break;
+                    default:
+                        $valid = false;
+                }
+            }
+        }
+        if ($valid) {
+            $dcv_result['valid'][] = $rrtype;
+        }
+    }
+}
+
 if (empty($_REQUEST['entityID'])) {
     sendResponse('Invalid or nonexistent entityID', 400);
 }
@@ -133,5 +168,9 @@ $dcv_result = [
     'domains' => array_values(array_unique($domains)),
     'warnings' => array_values(array_unique($warnings)),
 ];
+
+if (array_key_exists('check', $_REQUEST) and $_REQUEST['check']) {
+    checkDCVResult($dcv_result);
+}
 
 sendResponse($dcv_result);

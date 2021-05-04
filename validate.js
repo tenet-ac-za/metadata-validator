@@ -162,11 +162,19 @@ function sendForDCV(editorJSON)
                 '<p>In order to validate this entity for reference &quot;' + data['ref'] + '&quot;, you will need to add one of the following sets of DNS records:</p>' +
                 '<div id="validator-dialog-dcv-tabs"><ul>';
             $.each(data['rrset'], function (i, v) {
-                msg = msg + '<li><a href="#validator-dialog-dcv-rr-' + i + '">' + i + '</a></li>';
+                msg = msg + '<li><a href="#validator-dialog-dcv-rr-' + i + '">' + i;
+                if (Array.isArray(data['valid']) && data['valid'].includes(i)) {
+                    msg = msg + ' &check;';
+                }
+                msg = msg + '</a></li>';
             });
             msg = msg + '</ul>';
             $.each(data['rrset'], function (i, v) {
-                msg = msg + '<div id="validator-dialog-dcv-rr-' + i + '"><pre style="text-align: left; overflow: auto"><code>' + renderDCVDNS(data, i) + "\n</code></pre></div>";
+                msg = msg + '<div id="validator-dialog-dcv-rr-' + i + '"';
+                if (Array.isArray(data['valid']) && data['valid'].includes(i)) {
+                    msg = msg + ' class="validator-valid"';
+                }
+                msg = msg + '><pre style="text-align: left; overflow: auto"><code>' + renderDCVDNS(data, i) + "\n</code></pre></div>";
             });
             msg = msg + '</div><br/>';
             msg = msg + '<p>You may need to let your federation operator know once you have added these records.</p>';
@@ -197,7 +205,7 @@ function sendForDCV(editorJSON)
 }
 
 /*
- *
+ * get the DCV reference
  */
 function createDCVDialog()
 {
@@ -218,7 +226,7 @@ function createDCVDialog()
         '<div id="validator-dialog-dcv-form" title="Domain Control Validation for &quot;' + editorJSON.entityID + '&quot;" style="overflow:hidden;text-align:center;"><form>' +
         '<p>Please enter the DCV reference that was given to you by the federation operator. ' +
         'It is important you enter the reference <em>exactly</em> as supplied &mdash; copy-paste it if necessary.</p>' +
-        '<p><input type="url" name="dcvref" id="dcvref" placeholder="[FED#xxxxxx]" class="ui-corner-all" size="40" style="margin:0 auto;padding:1;width: 98%">' +
+        '<p><input type="text" name="dcvref" id="dcvref" placeholder="[FED#xxxxxx]" class="ui-corner-all" size="40" style="margin:0 auto;padding:1;width: 98%">' +
         /* Allow form submission with keyboard without duplicating the dialog button */
         '<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"></p>' +
         '<p><em><small>You can use the word &quot;TEST&quot; if you want to see how this functionality works prior to submitting to your federation operator.</small></em></p>' +
@@ -232,6 +240,9 @@ function createDCVDialog()
             "Continue": function() {
                 editorJSON.ref = $( this ).find('input#dcvref').val();
                 if (editorJSON.ref) {
+                    if (editorJSON.ref.toUpperCase().indexOf("TEST") === -1) {
+                        editorJSON.check = 1;
+                    }
                     $( this ).dialog('close');
                     sendForDCV(editorJSON);
                 }
