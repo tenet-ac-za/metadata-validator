@@ -71,6 +71,7 @@ function getPublicSuffix ($domain) {
 
 /**
  * Quick and dirty check that the result is what we expect...
+ * NB! DNS caching is a problem...
  */
 function checkDCVResult (&$dcv_result) {
     foreach ($dcv_result['rrset'] as $rrtype => $rdata) {
@@ -79,7 +80,7 @@ function checkDCVResult (&$dcv_result) {
             $dns = dns_get_record($dcv_result['label'] . '.' . $domain, constant('DNS_'.$rrtype));
             if ($dns === false) {
                 $valid = false;
-            } elseif ($dns[0]['type'] != $rrtype) {
+            } elseif (@$dns[0]['type'] != $rrtype) {
                 $valid = false;
             } else {
                 switch ($rrtype) {
@@ -89,7 +90,7 @@ function checkDCVResult (&$dcv_result) {
                         }
                         break;
                     case 'CNAME':
-                        if ($dns[0]['target'] != $rdata) {
+                        if (rtrim($dns[0]['target'], '.') != rtrim($rdata, '.')) {
                             $valid = false;
                         }
                         break;
