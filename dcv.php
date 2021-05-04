@@ -154,9 +154,9 @@ $dcv_result = [
     'label' => '_' . substr(
         sha1(
             ceil((date('z') + 1) / 30) . ':' // month-ish number
-            . $_REQUEST['entityID'] . ':'
+            . strtolower(trim($_REQUEST['entityID'])) . ':'
             . constant('DCV_SECRET') . ':'
-            . $_REQUEST['ref']
+            . strtolower(trim($_REQUEST['ref']))
         ),
         0, 10
     ),
