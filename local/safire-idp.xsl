@@ -9,6 +9,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:shibmd="urn:mace:shibboleth:metadata:1.0"
     xmlns:mdrpi="urn:oasis:names:tc:SAML:metadata:rpi"
+    xmlns:remd="http://refeds.org/metadata"
     xmlns:php="http://php.net/xsl"
     xmlns="urn:oasis:names:tc:SAML:2.0:metadata">
 
@@ -36,7 +37,7 @@
             <xsl:with-param name="m">
                 <xsl:text>scope contains a non 'ac.za' domain of '</xsl:text>
                 <xsl:value-of select="."/>
-                <xsl:text>', DCV will be required.</xsl:text>
+                <xsl:text>', DCV may be required.</xsl:text>
             </xsl:with-param>
         </xsl:call-template>
     </xsl:template>
@@ -74,4 +75,13 @@
         </xsl:call-template>
     </xsl:template>
 
+    <xsl:template match="md:EntityDescriptor">
+        <!-- Check ContactPerson requirements -->
+        <xsl:if test="count(md:ContactPerson[@contactType='other' and @remd:contactType='http://refeds.org/metadata/contactType/security'])=0">
+            <xsl:call-template name="error">
+                <xsl:with-param name="m">ContactPerson of type REFEDS/Sirtfi security MUST be set for identity providers</xsl:with-param>
+            </xsl:call-template>
+        </xsl:if>
+        <xsl:apply-templates/>
+    </xsl:template>
 </xsl:stylesheet>

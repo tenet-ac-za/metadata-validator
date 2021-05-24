@@ -9,6 +9,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:shibmd="urn:mace:shibboleth:metadata:1.0"
     xmlns:mdrpi="urn:oasis:names:tc:SAML:metadata:rpi"
+    xmlns:remd="http://refeds.org/metadata"
     xmlns:php="http://php.net/xsl"
     xmlns="urn:oasis:names:tc:SAML:2.0:metadata">
 
@@ -247,6 +248,16 @@
         <xsl:if test="count(md:ContactPerson[@contactType='support'])>1">
             <xsl:call-template name="warning">
                 <xsl:with-param name="m">More than one ContactPerson of type support</xsl:with-param>
+            </xsl:call-template>
+        </xsl:if>
+        <xsl:if test="count(md:ContactPerson[@contactType='other' and @remd:contactType='http://refeds.org/metadata/contactType/security'])=0">
+            <xsl:call-template name="warning">
+                <xsl:with-param name="m">ContactPerson of type REFEDS/Sirtfi security should be set</xsl:with-param>
+            </xsl:call-template>
+        </xsl:if>
+        <xsl:if test="count(md:ContactPerson[@contactType='other' and @remd:contactType='http://refeds.org/metadata/contactType/security'])>1">
+            <xsl:call-template name="warning">
+                <xsl:with-param name="m">More than one ContactPerson of type REFEDS/Sirtfi security</xsl:with-param>
             </xsl:call-template>
         </xsl:if>
         <xsl:apply-templates/>
