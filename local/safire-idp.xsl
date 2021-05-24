@@ -36,7 +36,7 @@
             <xsl:with-param name="m">
                 <xsl:text>scope contains a non 'ac.za' domain of '</xsl:text>
                 <xsl:value-of select="."/>
-                <xsl:text>'</xsl:text>
+                <xsl:text>', DCV will be required.</xsl:text>
             </xsl:with-param>
         </xsl:call-template>
     </xsl:template>
