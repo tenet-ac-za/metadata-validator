@@ -1,0 +1,12 @@
+<?php
+/* set the expected registration authority */
+define('REGISTRATION_AUTHORITY', 'https://example.ac.za');
+
+/* set the local domain */
+define('DOMAIN', 'example.ac.za');
+
+/* set the secret for DCV */
+define('PUBLICSUFFIXLIST', __DIR__ . '/vendor/php-domain-parser/test_data/public_suffix_list.dat');
+define('DCV_SECRET', 'changeme');
+define('DCV_TXT_PREFIX', 'https://metadata.example.ac.za/mdq/entities/');
+define('DCV_CNAME_SUFFIX', 'validator.example.ac.za');
