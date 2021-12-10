@@ -144,7 +144,7 @@ class xsltfunc {
         if (empty($x509key))
             return false;
         $x509keydetails = @openssl_pkey_get_details($x509key);
-        error_log(var_export($x509keydetails, true));
+        //error_log(var_export($x509keydetails, true));
         if (!array_key_exists('bits', $x509keydetails))
             return false;
         return (int) $x509keydetails['bits'];

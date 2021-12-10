@@ -1,40 +1,44 @@
 <?php
-// Alias the PHPUnit 6.0 ancestor if available, else fall back to legacy ancestor
-if (class_exists('\PHPUnit\Framework\TestCase', true) and !class_exists('\PHPUnit_Framework_TestCase', true)) {
-    class_alias('\PHPUnit\Framework\TestCase', '\PHPUnit_Framework_TestCase', true);
-}
+use \PHPUnit\Framework\TestCase;
 
 /** @runTestsInSeparateProcesses */
-class syntaxTest extends \PHPUnit_Framework_TestCase
+class syntaxTest extends TestCase
 {
-    public function testIndex()
+    protected function setUp(): void
     {
         $_SERVER['SERVER_NAME'] = 'validator.safire.ac.za';
+    }
+
+    public function testIndex()
+    {
         ob_start();
         include_once(dirname(__DIR__) . '/index.php');
         $output = ob_get_clean();
-        $this->assertContains('!DOCTYPE html', $output);
+        $this->assertStringContainsString('!DOCTYPE html', $output);
     }
 
     public function testFetchmetadata()
     {
-        $_SERVER['SERVER_NAME'] = 'validator.safire.ac.za';
         $_REQUEST['url'] = 'https://metadata.safire.ac.za/safire-hub-metadata.xml';
         ob_start();
         include_once(dirname(__DIR__) . '/fetchmetadata.php');
         $output = ob_get_clean();
-        $this->assertContains('<?xml', $output);
+        $this->assertStringContainsString('<?xml', $output);
     }
 
     /* needs work! */
     /** @preserveGlobalState disabled */
     public function testValidate()
     {
-        $_SERVER['SERVER_NAME'] = 'validator.safire.ac.za';
         $_SERVER['CONTENT_TYPE'] = 'text/xml';
-        ob_start();
-        // include_once(dirname(__DIR__) . '/validate.php');
+        try {
+            ob_start();
+            include_once(dirname(__DIR__) . '/validate.php');
+        } catch (RuntimeException $e) {
+            $this->assertEquals("exit()", $e->getMessage());
+        }
         $output = ob_get_clean();
-        // $this->assertNotNull(json_decode($output));
+        $this->assertStringContainsString('[ERROR] No input supplied', $output);
+        $this->assertNotNull(json_decode($output));
     }
 }
