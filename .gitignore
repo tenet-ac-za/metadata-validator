@@ -1,2 +1,4 @@
 local/config.inc.php
+composer.lock
+vendor/
 .phpunit.result.cache

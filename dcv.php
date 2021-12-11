@@ -10,13 +10,8 @@
 if (file_exists(__DIR__ . '/local/config.inc.php')) {
     include_once(__DIR__ . '/local/config.inc.php');
 }
+include_once(__DIR__ . '/vendor/autoload.php');
 
-/* Public Suffix List autoload hack */
-spl_autoload_register(function ($c) {
-    if (substr($c,0,4) == 'Pdp\\') {
-        include __DIR__ . '/vendor/php-domain-parser/src/' . basename(str_replace('\\', '/', $c)) . '.php';
-    } else { spl_autoload(); }
-});
 use Pdp\Domain;
 use Pdp\Rules;
 
@@ -52,7 +47,7 @@ function getPublicSuffix ($domain) {
     if (!isset($publicSuffixList)) {
         if (!file_exists(constant('PUBLICSUFFIXLIST'))) {
             trigger_error('Could not open Public Suffix List');
-            $publicSuffixList = Rules::fromPath(__DIR__ . '/vendor/php-domain-parser/test_data/public_suffix_list.dat');
+            $publicSuffixList = Rules::fromPath(__DIR__ . '/vendor/jeremykendall/php-domain-parser/test_data/public_suffix_list.dat');
         } else {
             $publicSuffixList = Rules::fromPath(constant('PUBLICSUFFIXLIST'));
         }
