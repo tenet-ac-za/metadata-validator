@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <psalm
-    name="simplesaml-module-safire"
+    name="metadata-validator"
     useDocblockTypes="true"
     totallyTyped="false"
     hideExternalErrors="true"
     allowStringToStandInForClass="true"
 >
     <projectFiles>
-        <directory name="lib" />
+        <directory name="." />
         <ignoreFiles>
             <directory name="vendor" />
         </ignoreFiles>
