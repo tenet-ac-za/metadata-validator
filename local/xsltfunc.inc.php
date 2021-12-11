@@ -260,16 +260,16 @@ class xsltfunc {
      */
     static public function checkEmailAddress($email)
     {
-        if (!function_exists('checkdnsrr')) {
-            error_log('checkEmailAddress needs Network functions');
+        $email = preg_replace('/^mailto:/', '', trim($email));
+        if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
             return false;
         }
-        $email = preg_replace('/^mailto:/', '', trim($email));
-        if (filter_var($email, FILTER_VALIDATE_EMAIL) === false)
-            return false;
         $domain = preg_replace('/^[^@]+\@/', '', $email);
-        if (!checkdnsrr($domain, 'ANY'))
+        if (
+            !(checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A') || checkdnsrr($domain, 'AAAA'))
+        ) {
             return false;
+        }
         return true;
     }
 
