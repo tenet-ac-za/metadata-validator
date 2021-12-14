@@ -63,7 +63,12 @@ if (substr(PHP_SAPI, 0, 3) === 'cli') {
     header("Content-Type: text/plain");
 }
 if (empty($xml)) {
-    print "No input given\n"; exit(1);
+    print "No input given\n";
+    if (! defined('PHPUNIT_COMPOSER_INSTALL') && ! defined('__PHPUNIT_PHAR__')) {
+        exit(1); /* can't unit test this */
+    } else {
+        throw new RuntimeException("exit()");
+    }
 }
 
 libxml_clear_errors();
@@ -71,7 +76,12 @@ $doc = new DOMDocument();
 $doc->preserveWhiteSpace = false;
 $doc->formatOutput = true;
 if ($doc->loadXML($xml) !== true) {
-    print "Error loading XML: " . libxml_get_last_error() . "\n"; exit(1);
+    print "Error loading XML: " . libxml_get_last_error() . "\n";
+        if (! defined('PHPUNIT_COMPOSER_INSTALL') && ! defined('__PHPUNIT_PHAR__')) {
+        exit(1); /* can't unit test this */
+    } else {
+        throw new RuntimeException("exit()");
+    }
 }
 
 /* normalise with a variant of UKAF's rules */

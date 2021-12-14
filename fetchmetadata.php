@@ -30,7 +30,11 @@ function badGateway($message)
     header('HTTP/1.0 502 Bad Gateway');
     header('Status: 502 Bad Gateway');
     print trim($message) . "\n";
-    exit(1);
+    if (! defined('PHPUNIT_COMPOSER_INSTALL') && ! defined('__PHPUNIT_PHAR__')) {
+        exit(1); /* can't unit test this */
+    } else {
+        throw new RuntimeException("exit()");
+    }
 }
 
 if (empty($_REQUEST['url']))

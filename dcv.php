@@ -39,7 +39,11 @@ function sendResponse($response, $status = 200) {
     if (array_key_exists('callback', $_REQUEST)) {
         print ');';
     }
-    exit;
+    if (! defined('PHPUNIT_COMPOSER_INSTALL') && ! defined('__PHPUNIT_PHAR__')) {
+        exit; /* can't unit test this */
+    } else {
+        throw new RuntimeException("exit()");
+    }
 }
 
 function getPublicSuffix ($domain) {
