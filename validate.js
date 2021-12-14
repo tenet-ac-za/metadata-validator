@@ -373,6 +373,7 @@ function renderCertInfo(cert)
                 '<tr><th>Thumbprint:</th><td>' + data['fingerprint'] + '</td></tr>' +
                 '</table>' +
                 '<a href="' + url + '" download="' + data['fingerprint'].replaceAll(':', '') + '.crt">Download this cert</a>' +
+                (data['selfsigned'] ? '' : ' &nbsp; <a target="_blank" rel="noreferrer" href="https://crt.sh/?q=' + data['fingerprint'] + '">View on crt.sh</a>') +
                 '<hr><code style="text-align: left"><pre>' + data['pem'] + '</pre></code>'
             );
             console.log(url);
