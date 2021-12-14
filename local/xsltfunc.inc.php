@@ -89,6 +89,25 @@ class xsltfunc {
     }
 
     /**
+     * Return the certificate subject name
+     *
+     * @param string $cert
+     * @return string $subject
+     */
+    static public function getCertSubject($cert)
+    {
+        $x509data = @openssl_x509_parse(self::_pemToX509($cert));
+        if (empty($x509data))
+            return false;
+        $subject = array_key_exists('subject', $x509data)
+            ? (array_key_exists('CN', $x509data['subject'])
+                ? $x509data['subject']['CN']
+                : join('/', $x509data['subject'])
+            ) : false;
+        return $subject;
+    }
+
+    /**
      * Check the certificate expiry
      *
      * @param string $cert

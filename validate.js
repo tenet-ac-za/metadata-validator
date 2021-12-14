@@ -204,7 +204,7 @@ function sendForDCV(editorJSON)
     });
 }
 
-/*
+/**
  * get the DCV reference
  */
 function createDCVDialog()
@@ -258,7 +258,7 @@ function createDCVDialog()
     });
 }
 
-/*
+/**
  * Fetch metata from a URL (via a proxy)
  */
 function fetchFromURL(url)
@@ -337,6 +337,82 @@ function createFetchURLDialog()
 }
 
 /**
+ * Display certificates
+ */
+function renderCertInfo(cert)
+{
+    $('#validator').append(
+    '<div id="validator-dialog-certificate" title="Certificate Details" style="text-align:left;overflow:hidden;">' +
+    '<code style="text-align: left"><pre>'+
+    cert +
+    '</pre></code>' +
+    '</div>'
+    );
+    $.ajax({
+        type: 'POST',
+        url: "certinfo.php",
+        data: cert,
+        contentType: 'text/plain',
+        dataType: 'json',
+        processData: false,
+        cache: false,
+        success: function (data, textStatus, jqXHR) {
+            console.log(data);
+            var url = window.URL.createObjectURL(
+                new Blob(
+                    [data['openssl']], {
+                        type: "application/x-pem-file"
+                    }
+                )
+            );
+            $('#validator-dialog-certificate').html(
+                '<table>' +
+                '<tr><th>Subject:</th><td>' + data['subject'] + '</td></tr>' +
+                '<tr><th>Issued By:</th><td>' + data['issuer'] + '</td></tr>' +
+                '<tr><th>Validity:</th><td class="validator-mesg-' + (data['validity']['valid'] ? 'info' : 'error') + '">' + data['validity']['range'] + '</td></tr>' +
+                '<tr><th>Thumbprint:</th><td>' + data['fingerprint'] + '</td></tr>' +
+                '</table>' +
+                '<a href="' + url + '" download="' + data['fingerprint'].replaceAll(':', '') + '.crt">Download this cert</a>' +
+                '<hr><code style="text-align: left"><pre>' + data['pem'] + '</pre></code>'
+            );
+            console.log(url);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            $('#validator-dialog-certificate code pre').text('------BEGIN CERTIFICATE-----\n' + cert.replace(/([^\n]{64})/g, '$1\n') + '\n------END CERTIFICATE-----\n');
+            console.log(textStatus);
+        },
+        complete: function (jqxhr, textStatus) {
+            $('#validator-dialog-certificate').dialog({
+                width: 600,
+                height: 'auto',
+                modal: true,
+                closeOnEscape: true
+            });
+        }
+    });
+}
+
+/**
+ * Find X509 certs to make our lives easier :)
+ */
+function markCertificates()
+{
+    var editorData = editor.getValue();
+    var editorXML = $.parseXML(editorData);
+    if (!editorXML)
+        return false;
+    var certsXML = editorXML.getElementsByTagNameNS('http://www.w3.org/2000/09/xmldsig#', 'X509Certificate');
+    for (var i = 0; i < certsXML.length; i++) {
+        editor.$search.set({
+            needle: certsXML[i].textContent
+        });
+        $.each(editor.$search.findAll(editor.getSession()), function (index, range) {
+            editor.getSession().addMarker(range, "validator-cert-marker", "text");
+        });
+    }
+}
+
+/**
  * Create the basic DOM for the application, so users can just use a <div>
  */
 function createValidatorDOM()
@@ -387,12 +463,25 @@ $(document).ready(function ()
                 $('#validator #dcv').show();
                 content = true;
             }
+            markCertificates();
         } else {
             content = false;
             $('#validator #validate').attr("disabled", true);
             $('#validator #normalise').hide();
             $('#validator #dcv').hide();
         }
+    });
+    editor.on("dblclick", function () {
+        var pos = editor.getCursorPosition();
+        $.each(editor.getSession().getMarkers(), function (index, marker) {
+            if (marker.clazz != 'validator-cert-marker')
+                return true;
+            if (! marker.range.contains(pos.row, pos.column))
+                return true;
+            var cert = editor.getSession().getTextRange(marker.range);
+            renderCertInfo(cert);
+            return false;
+        });
     });
 
     $('#validator #mdfile').change(function() {

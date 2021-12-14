@@ -56,6 +56,11 @@
 .validator-hidden {
     display: none;
 }
+.validator-cert-marker {
+    position: absolute;
+    z-index: -20;
+    background-color: #eee;
+}
 @media screen and (min-width: 783px) {
     .validator-right {
         float: right;
