@@ -103,13 +103,13 @@
     -->
     </xsl:template>
 
-    <!-- microsoft-quirks has a controlled vocabulary -->
-    <xsl:template match="mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:microsoft-quirks']">
+    <!-- quirks has a controlled vocabulary -->
+    <xsl:template match="mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:quirks']">
         <xsl:variable name="allowed" select="'adfs|azure|false'"/>
         <xsl:if test="not(contains(concat('|', $allowed, '|'), concat('|', saml:AttributeValue[1], '|')))">
             <xsl:call-template name="error">
                 <xsl:with-param name="m">
-                    <xsl:text>urn:x-safire.ac.za:microsoft-quirks should be adfs/azure/false, not '</xsl:text>
+                    <xsl:text>urn:x-safire.ac.za:quirks should be adfs/azure/false, not '</xsl:text>
                     <xsl:value-of select="saml:AttributeValue[1]"/>
                     <xsl:text>'</xsl:text>
                 </xsl:with-param>
