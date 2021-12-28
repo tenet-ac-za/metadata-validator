@@ -89,9 +89,9 @@
                 <xsl:with-param name="m">More than one urn:x-safire.ac.za:consent-disable EntityAttribute</xsl:with-param>
             </xsl:call-template>
         </xsl:if>
-        <xsl:if test="count(saml:Attribute[@Name='urn:x-safire.ac.za:scoping-disable'])>1">
+        <xsl:if test="count(saml:Attribute[@Name='urn:x-safire.ac.za:microsoft-quirks'])>1">
             <xsl:call-template name="error">
-                <xsl:with-param name="m">More than one urn:x-safire.ac.za:scoping-disable EntityAttribute</xsl:with-param>
+                <xsl:with-param name="m">More than one urn:x-safire.ac.za:microsoft-quirks EntityAttribute</xsl:with-param>
             </xsl:call-template>
         </xsl:if>
         <xsl:if test="count(saml:Attribute[@Name='urn:x-safire.ac.za:purpose-is-to'])>1">
@@ -115,9 +115,9 @@
 
     <!-- Some variables only apply to Identity Providers -->
     <xsl:template match="md:EntityDescriptor[md:SPSSODescriptor]">
-        <xsl:if test="md:Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:scoping-disable']">
+        <xsl:if test="md:Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:microsoft-quirks']">
             <xsl:call-template name="error">
-                <xsl:with-param name="m">urn:x-safire.ac.za:scoping-disable should not be set for Service Providers</xsl:with-param>
+                <xsl:with-param name="m">urn:x-safire.ac.za:microsoft-quirks should not be set for Service Providers</xsl:with-param>
             </xsl:call-template>
         </xsl:if>
         <xsl:if test="md:Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:schacHomeOrganization']">

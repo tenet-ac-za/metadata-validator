@@ -103,22 +103,29 @@
     -->
     </xsl:template>
 
-    <!-- scoping-disable has a controlled vocabulary -->
-    <xsl:template match="mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:scoping-disable']">
-        <xsl:variable name="allowed" select="'yes|no|true|false'"/>
+    <!-- microsoft-quirks has a controlled vocabulary -->
+    <xsl:template match="mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:microsoft-quirks']">
+        <xsl:variable name="allowed" select="'adfs|azure|false'"/>
         <xsl:if test="not(contains(concat('|', $allowed, '|'), concat('|', saml:AttributeValue[1], '|')))">
             <xsl:call-template name="error">
                 <xsl:with-param name="m">
-                    <xsl:text>urn:x-safire.ac.za:scoping-disable should be true/false, not '</xsl:text>
+                    <xsl:text>urn:x-safire.ac.za:microsoft-quirks should be adfs/azure/false, not '</xsl:text>
                     <xsl:value-of select="saml:AttributeValue[1]"/>
                     <xsl:text>'</xsl:text>
                 </xsl:with-param>
             </xsl:call-template>
         </xsl:if>
-        <xsl:if test="contains('|yes|true|', concat('|', saml:AttributeValue[1], '|'))">
+        <xsl:if test="contains('adfs', saml:AttributeValue[1])">
             <xsl:call-template name="info">
                 <xsl:with-param name="m">
-                    <xsl:text>SSO Provider is Microsoft AD FS or similar - no support for scoping :-(</xsl:text>
+                    <xsl:text>SSO Provider has Microsoft AD FS quirks</xsl:text>
+                </xsl:with-param>
+            </xsl:call-template>
+        </xsl:if>
+        <xsl:if test="contains('azure', saml:AttributeValue[1])">
+            <xsl:call-template name="info">
+                <xsl:with-param name="m">
+                    <xsl:text>SSO Provider has Microsoft Azure AD quirks</xsl:text>
                 </xsl:with-param>
             </xsl:call-template>
         </xsl:if>
