@@ -105,30 +105,48 @@
 
     <!-- quirks has a controlled vocabulary -->
     <xsl:template match="mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:quirks']">
-        <xsl:variable name="allowed" select="'adfs|azure|false'"/>
-        <xsl:if test="not(contains(concat('|', $allowed, '|'), concat('|', saml:AttributeValue[1], '|')))">
-            <xsl:call-template name="error">
-                <xsl:with-param name="m">
-                    <xsl:text>urn:x-safire.ac.za:quirks should be adfs/azure/false, not '</xsl:text>
-                    <xsl:value-of select="saml:AttributeValue[1]"/>
-                    <xsl:text>'</xsl:text>
-                </xsl:with-param>
-            </xsl:call-template>
-        </xsl:if>
-        <xsl:if test="contains('adfs', saml:AttributeValue[1])">
-            <xsl:call-template name="info">
-                <xsl:with-param name="m">
-                    <xsl:text>SSO Provider has Microsoft AD FS quirks</xsl:text>
-                </xsl:with-param>
-            </xsl:call-template>
-        </xsl:if>
-        <xsl:if test="contains('azure', saml:AttributeValue[1])">
-            <xsl:call-template name="info">
-                <xsl:with-param name="m">
-                    <xsl:text>SSO Provider has Microsoft Azure AD quirks</xsl:text>
-                </xsl:with-param>
-            </xsl:call-template>
-        </xsl:if>
+        <xsl:variable name="allowed" select="'false|adfs|azure|multipleauthn|nativerefedsmfa'"/>
+        <xsl:for-each select="saml:AttributeValue">
+            <xsl:if test="not(contains(concat('|', $allowed, '|'), concat('|', current(), '|')))">
+                <xsl:call-template name="error">
+                    <xsl:with-param name="m">
+                        <xsl:text>urn:x-safire.ac.za:quirks should be one of [</xsl:text>
+                        <xsl:value-of select="translate($allowed, '|', ';')"/>
+                        <xsl:text>], not '</xsl:text>
+                        <xsl:value-of select="current()"/>
+                        <xsl:text>'</xsl:text>
+                    </xsl:with-param>
+                </xsl:call-template>
+            </xsl:if>
+            <xsl:if test="contains('adfs', current())">
+                <xsl:call-template name="info">
+                    <xsl:with-param name="m">
+                        <xsl:text>SSO Provider has Microsoft AD FS quirks</xsl:text>
+                    </xsl:with-param>
+                </xsl:call-template>
+            </xsl:if>
+            <xsl:if test="contains('azure', current())">
+                <xsl:call-template name="info">
+                    <xsl:with-param name="m">
+                        <xsl:text>SSO Provider has Microsoft Azure AD quirks</xsl:text>
+                    </xsl:with-param>
+                </xsl:call-template>
+            </xsl:if>
+            <xsl:if test="contains('multipleauthn', current())">
+                <xsl:call-template name="info">
+                    <xsl:with-param name="m">
+                        <xsl:text>SSO Provider requires REFEDS MFA quirks</xsl:text>
+                    </xsl:with-param>
+                </xsl:call-template>
+            </xsl:if>
+            <xsl:if test="contains('nativerefedsmfa', current())">
+                <xsl:call-template name="info">
+                    <xsl:with-param name="m">
+                        <xsl:text>SSO Provider supports REFEDS MFA natively</xsl:text>
+                    </xsl:with-param>
+                </xsl:call-template>
+            </xsl:if>
+        </xsl:for-each>
     </xsl:template>
 
     <!-- purpose-is-to has a maximum length -->
