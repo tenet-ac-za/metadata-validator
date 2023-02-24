@@ -109,7 +109,7 @@ if (empty($_REQUEST['entityID'])) {
 }
 
 /**
- * @var Candidate domains for DCV
+ * @var string[] Candidate domains for DCV
  */
 $domains = [];
 $warnings = [];

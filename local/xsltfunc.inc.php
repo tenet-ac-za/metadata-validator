@@ -187,7 +187,7 @@ class xsltfunc {
             error_log('checkURL needs cURL functions');
             return false;
         }
-        if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED) === false)
+        if (filter_var($url, FILTER_VALIDATE_URL) === false)
             return false;
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -218,7 +218,7 @@ class xsltfunc {
             error_log('checkURLCert needs cURL functions');
             return false;
         }
-        if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED) === false)
+        if (filter_var($url, FILTER_VALIDATE_URL) === false)
             return false;
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
