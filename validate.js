@@ -371,6 +371,7 @@ function renderCertInfo(cert)
                 '<tr><th>Issued By:</th><td>' + data['issuer'] + '</td></tr>' +
                 '<tr><th>Validity:</th><td class="validator-mesg-' + (data['validity']['valid'] ? 'info' : 'error') + '">' + data['validity']['range'] + '</td></tr>' +
                 '<tr><th>Thumbprint:</th><td>' + data['fingerprint'] + '</td></tr>' +
+                '<tr><th>Bits:</th><td>' + data['bits'] + '</td></tr>' +
                 '</table>' +
                 '<a href="' + url + '" download="' + data['fingerprint'].replaceAll(':', '') + '.crt">Download this cert</a>' +
                 (data['selfsigned'] ? '' : ' &nbsp; <a target="_blank" rel="noreferrer" href="https://crt.sh/?q=' + data['fingerprint'] + '">View on crt.sh</a>') +

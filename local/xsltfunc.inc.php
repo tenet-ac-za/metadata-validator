@@ -164,8 +164,12 @@ class xsltfunc {
             return false;
         $x509keydetails = @openssl_pkey_get_details($x509key);
         //error_log(var_export($x509keydetails, true));
-        if (!array_key_exists('bits', $x509keydetails))
+        if ($x509keydetails['type'] == OPENSSL_KEYTYPE_EC) {
+            return $x509keydetails['ec']['curve_name'];
+        }
+        if (!array_key_exists('bits', $x509keydetails)) {
             return false;
+        }
         return (int) $x509keydetails['bits'];
     }
 
