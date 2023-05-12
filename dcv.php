@@ -102,6 +102,19 @@ function checkDCVResult (&$dcv_result) {
             $dcv_result['valid'][] = $rrtype;
         }
     }
+    $valid = true;
+    foreach ($dcv_result['domains'] as $domain) {
+        $http = @file_get_contents('http://' . $domain . '/.well-known/pki-validation/' . $dcv_result['entityhash'] . '.txt', false);
+        if ($http === false) {
+            $http = @file_get_contents('http://www.' . $domain . '/.well-known/pki-validation/' . $dcv_result['entityhash'] . '.txt', false);
+        }
+        if ($http == false || substr($http, 0, strlen($dcv_result['label'])) != $dcv_result['label']) {
+            $valid = false;
+        }
+    }
+    if ($valid) {
+        $dcv_result['valid'][] = 'http';
+    }
 }
 
 if (empty($_REQUEST['entityID'])) {
@@ -157,8 +170,9 @@ $dcv_result = [
             . constant('DCV_SECRET') . ':'
             . strtolower(trim($_REQUEST['ref']))
         ),
-        0, 10
+        0, 16
     ),
+    'entityhash' => sha1($_REQUEST['entityID']),
     /* Possible DNS responses, all pointing at the entityID in MDQ-ish form */
     'rrset' => [
         'TXT' => constant('DCV_TXT_PREFIX') . '{sha1}' . sha1($_REQUEST['entityID']),

@@ -148,6 +148,38 @@ function renderDCVDNS(data, rrtype = 'TXT')
 }
 
 /**
+ * renderDCVHTTP
+ */
+function renderDCVHTTPFile(data)
+{
+    var label = data['label'] + "\r\n";
+    $.each(data['warnings'], function (i, v) {
+        label = label + '# WARNING: ' + v + "\r\n";
+    });
+    var url = window.URL.createObjectURL(
+        new Blob(
+            [label], {
+                type: "text/plain"
+            }
+        )
+    );
+    var http = '<pre style="overflow: auto; border: 1px dashed; padding: 0.5em; margin: 0.5em;"><code>' + label + '</code></pre>';
+    http = http + '<p>[<a href="' + url + '" download="' + data['entityhash'] +'.txt">download file</a>]</p>'
+    return http;
+}
+function renderDCVHTTPLocs(data)
+{
+    var http = '<ul>';
+    for (var i = 0; i < data['domains'].length; i++) {
+        http = http + '<li><a href="http://' + data['domains'][i] + '/.well-known/pki-validation/' + data['entityhash'] + '.txt">';
+        http = http + 'http://' + data['domains'][i] + '/.well-known/pki-validation/' + data['entityhash'] + '.txt';
+        http = http + '</a></li>';
+    }
+    http = http + '</ul>';
+    return http;
+}
+
+/**
  * Send the XML to the server for DCV
  */
 function sendForDCV(editorJSON)
@@ -159,7 +191,7 @@ function sendForDCV(editorJSON)
         cache: false,
         success: function(data, textStatus, jqxhr) {
             var msg = '<div id="validator-dialog-dcv" title="Domain Control Validation for &quot;' + data['entityID'] + '&quot;">' +
-                '<p>In order to validate this entity for reference &quot;' + data['ref'] + '&quot;, you will need to add one of the following sets of DNS records:</p>' +
+                '<p>In order to validate this entity for reference &quot;' + data['ref'] + '&quot;, you will need to use one of the following methods:</p>' +
                 '<div id="validator-dialog-dcv-tabs"><ul>';
             $.each(data['rrset'], function (i, v) {
                 msg = msg + '<li><a href="#validator-dialog-dcv-rr-' + i + '">' + i;
@@ -168,14 +200,23 @@ function sendForDCV(editorJSON)
                 }
                 msg = msg + '</a></li>';
             });
+            msg = msg + '<li><a href="#validator-dialog-dcv-http">HTTP' + (Array.isArray(data['valid']) && data['valid'].includes('http') ? '&check;' : '') + '</a></li>';
             msg = msg + '</ul>';
             $.each(data['rrset'], function (i, v) {
                 msg = msg + '<div id="validator-dialog-dcv-rr-' + i + '"';
                 if (Array.isArray(data['valid']) && data['valid'].includes(i)) {
                     msg = msg + ' class="validator-valid"';
                 }
-                msg = msg + '><pre style="text-align: left; overflow: auto"><code>' + renderDCVDNS(data, i) + "\n</code></pre></div>";
+                msg = msg + ' style="text-align: left;"><p>Add the following ' + i + ' records to your DNS:</p>';
+                msg = msg + '<pre style="overflow: auto"><code>' + renderDCVDNS(data, i) + "\n</code></pre></div>";
             });
+            msg = msg + '<div id="validator-dialog-dcv-http"'
+                + (Array.isArray(data['valid']) && data['valid'].includes('http') ? ' class="validator-valid"' : '') + ' style="text-align: left;">'
+                + '<p>Upload a text file to your your web server(s) containing the following:<p>'
+                + renderDCVHTTPFile(data)
+                + '<p>The file must be accessible at the following web locations:</p>'
+                + renderDCVHTTPLocs(data);
+            msg = msg + '</div>';
             msg = msg + '</div><br/>';
             msg = msg + '<p>You may need to let your federation operator know once you have added these records.</p>';
             msg = msg + '</div>';
