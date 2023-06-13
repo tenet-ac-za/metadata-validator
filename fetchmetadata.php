@@ -82,9 +82,10 @@ if ($data === false)
 if (!in_array(curl_getinfo($curl, CURLINFO_CONTENT_TYPE), $SUPPORTED_CONTENT_TYPES))
     badGateway('Got unsupported content type. Only accept: ' . implode(', ', $SUPPORTED_CONTENT_TYPES));
 
-header(strtok($data, "\n")); /* return the same status code */
-header('Status: ' . curl_getinfo($curl, CURLINFO_HTTP_CODE));
+http_response_code(curl_getinfo($curl, CURLINFO_RESPONSE_CODE));
+header('Status: ' . curl_getinfo($curl, CURLINFO_RESPONSE_CODE));
 header('Content-Type: text/plain'); /* edit wants plain text, not DOM */
 header('Content-Length: ' . curl_getinfo($curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD));
+header('X-Location: ' . curl_getinfo($curl, CURLINFO_EFFECTIVE_URL));
 print substr($data, curl_getinfo($curl, CURLINFO_HEADER_SIZE));
 curl_close($curl);
