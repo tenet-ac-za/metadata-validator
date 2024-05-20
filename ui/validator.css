@@ -63,6 +63,10 @@ input.validator-off-screen {
     border: 1px dashed;
     padding: 0.5em;
 }
+.validator-dialog a:focus,
+.validator-dialog-dcv a:focus {
+    background: inherit;
+}
 .validator-valid {
     border: 2px solid green !important;
 }
