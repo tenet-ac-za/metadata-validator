@@ -117,6 +117,9 @@ jobs:
           # fail_ci_if_error: true
           # verbose: true
 
+      - name: Touch a config file for psalm
+        run: echo '<?php' > ${{ github.workspace }}/local/config.inc.php
+
       - name: PHP Code Sniffer
         continue-on-error: true
         run: php vendor/bin/phpcs
