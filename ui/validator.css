@@ -26,11 +26,42 @@
 #validator #results ul {
     font-family: monospace;
 }
+#validator li,
+.validator-dialog li,
+.validator-dialog-dcv li {
+    list-style: initial;
+}
 /* trick to skin the input[type=file] ui */
 #validator #mdfile {
    opacity: 0;
    position: absolute;
    z-index: -1;
+}
+/* trick to allow form submission with keyboard without duplicating the dialog button */
+input.validator-off-screen {
+    position: absolute;
+    top: -1000px;
+}
+#validator .validator-dialog {
+    overflow: hidden;
+    text-align: center;
+}
+#validator code,
+.validator-dialog-dcv {
+    text-align: left;
+}
+.validator-dialog-dcv pre {
+    overflow: auto;
+}
+.validator-dialog #mdaddress,
+.validator-dialog #dcvref {
+    margin: 0 auto;
+    padding: 1;
+    width: 98%
+}
+#validator-dialog-dcv-http pre {
+    border: 1px dashed;
+    padding: 0.5em;
 }
 .validator-valid {
     border: 2px solid green !important;

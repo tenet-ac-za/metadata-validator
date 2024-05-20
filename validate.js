@@ -54,9 +54,17 @@ function populateResultsPane(data)
             msg = '<span class="validator-mesg-info">' + msg + '</span>';
         }
         if (err['line'] > 0) {
-            msg = msg + ' <span class="validator-linenum">[<a href="#" onclick="editor.gotoLine(' + err['line'] + ',' + err['column'] + ')">' + err['line'] + ', ' + err['column'] + '</a>]</span>';
+            msg = msg + ' <span class="validator-linenum">'
+            + '[<a href="#" data-line="' + err['line'] + '" data-column="' + err['column'] + '" data-msg="' + err['msg'] + '" data-level="' + err['level'] + '">'
+            + err['line'] + ', ' + err['column'] + '</a>]</span>';
         }
         $('#validator #results ul').append('<li>' + msg + '</li>');
+    });
+    $('.validator-linenum a').click(function () {
+        editor.gotoLine(
+            $(this).data('line'),
+            $(this).data('column')
+        );
     });
     $('#validator #results').removeClass('validator-hidden');
 }
@@ -163,7 +171,7 @@ function renderDCVHTTPFile(data)
             }
         )
     );
-    var http = '<pre style="overflow: auto; border: 1px dashed; padding: 0.5em; margin: 0.5em;"><code>' + label + '</code></pre>';
+    var http = '<pre><code>' + label + '</code></pre>';
     http = http + '<p>[<a href="' + url + '" download="' + data['entityhash'] +'.txt">download file</a>]</p>'
     return http;
 }
@@ -190,7 +198,7 @@ function sendForDCV(editorJSON)
         dataType: 'json', /* note CSP for jsonp */
         cache: false,
         success: function(data, textStatus, jqxhr) {
-            var msg = '<div id="validator-dialog-dcv" title="Domain Control Validation for &quot;' + data['entityID'] + '&quot;">' +
+            var msg = '<div id="validator-dialog-dcv" class="validator-dialog" title="Domain Control Validation for &quot;' + data['entityID'] + '&quot;">' +
                 '<p>In order to validate this entity for reference &quot;' + data['ref'] + '&quot;, you will need to use one of the following methods:</p>' +
                 '<div id="validator-dialog-dcv-tabs"><ul>';
             $.each(data['rrset'], function (i, v) {
@@ -203,16 +211,16 @@ function sendForDCV(editorJSON)
             msg = msg + '<li><a href="#validator-dialog-dcv-http">HTTP' + (Array.isArray(data['valid']) && data['valid'].includes('http') ? '&check;' : '') + '</a></li>';
             msg = msg + '</ul>';
             $.each(data['rrset'], function (i, v) {
-                msg = msg + '<div id="validator-dialog-dcv-rr-' + i + '"';
+                msg = msg + '<div id="validator-dialog-dcv-rr-' + i + '" class="validator-dialog-dcv';
                 if (Array.isArray(data['valid']) && data['valid'].includes(i)) {
-                    msg = msg + ' class="validator-valid"';
+                    msg = msg + ' validator-valid';
                 }
-                msg = msg + ' style="text-align: left;"><p>Add the following ' + i + ' records to your DNS:</p>';
-                msg = msg + '<pre style="overflow: auto"><code>' + renderDCVDNS(data, i) + "\n</code></pre></div>";
+                msg = msg + '"><p>Add the following ' + i + ' records to your DNS:</p>';
+                msg = msg + '<pre><code>' + renderDCVDNS(data, i) + "\n</code></pre></div>";
             });
-            msg = msg + '<div id="validator-dialog-dcv-http"'
-                + (Array.isArray(data['valid']) && data['valid'].includes('http') ? ' class="validator-valid"' : '') + ' style="text-align: left;">'
-                + '<p>Upload a text file to your your web server(s) containing the following:<p>'
+            msg = msg + '<div id="validator-dialog-dcv-http" class="validator-dialog-dcv'
+                + (Array.isArray(data['valid']) && data['valid'].includes('http') ? ' validator-valid' : '') + '">'
+                + '<p>Upload a text file to your your web server(s) containing the following:</p>'
                 + renderDCVHTTPFile(data)
                 + '<p>The file must be accessible at the following web locations:</p>'
                 + renderDCVHTTPLocs(data);
@@ -225,7 +233,7 @@ function sendForDCV(editorJSON)
         },
         error: function(jqxhr, textStatus) {
             var data = jqxhr.responseJSON;
-            var msg = '<div id="validator-dialog-dcv" title="Domain Control Validation Error">' +
+            var msg = '<div id="validator-dialog-dcv" class-"validator-dialog validator-error" title="Domain Control Validation Error">' +
                 '<p>Failed to determine DCV requirements for &quot;' + data['entityID'] + '&quot;:</p>' +
                 '<div id="validator-dcv-error" class="validator-mesg-error">' + data['error'] + '</div></div>';
             $('#validator').append(msg);
@@ -264,12 +272,12 @@ function createDCVDialog()
     }
 
     $('#validator').append(
-        '<div id="validator-dialog-dcv-form" title="Domain Control Validation for &quot;' + editorJSON.entityID + '&quot;" style="overflow:hidden;text-align:center;"><form>' +
+        '<div id="validator-dialog-dcv-form" class="validator-dialog" title="Domain Control Validation for &quot;' + editorJSON.entityID + '&quot;""><form>' +
         '<p>Please enter the DCV reference that was given to you by the federation operator. ' +
         'It is important you enter the reference <em>exactly</em> as supplied &mdash; copy-paste it if necessary.</p>' +
-        '<p><input type="text" name="dcvref" id="dcvref" placeholder="[FED#xxxxxx]" class="ui-corner-all" size="40" style="margin:0 auto;padding:1;width: 98%">' +
+        '<p><input type="text" name="dcvref" id="dcvref" placeholder="[FED#xxxxxx]" class="ui-corner-all" size="40">' +
         /* Allow form submission with keyboard without duplicating the dialog button */
-        '<input type="submit" tabindex="-1" style="position:absolute; top:-1000px"></p>' +
+        '<input type="submit" tabindex="-1" class="validator-off-screen"></p>' +
         '<p><em><small>You can use the word &quot;TEST&quot; if you want to see how this functionality works prior to submitting to your federation operator.</small></em></p>' +
         '</form></div>'
     );
@@ -322,7 +330,7 @@ function fetchFromURL(url)
                 error = jqxhr.statusText;
             }
             $('#validator').append(
-                '<div id="validator-dialog-error" title="An error has occurred">' +
+                '<div id="validator-dialog-error" class="validator-dialog validator-error" title="An error has occurred">' +
                 '<p>An error occurred fetching data from &quot;' + url + '&quot;</p>' +
                 '<p>' + error + '</p>' +
                 '</div>'
@@ -349,10 +357,10 @@ function fetchFromURL(url)
 function createFetchURLDialog()
 {
     $('#validator').append(
-        '<div id="validator-dialog-form" title="Enter address of metadata server:" style="overflow:hidden;text-align:center;"><form>' +
-        '<input type="url" name="mdaddress" id="mdaddress" placeholder="https://..." class="ui-corner-all" size="40" style="margin:0 auto;padding:1;width: 98%">' +
+        '<div id="validator-dialog-form" class="validator-dialog" title="Enter address of metadata server:"><form>' +
+        '<input type="url" name="mdaddress" id="mdaddress" placeholder="https://..." class="ui-corner-all" size="40">' +
         /* Allow form submission with keyboard without duplicating the dialog button */
-        '<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">' +
+        '<input type="submit" tabindex="-1" class="validator-off-screen">' +
         '</form></div>'
     );
     $('#validator-dialog-form').dialog({
@@ -383,8 +391,8 @@ function createFetchURLDialog()
 function renderCertInfo(cert)
 {
     $('#validator').append(
-    '<div id="validator-dialog-certificate" title="Certificate Details" style="text-align:left;overflow:hidden;">' +
-    '<code style="text-align: left"><pre>'+
+    '<div id="validator-dialog-certificate" class="validator-dialog" title="Certificate Details">' +
+    '<code><pre>'+
     cert +
     '</pre></code>' +
     '</div>'
@@ -416,7 +424,7 @@ function renderCertInfo(cert)
                 '</table>' +
                 '<a href="' + url + '" download="' + data['fingerprint'].replaceAll(':', '') + '.crt">Download this cert</a>' +
                 (data['selfsigned'] ? '' : ' &nbsp; <a target="_blank" rel="noreferrer" href="https://crt.sh/?q=' + data['fingerprint'] + '">View on crt.sh</a>') +
-                '<hr><code style="text-align: left"><pre>' + data['pem'] + '</pre></code>'
+                '<hr><pre><code>' + data['pem'] + '</code></pre>'
             );
             console.log(url);
         },
