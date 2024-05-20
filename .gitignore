@@ -1,4 +1,5 @@
 local/config.inc.php
+local/public_suffix_list.dat
 composer.lock
 build/
 vendor/

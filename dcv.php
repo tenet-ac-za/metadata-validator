@@ -51,7 +51,7 @@ function getPublicSuffix ($domain) {
     if (!isset($publicSuffixList)) {
         if (!file_exists(constant('PUBLICSUFFIXLIST'))) {
             trigger_error('Could not open Public Suffix List');
-            $publicSuffixList = Rules::fromPath(__DIR__ . '/vendor/jeremykendall/php-domain-parser/test_data/public_suffix_list.dat');
+            $publicSuffixList = Rules::fromPath(__DIR__ . '/local/public_suffix_list.dat');
         } else {
             $publicSuffixList = Rules::fromPath(constant('PUBLICSUFFIXLIST'));
         }
