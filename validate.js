@@ -501,9 +501,10 @@ $(document).ready(function ()
 
     content = false;
 
+    /* This is how we do CSP, but the cdnjs builds don't have CSS */
     editor = ace.edit("metadata");
     editor.setTheme("ace/theme/xcode");
-    editor.getSession().setMode("ace/mode/xml");
+    editor.session.setMode("ace/mode/xml");
     editor.$blockScrolling = Infinity;
     editor.on('paste', function() { resetUI(); });
     editor.on('change', function() {

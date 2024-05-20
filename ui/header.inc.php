@@ -43,6 +43,9 @@ $nonce = sprintf(' nonce="%s"', $nonce);
     <!-- these are the bits you need to keep in a new skin -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="stylesheet" type="text/css" href="ui/jquery-ui.css">
+    <!-- cdnjs preferred, but doesn't have style sheets for ace editor :-(. These are unnecessary if you disable useStrictCSP in footer.inc.php -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ace-builds@1.33.2/css/ace.css" integrity="sha256-attAqBHW7Lrtbe8maDpZhm2GoONy1kaP6RFBAYp3bGI=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ace-builds@1.33.2/css/theme/xcode.css" integrity="sha256-j5T9X1QnSjk9DPjHuebrv01S8/x1VqCWGAhq4NYPdh8=" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="ui/validator.css">
 
     <!-- this is for the github-corners - https://github.com/tholman/github-corners -->
