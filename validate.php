@@ -196,8 +196,8 @@ if (file_exists(__DIR__ . '/local/xsltfunc.inc.php')) {
     include_once(__DIR__ . '/local/xsltfunc.inc.php');
     $xslt->registerPHPFunctions(
         array_map(function ($n) {
-            return 'xsltfunc::' . $n;
-        }, get_class_methods('xsltfunc'))
+            return 'XsltFunc::' . $n;
+        }, get_class_methods('XsltFunc'))
     );
 }
 libxml_clear_errors();

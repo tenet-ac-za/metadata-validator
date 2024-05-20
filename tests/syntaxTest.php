@@ -3,7 +3,7 @@
 use PHPUnit\Framework\TestCase;
 
 /** @runTestsInSeparateProcesses */
-class syntaxTest extends TestCase
+class SyntaxTest extends TestCase
 {
     protected function setUp(): void
     {

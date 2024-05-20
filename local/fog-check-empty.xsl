@@ -27,97 +27,97 @@
         whitespace will be considered blank for these purposes (PHP's trim() function).
     -->
 
-    <xsl:template match="md:Company[php:functionString('xsltfunc::checkStringIsBlank', text()) = 1]">
+    <xsl:template match="md:Company[php:functionString('XsltFunc::checkStringIsBlank', text()) = 1]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">md:Company must not be empty</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="md:GivenName[php:functionString('xsltfunc::checkStringIsBlank', text()) = 1]">
+    <xsl:template match="md:GivenName[php:functionString('XsltFunc::checkStringIsBlank', text()) = 1]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">md:GivenName must not be empty</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="md:OrganizationDisplayName[php:functionString('xsltfunc::checkStringIsBlank', text()) = 1]">
+    <xsl:template match="md:OrganizationDisplayName[php:functionString('XsltFunc::checkStringIsBlank', text()) = 1]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">md:OrganizationDisplayName must not be empty</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="md:OrganizationName[php:functionString('xsltfunc::checkStringIsBlank', text()) = 1]">
+    <xsl:template match="md:OrganizationName[php:functionString('XsltFunc::checkStringIsBlank', text()) = 1]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">md:OrganizationName must not be empty</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="md:ServiceDescription[php:functionString('xsltfunc::checkStringIsBlank', text()) = 1]">
+    <xsl:template match="md:ServiceDescription[php:functionString('XsltFunc::checkStringIsBlank', text()) = 1]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">md:ServiceDescription must not be empty</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="md:ServiceName[php:functionString('xsltfunc::checkStringIsBlank', text()) = 1]">
+    <xsl:template match="md:ServiceName[php:functionString('XsltFunc::checkStringIsBlank', text()) = 1]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">md:ServiceName must not be empty</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="md:SurName[php:functionString('xsltfunc::checkStringIsBlank', text()) = 1]">
+    <xsl:template match="md:SurName[php:functionString('XsltFunc::checkStringIsBlank', text()) = 1]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">md:SurName must not be empty</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="md:EmailAddress[php:functionString('xsltfunc::checkStringIsBlank', text()) = 1]">
+    <xsl:template match="md:EmailAddress[php:functionString('XsltFunc::checkStringIsBlank', text()) = 1]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">md:EmailAddress must not be empty</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="md:TelephoneNumber[php:functionString('xsltfunc::checkStringIsBlank', text()) = 1]">
+    <xsl:template match="md:TelephoneNumber[php:functionString('XsltFunc::checkStringIsBlank', text()) = 1]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">md:TelephoneNumber must not be empty</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="mdui:Description[php:functionString('xsltfunc::checkStringIsBlank', text()) = 1]">
+    <xsl:template match="mdui:Description[php:functionString('XsltFunc::checkStringIsBlank', text()) = 1]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">mdui:Description must not be empty</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="mdui:DisplayName[php:functionString('xsltfunc::checkStringIsBlank', text()) = 1]">
+    <xsl:template match="mdui:DisplayName[php:functionString('XsltFunc::checkStringIsBlank', text()) = 1]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">mdui:DisplayName must not be empty</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="mdui:DomainHint[php:functionString('xsltfunc::checkStringIsBlank', text()) = 1]">
+    <xsl:template match="mdui:DomainHint[php:functionString('XsltFunc::checkStringIsBlank', text()) = 1]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">mdui:DomainHint must not be empty</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="mdui:GeolocationHint[php:functionString('xsltfunc::checkStringIsBlank', text()) = 1]">
+    <xsl:template match="mdui:GeolocationHint[php:functionString('XsltFunc::checkStringIsBlank', text()) = 1]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">mdui:GeolocationHint must not be empty</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="mdui:IPHint[php:functionString('xsltfunc::checkStringIsBlank', text()) = 1]">
+    <xsl:template match="mdui:IPHint[php:functionString('XsltFunc::checkStringIsBlank', text()) = 1]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">mdui:IPHint must not be empty</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="mdui:Keywords[php:functionString('xsltfunc::checkStringIsBlank', text()) = 1]">
+    <xsl:template match="mdui:Keywords[php:functionString('XsltFunc::checkStringIsBlank', text()) = 1]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">mdui:Keywords must not be empty</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="shibmd:Scope[php:functionString('xsltfunc::checkStringIsBlank', text()) = 1]">
+    <xsl:template match="shibmd:Scope[php:functionString('XsltFunc::checkStringIsBlank', text()) = 1]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">shibmd:Scope must not be empty</xsl:with-param>
         </xsl:call-template>

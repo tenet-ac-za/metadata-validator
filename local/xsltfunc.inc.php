@@ -12,7 +12,7 @@ if (file_exists(dirname(__DIR__) . '/local/config.inc.php')) {
     include_once(dirname(__DIR__) . '/local/config.inc.php');
 }
 
-class xsltfunc
+class XsltFunc
 {
     /**
      * Take a PEM representation of a certificate and return the x509 structure
@@ -20,10 +20,10 @@ class xsltfunc
      * @param string $x509certdata
      * @return x509cert|false $x509cert
      */
-    private static function _pemToX509($x509certdata)
+    private static function pemToX509($x509certdata)
     {
         if (!function_exists('openssl_x509_read')) {
-            error_log('_pemToX509 needs OpenSSL functions');
+            error_log('pemToX509 needs OpenSSL functions');
             return false;
         }
         $pem = trim($x509certdata);
@@ -45,7 +45,7 @@ class xsltfunc
      */
     public static function checkCertSelfSigned($cert)
     {
-        $x509data = @openssl_x509_parse(self::_pemToX509($cert));
+        $x509data = @openssl_x509_parse(self::pemToX509($cert));
         if (empty($x509data)) {
             return false;
         }
@@ -66,7 +66,7 @@ class xsltfunc
      */
     public static function checkCertIsCA($cert)
     {
-        $x509data = @openssl_x509_parse(self::_pemToX509($cert));
+        $x509data = @openssl_x509_parse(self::pemToX509($cert));
         if (empty($x509data)) {
             return false;
         }
@@ -91,7 +91,7 @@ class xsltfunc
      */
     public static function getCertIssuer($cert)
     {
-        $x509data = @openssl_x509_parse(self::_pemToX509($cert));
+        $x509data = @openssl_x509_parse(self::pemToX509($cert));
         if (empty($x509data)) {
             return false;
         }
@@ -111,7 +111,7 @@ class xsltfunc
      */
     public static function getCertSubject($cert)
     {
-        $x509data = @openssl_x509_parse(self::_pemToX509($cert));
+        $x509data = @openssl_x509_parse(self::pemToX509($cert));
         if (empty($x509data)) {
             return false;
         }
@@ -132,7 +132,7 @@ class xsltfunc
      */
     public static function checkCertValid($cert, $fromto = 'both')
     {
-        $x509data = @openssl_x509_parse(self::_pemToX509($cert));
+        $x509data = @openssl_x509_parse(self::pemToX509($cert));
         if (empty($x509data)) {
             return false;
         }
@@ -155,7 +155,7 @@ class xsltfunc
      */
     public static function getCertDates($cert, $fromto = 'both', $format = '%F')
     {
-        $x509data = @openssl_x509_parse(self::_pemToX509($cert));
+        $x509data = @openssl_x509_parse(self::pemToX509($cert));
         if (empty($x509data)) {
             return false;
         }
@@ -179,7 +179,7 @@ class xsltfunc
      */
     public static function getCertBits($cert)
     {
-        $x509key = @openssl_get_publickey(self::_pemToX509($cert));
+        $x509key = @openssl_get_publickey(self::pemToX509($cert));
         if (empty($x509key)) {
             return false;
         }

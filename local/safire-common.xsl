@@ -80,7 +80,7 @@
     <!-- Check the metadata certificates -->
     <xsl:template match="ds:X509Certificate">
         <xsl:variable name="use" select="ancestor::md:KeyDescriptor/@use"/>
-        <xsl:if test="php:functionString('xsltfunc::checkBase64', text()) = 0">
+        <xsl:if test="php:functionString('XsltFunc::checkBase64', text()) = 0">
             <xsl:call-template name="error">
                 <xsl:with-param name="m">
                     <xsl:text>X509Certificate </xsl:text>
@@ -93,7 +93,7 @@
                 </xsl:with-param>
             </xsl:call-template>
         </xsl:if>
-        <xsl:if test="php:functionString('xsltfunc::checkCertSelfSigned',text()) = 0">
+        <xsl:if test="php:functionString('XsltFunc::checkCertSelfSigned',text()) = 0">
             <xsl:call-template name="warning">
                 <xsl:with-param name="m">
                     <xsl:text>X509Certificate </xsl:text>
@@ -103,12 +103,12 @@
                         <xsl:text>) </xsl:text>
                     </xsl:if>
                     <xsl:text>should be self-signed. Got issuer of '</xsl:text>
-                    <xsl:value-of select="php:functionString('xsltfunc::getCertIssuer',text())"/>
+                    <xsl:value-of select="php:functionString('XsltFunc::getCertIssuer',text())"/>
                     <xsl:text>'</xsl:text>
                 </xsl:with-param>
             </xsl:call-template>
         </xsl:if>
-        <xsl:if test="php:functionString('xsltfunc::checkCertIsCA',text()) = 1">
+        <xsl:if test="php:functionString('XsltFunc::checkCertIsCA',text()) = 1">
             <xsl:call-template name="warning">
                 <xsl:with-param name="m">
                     <xsl:text>X509Certificate </xsl:text>
@@ -121,7 +121,7 @@
                 </xsl:with-param>
             </xsl:call-template>
         </xsl:if>
-        <xsl:if test="php:functionString('xsltfunc::getCertBits', text()) &lt; 2048">
+        <xsl:if test="php:functionString('XsltFunc::getCertBits', text()) &lt; 2048">
             <xsl:call-template name="error">
                 <xsl:with-param name="m">
                     <xsl:text>X509Certificate </xsl:text>
@@ -131,12 +131,12 @@
                         <xsl:text>) </xsl:text>
                     </xsl:if>
                     <xsl:text>key should be >= 2048 bits, found </xsl:text>
-                    <xsl:value-of select="php:functionString('xsltfunc::getCertBits',text())"/>
+                    <xsl:value-of select="php:functionString('XsltFunc::getCertBits',text())"/>
                 </xsl:with-param>
             </xsl:call-template>
         </xsl:if>
         <xsl:choose>
-            <xsl:when test="php:functionString('xsltfunc::checkCertValid',text(),'from') = 0">
+            <xsl:when test="php:functionString('XsltFunc::checkCertValid',text(),'from') = 0">
                 <xsl:call-template name="warning">
                     <xsl:with-param name="m">
                         <xsl:text>X509Certificate </xsl:text>
@@ -146,12 +146,12 @@
                             <xsl:text>) </xsl:text>
                         </xsl:if>
                         <xsl:text>is not yet valid (begins </xsl:text>
-                        <xsl:value-of select="php:functionString('xsltfunc::getCertDates',text(),'from')"/>
+                        <xsl:value-of select="php:functionString('XsltFunc::getCertDates',text(),'from')"/>
                         <xsl:text>)</xsl:text>
                     </xsl:with-param>
                 </xsl:call-template>
             </xsl:when>
-            <xsl:when test="php:functionString('xsltfunc::checkCertValid',text(),'to') = 0">
+            <xsl:when test="php:functionString('XsltFunc::checkCertValid',text(),'to') = 0">
                 <xsl:call-template name="warning">
                     <xsl:with-param name="m">
                         <xsl:text>X509Certificate </xsl:text>
@@ -161,7 +161,7 @@
                             <xsl:text>) </xsl:text>
                         </xsl:if>
                         <xsl:text>has expired or expires within a year (ends </xsl:text>
-                        <xsl:value-of select="php:functionString('xsltfunc::getCertDates',text(),'to')"/>
+                        <xsl:value-of select="php:functionString('XsltFunc::getCertDates',text(),'to')"/>
                         <xsl:text>)</xsl:text>
                     </xsl:with-param>
                 </xsl:call-template>
@@ -176,7 +176,7 @@
                             <xsl:text>) </xsl:text>
                         </xsl:if>
                         <xsl:text>validity: </xsl:text>
-                        <xsl:value-of select="php:functionString('xsltfunc::getCertDates',text(),'both')"/>
+                        <xsl:value-of select="php:functionString('XsltFunc::getCertDates',text(),'both')"/>
                     </xsl:with-param>
                 </xsl:call-template>
             </xsl:otherwise>
@@ -210,7 +210,7 @@
             </xsl:with-param>
         </xsl:call-template>
     </xsl:template>
-    <xsl:template match="md:EmailAddress[php:functionString('xsltfunc::checkEmailAddress', text()) = 0]">
+    <xsl:template match="md:EmailAddress[php:functionString('XsltFunc::checkEmailAddress', text()) = 0]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">
                 <xsl:value-of select="substring-after(text(), 'mailto:')"/>
@@ -265,7 +265,7 @@
 
     <xsl:template match="mdui:*[substring(name(), string-length(name()) - 2) = 'URL']">
         <!-- Check that *URL point at web servers that exist -->
-        <xsl:if test="php:functionString('xsltfunc::checkURL', text()) = 0">
+        <xsl:if test="php:functionString('XsltFunc::checkURL', text()) = 0">
             <xsl:call-template name="error">
                 <xsl:with-param name="m">
                     <xsl:value-of select='local-name()'/>
@@ -277,7 +277,7 @@
 
     <xsl:template match="md:OrganizationURL">
         <!-- Check that *URL point at web servers that exist -->
-        <xsl:if test="php:functionString('xsltfunc::checkURL', text()) = 0">
+        <xsl:if test="php:functionString('XsltFunc::checkURL', text()) = 0">
             <xsl:call-template name="error">
                 <xsl:with-param name="m">
                     <xsl:value-of select='local-name()'/>
@@ -299,7 +299,7 @@
                     </xsl:with-param>
                 </xsl:call-template>
             </xsl:when>
-            <xsl:when test="php:functionString('xsltfunc::checkURL', text()) = 0">
+            <xsl:when test="php:functionString('XsltFunc::checkURL', text()) = 0">
                 <xsl:call-template name="error">
                     <xsl:with-param name="m">
                         <xsl:value-of select='name()'/>
@@ -313,21 +313,21 @@
     <xsl:template match="md:*[@Location]">
         <!-- Check @Location uses a valid certificate -->
         <xsl:choose>
-            <xsl:when test="starts-with(@Location, 'https:') and php:functionString('xsltfunc::checkURLCert', @Location, 0) = 0">
+            <xsl:when test="starts-with(@Location, 'https:') and php:functionString('XsltFunc::checkURLCert', @Location, 0) = 0">
                 <xsl:call-template name="error">
                     <xsl:with-param name="m">
                         <xsl:value-of select='local-name()'/>
                         <xsl:text> Location SSL verification with cURL: </xsl:text>
-                        <xsl:value-of select="php:functionString('xsltfunc::checkURLCert',@Location, 0, 1)"/>
+                        <xsl:value-of select="php:functionString('XsltFunc::checkURLCert',@Location, 0, 1)"/>
                     </xsl:with-param>
                 </xsl:call-template>
             </xsl:when>
-            <xsl:when test="starts-with(@Location, 'https:') and php:functionString('xsltfunc::checkURLCert', @Location, 1) = 0">
+            <xsl:when test="starts-with(@Location, 'https:') and php:functionString('XsltFunc::checkURLCert', @Location, 1) = 0">
                 <xsl:call-template name="warning">
                     <xsl:with-param name="m">
                         <xsl:value-of select='local-name()'/>
                         <xsl:text> Location fails modern-browser SSL tests: </xsl:text>
-                        <xsl:value-of select="php:functionString('xsltfunc::checkURLCert',@Location, 1, 1)"/>
+                        <xsl:value-of select="php:functionString('XsltFunc::checkURLCert',@Location, 1, 1)"/>
                         <xsl:text> See https://www.ssllabs.com/ssltest/?d=</xsl:text>
                         <xsl:value-of select="substring-before(substring-after(@Location, '://'), '/')"/>
                     </xsl:with-param>
@@ -336,7 +336,7 @@
         </xsl:choose>
 
         <!-- Check that @Location point at web servers that exist -->
-        <xsl:if test="php:functionString('xsltfunc::checkURL', @Location) = 0">
+        <xsl:if test="php:functionString('XsltFunc::checkURL', @Location) = 0">
             <xsl:call-template name="error">
                 <xsl:with-param name="m">
                     <xsl:value-of select='local-name()'/>
@@ -347,7 +347,7 @@
     </xsl:template>
 
     <!-- Check entityID  -->
-    <xsl:template match="md:EntityDescriptor[php:functionString('xsltfunc::checkURL', @entityID) = 0]">
+    <xsl:template match="md:EntityDescriptor[php:functionString('XsltFunc::checkURL', @entityID) = 0]">
         <xsl:call-template name="warning">
             <xsl:with-param name="m">
                 <xsl:value-of select='@entityID'/>
