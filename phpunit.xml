@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-  <coverage processUncoveredFiles="false">
-    <include>
-      <directory suffix=".php">.</directory>
-    </include>
-    <exclude>
-      <directory suffix=".php">vendor</directory>
-      <directory suffix=".php">tests</directory>
-      <file>local/config.inc.php</file>
-    </exclude>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" cacheDirectory=".phpunit.cache">
+  <coverage>
     <report>
       <clover outputFile="build/logs/clover.xml"/>
       <html outputDirectory="build/coverage" lowUpperBound="35" highLowerBound="70"/>
@@ -22,6 +14,16 @@
   </testsuites>
   <logging/>
   <php>
-    <env name="TZ" value="UTC" force="true" />
+    <env name="TZ" value="UTC" force="true"/>
   </php>
+  <source>
+    <include>
+      <directory suffix=".php">.</directory>
+    </include>
+    <exclude>
+      <directory suffix=".php">vendor</directory>
+      <directory suffix=".php">tests</directory>
+      <file>local/config.inc.php</file>
+    </exclude>
+  </source>
 </phpunit>

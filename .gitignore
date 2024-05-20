@@ -2,4 +2,4 @@ local/config.inc.php
 composer.lock
 build/
 vendor/
-.phpunit.result.cache
+.phpunit.cache/
