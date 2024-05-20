@@ -8,7 +8,7 @@
  */
 include_once(__DIR__ . '/ui/header.inc.php');
 ?>
-<h2>SAML Metadata Validator</h2>
+<h1>SAML Metadata Validator</h1>
 <p>This validator applys very similar rules to SAFIRE's
 <a href="https://phph.<?php echo constant('DOMAIN') ?>">metadata aggregator</a>. It
 is intended to allow people to check their own metadata before submitting

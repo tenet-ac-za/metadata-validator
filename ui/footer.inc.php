@@ -15,18 +15,31 @@ if (file_exists(dirname(__DIR__) . '/local/config.inc.php')) {
     include_once(dirname(__DIR__) . '/local/config.inc.php');
 }
 ?>
-    </div><!-- #content -->
-    <div id="footer">
-        <hr>
-        <span><a href="https://<?php echo constant('DOMAIN') ?>/safire/policy/privacy/">Privacy statement</a></span>
-        <span class="float-r"><a href="https://<?php echo constant('DOMAIN') ?>/">SAFIRE - South African Identity Federation</a></span>
+        </div>
+      </div>
+      <div id="push"></div>
+      </main>
+    </div>
+    <div id="foot">
+      <footer id="footer">
+        <div class="wrap">
+          <div class="center copyrights">
+            <!-- these are SAFIRE-specific -->
+            <ul>
+              <li><a href="https://<?= constant('DOMAIN') ?>/safire/policy/privacy/">Privacy statement</a></li>
+              <!-- <li><<a href="#cookiesettings">Cookies</a></li> -->
+              <li><a href="https://<?= constant('DOMAIN') ?>/">SAFIRE - South African Identity Federation</a></li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
 
-        <br class="clear-r">
-
-    </div><!-- #footer -->
-
-</div><!-- #wrap -->
-
-</body>
+  <!-- these are the bits you need to keep in a new skin -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.3/jquery-ui.min.js" integrity="sha512-Ww1y9OuQ2kehgVWSD/3nhgfrb424O3802QYP/A5gPXoM4+rRjiKrjHdGxQKrMGQykmsJ/86oGdHszfcVgUr4hA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.33.2/ace.min.js" integrity="sha512-40pej1Lz2wywxd9lNJwJNSp9ekNFyX6wCmOzoaqIuUqexcjAUYqnhbg+fYUuPHzVyr5hshGv5FX8Om7yuTuWnA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="validate.js"></script>
 </html>
 
