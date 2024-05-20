@@ -1,4 +1,5 @@
 <?php
+
 /**
  * metadata-validator
  *
@@ -6,6 +7,7 @@
  * @copyright Copyright (c) 2016, Tertiary Education and Research Network of South Africa
  * @license https://github.com/tenet-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
+
 include_once(__DIR__ . '/ui/header.inc.php');
 ?>
 <h1>SAML Metadata Validator</h1>

@@ -4,7 +4,8 @@ if (file_exists(__DIR__ . '/local/xsltfunc.inc.php')) {
     include_once(__DIR__ . '/local/xsltfunc.inc.php');
 }
 
-function sendResponse($response, $status = 200) {
+function sendResponse($response, $status = 200)
+{
     if (array_key_exists('callback', $_REQUEST)) {
         header('content-type: text/javascript; charset=utf-8');
         echo addslashes($_REQUEST['callback']) . '(';
@@ -29,7 +30,8 @@ function sendResponse($response, $status = 200) {
     }
 }
 
-function getOpenSSLInfo($pem, $arg = '-text') {
+function getOpenSSLInfo($pem, $arg = '-text')
+{
     /* get OpenSSL response */
     $openssl = proc_open('openssl x509 ' . escapeshellarg($arg), [ 0 => ['pipe', 'r'], 1 => ['pipe', 'w'] ], $pipes);
     if (is_resource($openssl)) {
@@ -62,7 +64,7 @@ if (empty($cert)) {
 
 /* normalise the certificate */
 $pem = trim($cert);
-if (!preg_match('/^-----BEGIN CERTIFICATE/',$pem)) {
+if (!preg_match('/^-----BEGIN CERTIFICATE/', $pem)) {
     $pem = "-----BEGIN CERTIFICATE-----\n" . wordwrap(preg_replace('/\s+/', '', $pem), 64, "\n", true) . "\n-----END CERTIFICATE-----\n";
 }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Functions for use in XSLT
  *
@@ -6,30 +7,33 @@
  * @copyright Copyright (c) 2016, Tertiary Education and Research Network of South Africa
  * @license https://github.com/tenet-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
+
 if (file_exists(dirname(__DIR__) . '/local/config.inc.php')) {
     include_once(dirname(__DIR__) . '/local/config.inc.php');
 }
 
-class xsltfunc {
+class xsltfunc
+{
     /**
      * Take a PEM representation of a certificate and return the x509 structure
      *
      * @param string $x509certdata
      * @return x509cert|false $x509cert
      */
-    static private function _pemToX509($x509certdata)
+    private static function _pemToX509($x509certdata)
     {
         if (!function_exists('openssl_x509_read')) {
             error_log('_pemToX509 needs OpenSSL functions');
             return false;
         }
         $pem = trim($x509certdata);
-        if (!preg_match('/^-----BEGIN CERTIFICATE/',$pem)) {
+        if (!preg_match('/^-----BEGIN CERTIFICATE/', $pem)) {
             $pem = "-----BEGIN CERTIFICATE-----\n" . wordwrap($pem, 64, "\n", true) . "\n-----END CERTIFICATE-----\n";
         }
         $x509cert = @openssl_x509_read($pem);
-        if ($x509cert === false)
+        if ($x509cert === false) {
             return false;
+        }
         return $x509cert;
     }
 
@@ -39,33 +43,43 @@ class xsltfunc {
      * @param string $cert
      * @return bool
      */
-    static public function checkCertSelfSigned($cert)
+    public static function checkCertSelfSigned($cert)
     {
         $x509data = @openssl_x509_parse(self::_pemToX509($cert));
-        if (empty($x509data))
+        if (empty($x509data)) {
             return false;
-        if (!array_key_exists('subject', $x509data) or
-            !array_key_exists('issuer', $x509data))
+        }
+        if (
+            !array_key_exists('subject', $x509data) or
+            !array_key_exists('issuer', $x509data)
+        ) {
             return false;
-        if (array_diff_assoc($x509data['subject'], $x509data['issuer']))
+        }
+        if (array_diff_assoc($x509data['subject'], $x509data['issuer'])) {
             return false;
+        }
         return true;
     }
 
     /**
      * Check whether basicConstraints has CA:TRUE
      */
-    static public function checkCertIsCA($cert)
+    public static function checkCertIsCA($cert)
     {
         $x509data = @openssl_x509_parse(self::_pemToX509($cert));
-        if (empty($x509data))
+        if (empty($x509data)) {
             return false;
+        }
         error_log(var_export($x509data['extensions'], true));
-        if (!array_key_exists('extensions', $x509data) or
-            !array_key_exists('basicConstraints', $x509data['extensions']))
+        if (
+            !array_key_exists('extensions', $x509data) or
+            !array_key_exists('basicConstraints', $x509data['extensions'])
+        ) {
             return false;
-        if (preg_match('/CA:TRUE/i', $x509data['extensions']['basicConstraints']))
+        }
+        if (preg_match('/CA:TRUE/i', $x509data['extensions']['basicConstraints'])) {
             return true;
+        }
         return false;
     }
 
@@ -75,11 +89,12 @@ class xsltfunc {
      * @param string $cert
      * @return string $issuer
      */
-    static public function getCertIssuer($cert)
+    public static function getCertIssuer($cert)
     {
         $x509data = @openssl_x509_parse(self::_pemToX509($cert));
-        if (empty($x509data))
+        if (empty($x509data)) {
             return false;
+        }
         $issuer = array_key_exists('issuer', $x509data)
             ? (array_key_exists('CN', $x509data['issuer'])
                 ? $x509data['issuer']['CN']
@@ -94,11 +109,12 @@ class xsltfunc {
      * @param string $cert
      * @return string $subject
      */
-    static public function getCertSubject($cert)
+    public static function getCertSubject($cert)
     {
         $x509data = @openssl_x509_parse(self::_pemToX509($cert));
-        if (empty($x509data))
+        if (empty($x509data)) {
             return false;
+        }
         $subject = array_key_exists('subject', $x509data)
             ? (array_key_exists('CN', $x509data['subject'])
                 ? $x509data['subject']['CN']
@@ -114,15 +130,18 @@ class xsltfunc {
      * @param string $fromto
      * @return bool
      */
-    static public function checkCertValid($cert, $fromto = 'both')
+    public static function checkCertValid($cert, $fromto = 'both')
     {
         $x509data = @openssl_x509_parse(self::_pemToX509($cert));
-        if (empty($x509data))
+        if (empty($x509data)) {
             return false;
-        if ($fromto != 'to' and $x509data['validFrom_time_t'] >= time())
+        }
+        if ($fromto != 'to' and $x509data['validFrom_time_t'] >= time()) {
             return false;
-        if ($fromto != 'from' and $x509data['validTo_time_t'] < (time() + 366 * 86400))
+        }
+        if ($fromto != 'from' and $x509data['validTo_time_t'] < (time() + 366 * 86400)) {
             return false;
+        }
         return true;
     }
 
@@ -134,11 +153,12 @@ class xsltfunc {
      * @param string $format per strftime
      * @return string $date
      */
-    static public function getCertDates($cert, $fromto = 'both', $format = '%F')
+    public static function getCertDates($cert, $fromto = 'both', $format = '%F')
     {
         $x509data = @openssl_x509_parse(self::_pemToX509($cert));
-        if (empty($x509data))
+        if (empty($x509data)) {
             return false;
+        }
         switch ($fromto) {
             case 'from':
                 return strftime($format, $x509data['validFrom_time_t']);
@@ -157,11 +177,12 @@ class xsltfunc {
      * @param string $cert
      * @return integer $bits
      */
-    static public function getCertBits($cert)
+    public static function getCertBits($cert)
     {
         $x509key = @openssl_get_publickey(self::_pemToX509($cert));
-        if (empty($x509key))
+        if (empty($x509key)) {
             return false;
+        }
         $x509keydetails = @openssl_pkey_get_details($x509key);
         //error_log(var_export($x509keydetails, true));
         if ($x509keydetails['type'] == OPENSSL_KEYTYPE_EC) {
@@ -185,14 +206,15 @@ class xsltfunc {
      * @param string $type
      * @return bool
      */
-    static public function checkURL($url)
+    public static function checkURL($url)
     {
         if (!function_exists('curl_init')) {
             error_log('checkURL needs cURL functions');
             return false;
         }
-        if (filter_var($url, FILTER_VALIDATE_URL) === false)
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
             return false;
+        }
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
@@ -216,14 +238,15 @@ class xsltfunc {
      * @param bool $modern do modern browser compat checks
      * @return bool
      */
-    static public function checkURLCert($url, $modern = true, $verbose = false)
+    public static function checkURLCert($url, $modern = true, $verbose = false)
     {
         if (!function_exists('curl_init')) {
             error_log('checkURLCert needs cURL functions');
             return false;
         }
-        if (filter_var($url, FILTER_VALIDATE_URL) === false)
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
             return false;
+        }
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTPS);
@@ -237,8 +260,9 @@ class xsltfunc {
         if ($modern == true) {
             curl_setopt($curl, CURLOPT_CERTINFO, true);
             /* Try use a modernish version of TLS */
-            if (defined('CURL_SSLVERSION_TLSv1_2'))
+            if (defined('CURL_SSLVERSION_TLSv1_2')) {
                 curl_setopt($curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+            }
             /* Chrome 54's cipher list - try eliminate older, insecure servers */
             curl_setopt($curl, CURLOPT_SSL_CIPHER_LIST, 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305-SHA256:ECDHE-RSA-CHACHA20-POLY1305-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:RSA-AES128-GCM-SHA256:RSA-AES256-GCM-SHA384:RSA-AES128-SHA:RSA-AES256-SHA:RSA-3DES-EDE-SHA');
             /* OSCP stapling check - remote host must support it!
@@ -250,15 +274,14 @@ class xsltfunc {
         $curlerror = curl_error($curl);
 
         if ($curlresponse !== true and !$verbose) {
-            error_log(sprintf("checkURLCert(%s, %s) verifypeer returned %d (%s)", $url, $modern ? 'true' : 'false',  curl_getinfo($curl, CURLINFO_SSL_VERIFYRESULT), $curlerror));
-
+            error_log(sprintf("checkURLCert(%s, %s) verifypeer returned %d (%s)", $url, $modern ? 'true' : 'false', curl_getinfo($curl, CURLINFO_SSL_VERIFYRESULT), $curlerror));
         } elseif ($modern == true) {
             /* check for SHA1 */
             $chain = curl_getinfo($curl, CURLINFO_CERTINFO);
             $root = array_pop($chain); /* except root cert */
             foreach ($chain as $cert) {
                 if (preg_match('/(sha1|md5)/i', $cert['Signature Algorithm'])) {
-                    error_log(sprintf("checkURLCert(%s, %s) signature check found %s", $url, $modern ? 'true' : 'false',  $cert['Signature Algorithm']));
+                    error_log(sprintf("checkURLCert(%s, %s) signature check found %s", $url, $modern ? 'true' : 'false', $cert['Signature Algorithm']));
                     $curlerror = sprintf('Signature check found %s', $cert['Signature Algorithm']);
                     $curlresponse = false;
                 }
@@ -281,7 +304,7 @@ class xsltfunc {
      * @param string $email
      * @return bool
      */
-    static public function checkEmailAddress($email)
+    public static function checkEmailAddress($email)
     {
         $email = preg_replace('/^mailto:/', '', trim($email));
         if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
@@ -301,16 +324,17 @@ class xsltfunc {
      * @param string $data
      * @return bool
      */
-    static public function checkBase64($data)
+    public static function checkBase64($data)
     {
         if (!function_exists('base64_decode')) {
             error_log('checkBase64 needs URL functions');
             return true;
         }
-        if (@base64_decode(preg_replace('/\s+/', '', $data), true) === false)
+        if (@base64_decode(preg_replace('/\s+/', '', $data), true) === false) {
             return false;
-        else
+        } else {
             return true;
+        }
     }
 
     /**
@@ -318,12 +342,12 @@ class xsltfunc {
      * @param string $data
      * @return bool
      */
-    static public function checkStringIsBlank($data)
+    public static function checkStringIsBlank($data)
     {
-        if (trim($data) == '')
+        if (trim($data) == '') {
             return true;
-        else
+        } else {
             return false;
+        }
     }
-
 }

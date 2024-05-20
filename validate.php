@@ -1,4 +1,5 @@
 <?php
+
 /**
  * metadata-validator AJAX POST handler
  *
@@ -60,11 +61,21 @@ function filter_libxml_errors()
     $errors = libxml_get_errors();
     $filteredErrors = array();
     foreach ($errors as $error) {
-        if ($error->code == 1209) { continue; }
-        if ($error->code == 1 and preg_match('/xmlXPathCompOpEval: function .+ not found/', $error->message)) { continue; }
-        if ($error->code == 1 and preg_match('/entity does not have an mdrpi:RegistrationInfo element/', $error->message)) { continue; }
-        if ($error->code == 1 and preg_match('/entity has legacy KeyName element/', $error->message)) { continue; }
-        if ($error->code == 1 and preg_match('/\[ERROR\] regular expression in scope/', $error->message)) { continue; }
+        if ($error->code == 1209) {
+            continue;
+        }
+        if ($error->code == 1 and preg_match('/xmlXPathCompOpEval: function .+ not found/', $error->message)) {
+            continue;
+        }
+        if ($error->code == 1 and preg_match('/entity does not have an mdrpi:RegistrationInfo element/', $error->message)) {
+            continue;
+        }
+        if ($error->code == 1 and preg_match('/entity has legacy KeyName element/', $error->message)) {
+            continue;
+        }
+        if ($error->code == 1 and preg_match('/\[ERROR\] regular expression in scope/', $error->message)) {
+            continue;
+        }
         $filteredErrors[] = $error;
     }
     return $filteredErrors;
@@ -75,7 +86,7 @@ function filter_libxml_errors()
  *
  * @param array $response
  */
-function sendResponse ($response, $pass = 0)
+function sendResponse($response, $pass = 0)
 {
     header('Content-Type: application/json');
     if (is_string($response)) {
@@ -92,7 +103,9 @@ function sendResponse ($response, $pass = 0)
     /* if this is only info messages, return success */
     $success = true;
     foreach ($response as $err) {
-        if ($err->code == 1 and preg_match('/\[INFO\]/', $err->message)) { continue; }
+        if ($err->code == 1 and preg_match('/\[INFO\]/', $err->message)) {
+            continue;
+        }
         $success = false;
     }
     // error_log(var_export($response, true));
@@ -134,7 +147,7 @@ if ($doc->loadXML($xml) !== true) {
 /* 2 - valid namespaces: turn it into an XPath */
 libxml_clear_errors();
 $xp = new DomXPath($doc);
-foreach($namespaces as $full => $prefix) {
+foreach ($namespaces as $full => $prefix) {
     $xp->registerNamespace($prefix, $full);
 }
 $errors = filter_libxml_errors();
@@ -166,7 +179,9 @@ libxml_clear_errors();
 $xslt = new XSLTProcessor();
 $rules = glob('./rules/*.xsl');
 foreach ($rules as $rule) {
-    if (preg_match('/check_framework\.xsl$/', $rule)) { continue; }
+    if (preg_match('/check_framework\.xsl$/', $rule)) {
+        continue;
+    }
     $xslt->setParameter('', 'expectedAuthority', constant('REGISTRATION_AUTHORITY'));
     $xslt->importStylesheet(new SimpleXMLElement($rule, 0, true));
     $xslt->transformToDoc($xp->document);
@@ -180,13 +195,17 @@ if ($errors) {
 if (file_exists(__DIR__ . '/local/xsltfunc.inc.php')) {
     include_once(__DIR__ . '/local/xsltfunc.inc.php');
     $xslt->registerPHPFunctions(
-        array_map(function($n) { return 'xsltfunc::' . $n; }, get_class_methods('xsltfunc'))
+        array_map(function ($n) {
+            return 'xsltfunc::' . $n;
+        }, get_class_methods('xsltfunc'))
     );
 }
 libxml_clear_errors();
 $localrules = glob('./local/*.xsl');
 foreach ($localrules as $rule) {
-    if (preg_match('/check_framework\.xsl$/', $rule) or preg_match('/ns_norm\.xsl$/', $rule)) { continue; }
+    if (preg_match('/check_framework\.xsl$/', $rule) or preg_match('/ns_norm\.xsl$/', $rule)) {
+        continue;
+    }
     $xslt->importStylesheet(new SimpleXMLElement($rule, 0, true));
     $xslt->transformToDoc($xp->document);
 }

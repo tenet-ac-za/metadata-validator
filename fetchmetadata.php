@@ -1,4 +1,5 @@
 <?php
+
 /**
  * metadata-validator fetchurl helper
  *
@@ -37,19 +38,23 @@ function badGateway($message)
     }
 }
 
-if (empty($_REQUEST['url']))
+if (empty($_REQUEST['url'])) {
     badGateway('A URL must be given');
+}
 
 $url = parse_url($_REQUEST['url']);
 
-if (!in_array(strtolower($url['scheme']), $SUPPORTED_SCHEMES))
+if (!in_array(strtolower($url['scheme']), $SUPPORTED_SCHEMES)) {
     badGateway('The following schemes are supported: ' . implode(', ', $SUPPORTED_SCHEMES));
+}
 
-if (array_key_exists('user', $url) or array_key_exists('pass', $url))
+if (array_key_exists('user', $url) or array_key_exists('pass', $url)) {
     badGateway('Cannot fetch a password protected resource');
+}
 
-if (strtolower($url['host']) == 'localhost' or in_array('127.0.0.1', gethostbynamel($url['host'])))
+if (strtolower($url['host']) == 'localhost' or in_array('127.0.0.1', gethostbynamel($url['host']))) {
     badGateway('Please don\'t fetch local resources :-(');
+}
 
 /* set up a cURL object to try fetch this for us */
 
@@ -71,16 +76,18 @@ curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
 /* break the connection if FETCH_MAX_SIZE reached */
 curl_setopt($curl, CURLOPT_BUFFERSIZE, 128);
 curl_setopt($curl, CURLOPT_NOPROGRESS, false);
-curl_setopt($curl, CURLOPT_PROGRESSFUNCTION, function($ds, $d, $us, $u){
+curl_setopt($curl, CURLOPT_PROGRESSFUNCTION, function ($ds, $d, $us, $u) {
     return ($d > FETCH_MAX_SIZE) ? 1 : 0;
 });
 
 $data = curl_exec($curl);
-if ($data === false)
+if ($data === false) {
     badGateway(curl_error($curl));
+}
 
-if (!in_array(preg_replace('/\s*;.*$/', '', curl_getinfo($curl, CURLINFO_CONTENT_TYPE)), $SUPPORTED_CONTENT_TYPES))
+if (!in_array(preg_replace('/\s*;.*$/', '', curl_getinfo($curl, CURLINFO_CONTENT_TYPE)), $SUPPORTED_CONTENT_TYPES)) {
     badGateway('Got unsupported content type. Only accept: ' . implode(', ', $SUPPORTED_CONTENT_TYPES));
+}
 
 http_response_code(curl_getinfo($curl, CURLINFO_RESPONSE_CODE));
 header('Status: ' . curl_getinfo($curl, CURLINFO_RESPONSE_CODE));

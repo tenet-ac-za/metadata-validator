@@ -1,4 +1,5 @@
 <?php
+
 /**
  * metadata-validator DCV generator
  *
@@ -15,7 +16,8 @@ include_once(__DIR__ . '/vendor/autoload.php');
 use Pdp\Domain;
 use Pdp\Rules;
 
-function sendResponse($response, $status = 200) {
+function sendResponse($response, $status = 200)
+{
     if (array_key_exists('callback', $_REQUEST)) {
         header('content-type: text/javascript; charset=utf-8');
         echo addslashes($_REQUEST['callback']) . '(';
@@ -46,7 +48,8 @@ function sendResponse($response, $status = 200) {
     }
 }
 
-function getPublicSuffix ($domain) {
+function getPublicSuffix($domain)
+{
     global $publicSuffixList;
     if (!isset($publicSuffixList)) {
         if (!file_exists(constant('PUBLICSUFFIXLIST'))) {
@@ -72,11 +75,12 @@ function getPublicSuffix ($domain) {
  * Quick and dirty check that the result is what we expect...
  * NB! DNS caching is a problem...
  */
-function checkDCVResult (&$dcv_result) {
+function checkDCVResult(&$dcv_result)
+{
     foreach ($dcv_result['rrset'] as $rrtype => $rdata) {
         $valid = true;
         foreach ($dcv_result['domains'] as $domain) {
-            $dns = dns_get_record($dcv_result['label'] . '.' . $domain, constant('DNS_'.$rrtype));
+            $dns = dns_get_record($dcv_result['label'] . '.' . $domain, constant('DNS_' . $rrtype));
             if ($dns === false) {
                 $valid = false;
             } elseif (@$dns[0]['type'] != $rrtype) {
@@ -170,7 +174,8 @@ $dcv_result = [
             . constant('DCV_SECRET') . ':'
             . strtolower(trim($_REQUEST['ref']))
         ),
-        0, 16
+        0,
+        16
     ),
     'entityhash' => sha1($_REQUEST['entityID']),
     /* Possible DNS responses, all pointing at the entityID in MDQ-ish form */

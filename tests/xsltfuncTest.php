@@ -1,6 +1,6 @@
 <?php
 
-use \PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
 /* It seems the OpenSSL functions don't do timezones properly, so the results here vary depending on system timezone */
 date_default_timezone_set('UTC');
@@ -14,7 +14,7 @@ class xsltfuncTest extends TestCase
     protected function setUp(): void
     {
         $_SERVER['SERVER_NAME'] = 'validator.safire.ac.za';
-        require_once (dirname(__DIR__) . '/local/xsltfunc.inc.php');
+        require_once(dirname(__DIR__) . '/local/xsltfunc.inc.php');
         $this->selfsigned = file_get_contents(__DIR__ . '/selfsigned.pem');
         $this->casigned = file_get_contents(__DIR__ . '/casigned.pem');
         $this->expired = file_get_contents(__DIR__ . '/expired.pem');

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * metadata-validator normalizer
  *
@@ -43,9 +44,9 @@ $namespaces = array(
  */
 function nssort($a, $b)
 {
-    if (substr($a,0,6) == 'xmlns=') {
+    if (substr($a, 0, 6) == 'xmlns=') {
         return 0;
-    } elseif(substr($b,0,6) == 'xmlns=') {
+    } elseif (substr($b, 0, 6) == 'xmlns=') {
         return 1;
     } else {
         return strcmp($a, $b);
@@ -77,7 +78,7 @@ $doc->preserveWhiteSpace = false;
 $doc->formatOutput = true;
 if ($doc->loadXML($xml) !== true) {
     print "Error loading XML: " . libxml_get_last_error() . "\n";
-        if (! defined('PHPUNIT_COMPOSER_INSTALL') && ! defined('__PHPUNIT_PHAR__')) {
+    if (! defined('PHPUNIT_COMPOSER_INSTALL') && ! defined('__PHPUNIT_PHAR__')) {
         exit(1); /* can't unit test this */
     } else {
         throw new RuntimeException("exit()");
@@ -93,10 +94,11 @@ $doc = $xslt->transformToDoc($doc);
 /* get some XPath */
 libxml_clear_errors();
 $xp = new DomXPath($doc);
-foreach($namespaces as $full => $prefix) {
+foreach ($namespaces as $full => $prefix) {
     $xp->registerNamespace($prefix, $full);
     /* remove namespaces that are not in use and are not needed for registration parameters */
-    if (!in_array($prefix, array('mdrpi', 'mdattr', 'saml', 'remd', 'mdui')) and
+    if (
+        !in_array($prefix, array('mdrpi', 'mdattr', 'saml', 'remd', 'mdui')) and
         $xp->query("//${prefix}:*")->length === 0
     ) {
         $doc->documentElement->removeAttributeNS($full, $prefix);
@@ -110,7 +112,8 @@ foreach (array('IDPSSODescriptor', 'SPSSODescriptor', 'AASSODescriptor') as $sso
         $signing = $xp->query("//md:KeyDescriptor[@use='signing']/ds:KeyInfo/ds:X509Data/ds:X509Certificate", $e->item(0));
         $encryption = $xp->query("//md:KeyDescriptor[@use='encryption']/ds:KeyInfo/ds:X509Data/ds:X509Certificate", $e->item(0));
         $unspecified = $xp->query("//md:KeyDescriptor[not(@use)]/ds:KeyInfo/ds:X509Data/ds:X509Certificate", $e->item(0));
-        if ($signing->length == 1 and
+        if (
+            $signing->length == 1 and
             $encryption->length == 1 and
             $signing->item(0)->nodeValue == $encryption->item(0)->nodeValue and
             (
@@ -152,7 +155,7 @@ if ($roledescriptor->length) {
 $attributes = $xp->query("//md:IDPSSODescriptor/saml:Attribute");
 if ($attributes->length) {
     foreach ($attributes as $e) {
-    if (preg_match('{http://schemas\.(xmlsoap\.org|microsoft\.com)/}i', $e->getAttribute('Name'))) {
+        if (preg_match('{http://schemas\.(xmlsoap\.org|microsoft\.com)/}i', $e->getAttribute('Name'))) {
             $e->parentNode->removeChild($e);
         }
     }
@@ -170,7 +173,7 @@ $doc->normalizeDocument();
 $preoutput = $doc->saveXML();
 
 /* remove whitespace from any certificates */
-$preoutput = preg_replace_callback('/<ds:X509Certificate>\s*([^<>]+)\s*<\/ds:X509Certificate>/i', function($m) {
+$preoutput = preg_replace_callback('/<ds:X509Certificate>\s*([^<>]+)\s*<\/ds:X509Certificate>/i', function ($m) {
     return '<ds:X509Certificate>' . preg_replace('/\s+/', '', $m[1]) . '</ds:X509Certificate>';
 }, $preoutput);
 
