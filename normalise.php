@@ -78,7 +78,15 @@ libxml_clear_errors();
 $doc = new DOMDocument();
 $doc->preserveWhiteSpace = false;
 $doc->formatOutput = true;
-if ($doc->loadXML($xml) !== true) {
+$options = LIBXML_NONET | LIBXML_PARSEHUGE;
+/* LIBXML_NO_XXE available from PHP 8.4 */
+if (defined('LIBXML_NO_XXE')) {
+    $options |= LIBXML_NO_XXE;
+}
+if (defined('LIBXML_COMPACT')) {
+    $options |= LIBXML_COMPACT;
+}
+if ($doc->loadXML($xml, $options) !== true) {
     print "Error loading XML: " . libxml_get_last_error() . "\n";
     if (! defined('PHPUNIT_COMPOSER_INSTALL') && ! defined('__PHPUNIT_PHAR__')) {
         exit(1); /* can't unit test this */

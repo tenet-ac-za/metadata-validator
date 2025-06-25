@@ -169,7 +169,15 @@ libxml_use_internal_errors(true);
 libxml_clear_errors();
 $doc = new DOMDocument();
 $doc->preserveWhiteSpace = true;
-if ($doc->loadXML($xml) !== true) {
+$options = LIBXML_NONET | LIBXML_PARSEHUGE;
+/* LIBXML_NO_XXE available from PHP 8.4 */
+if (defined('LIBXML_NO_XXE')) {
+    $options |= LIBXML_NO_XXE;
+}
+if (defined('LIBXML_COMPACT')) {
+    $options |= LIBXML_COMPACT;
+}
+if ($doc->loadXML($xml, $options) !== true) {
     $errors = filter_libxml_errors();
     sendResponse($errors, 1);
 }
