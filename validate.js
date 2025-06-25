@@ -113,13 +113,13 @@ function sendForValidation()
 /**
  * Send the XML to the server for normalisation
  */
-function sendForNormalisation()
+function sendForNormalisation(prefix = false)
 {
     resetUI();
     var editorData = editor.getValue();
     $.ajax({
         type: 'POST',
-        url: "normalise.php",
+        url: "normalise.php" + (prefix ? '?prefix=1' : ''),
         data: editorData,
         contentType: 'text/xml',
         processData: false,
@@ -559,6 +559,8 @@ $(document).ready(function ()
 
     $('#validator #normalise').click(function() {
         sendForNormalisation();
+    }).dblclick(function() {
+        sendForNormalisation(true);
     });
 
     $('#validator #dcv').click(function() {

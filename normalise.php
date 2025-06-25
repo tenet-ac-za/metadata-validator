@@ -90,7 +90,8 @@ if ($doc->loadXML($xml) !== true) {
 /* normalise with a variant of UKAF's rules */
 libxml_clear_errors();
 $xslt = new XSLTProcessor();
-$xslt->importStylesheet(new SimpleXMLElement(__DIR__ . '/rules/ns_norm.xsl', 0, true));
+$normalise = isset($_GET['prefix']) ? 'ns_norm_withmd.xsl' : 'ns_norm.xsl';
+$xslt->importStylesheet(new SimpleXMLElement(__DIR__ . '/rules/' . $normalise, 0, true));
 $doc = $xslt->transformToDoc($doc);
 
 /* get some XPath */
