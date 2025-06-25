@@ -12,6 +12,7 @@
  * @license https://github.com/tenet-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
 
+// phpcs:disable Generic.Files.LineLength.TooLong
 declare(strict_types=1);
 
 if (file_exists(dirname(__DIR__) . '/local/config.inc.php')) {
