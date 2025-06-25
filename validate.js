@@ -27,6 +27,18 @@ function resetUI()
 }
 
 /**
+ * replaces the editor value, reseting markers and selection
+ */
+function setEditorValue(data)
+{
+    editor.clearSelection();
+    editor.setValue(data);
+    markCertificates();
+    resetUI();
+    editor.gotoLine(1, 0);
+}
+
+/**
  * construct the results pane from json
  */
 function populateResultsPane(data)
@@ -125,9 +137,7 @@ function sendForNormalisation(prefix = false)
         processData: false,
         cache: false,
         success: function(data) {
-            editor.setValue(data);
-            resetUI();
-            editor.gotoLine(1, 0);
+            setEditorValue(data);
         }
     });
 }
@@ -318,9 +328,7 @@ function fetchFromURL(url)
         url: 'fetchmetadata.php',
         data: { url: url },
         success: function(data) {
-            editor.setValue(data);
-            resetUI();
-            editor.gotoLine(1, 0);
+            setEditorValue(data);
         },
         error: function(jqxhr) {
             console.log(jqxhr);
@@ -453,9 +461,14 @@ function markCertificates()
     if (!editorXML)
         return false;
     var certsXML = editorXML.getElementsByTagNameNS('http://www.w3.org/2000/09/xmldsig#', 'X509Certificate');
+    $.each(editor.getSession().getMarkers(), function (i, v) {
+        editor.getSession().removeMarker(v.id);
+    });
     for (var i = 0; i < certsXML.length; i++) {
         editor.$search.set({
-            needle: certsXML[i].textContent
+            needle: certsXML[i].textContent,
+            regExp: false,
+            wholeWord: true
         });
         $.each(editor.$search.findAll(editor.getSession()), function (index, range) {
             editor.getSession().addMarker(range, "validator-cert-marker", "text");
@@ -542,9 +555,7 @@ $(document).ready(function ()
             var reader = new FileReader();
             reader.readAsText(file);
             reader.onload = function(e) {
-                editor.setValue(e.target.result);
-                resetUI();
-                editor.gotoLine(1, 0);
+                setEditorValue(e.target.result);
             };
         }
     });
