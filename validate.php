@@ -88,7 +88,9 @@ function filter_libxml_errors()
  */
 function sendResponse($response, $pass = 0)
 {
-    header('Content-Type: application/json');
+    if (substr(PHP_SAPI, 0, 3) !== 'cli') {
+        header('Content-Type: application/json');
+    }
     if (is_string($response)) {
         // emulate libXMLError
         $err = new libXMLError();
@@ -115,7 +117,7 @@ function sendResponse($response, $pass = 0)
         'passes' => count($GLOBALS['passes']) - 1,
         'success' => $success,
         'errors' => $response
-    ));
+    ), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     if (! defined('PHPUNIT_COMPOSER_INSTALL') && ! defined('__PHPUNIT_PHAR__')) {
         exit; /* can't unit test this */
     } else {
@@ -123,18 +125,32 @@ function sendResponse($response, $pass = 0)
     }
 }
 
-/* 0 - preflight: did we get the right content type */
-if ($_SERVER["CONTENT_TYPE"] !== 'text/xml') {
-    sendResponse('Incorrect content-type: header');
-}
+if (substr(PHP_SAPI, 0, 3) === 'cli') {
+    $debug = true;
+    fwrite(STDERR, "Reading XML from " . ($argc > 1 ? $argv[1] : 'stdin') . "\n");
+    if ($argc > 1) {
+        $xml = file_get_contents($argv[1]);
+    } else {
+        $xml = file_get_contents('php://stdin');
+    }
+} else {
+    $debug = false;
+    /* 0 - preflight: did we get the right content type */
+    if ($_SERVER["CONTENT_TYPE"] !== 'text/xml') {
+        sendResponse('Incorrect content-type: header');
+    }
 
-/* 0 - preflight: could we read it */
-$xml = file_get_contents('php://input');
+    /* 0 - preflight: could we read it */
+    $xml = file_get_contents('php://input');
+}
 if (empty($xml)) {
     sendResponse('No input supplied');
 }
 
 /* 1 - valid XML: parse the XML into DOM */
+if ($debug) {
+    fwrite(STDERR, "1 - valid XML: parse the XML into DOM\n");
+}
 libxml_use_internal_errors(true);
 libxml_clear_errors();
 $doc = new DOMDocument();
@@ -145,6 +161,9 @@ if ($doc->loadXML($xml) !== true) {
 }
 
 /* 2 - valid namespaces: turn it into an XPath */
+if ($debug) {
+    fwrite(STDERR, "2 - valid namespaces: turn it into an XPath\n");
+}
 libxml_clear_errors();
 $xp = new DomXPath($doc);
 foreach ($namespaces as $full => $prefix) {
@@ -156,6 +175,9 @@ if ($errors) {
 }
 
 /* 3 - verify SAML schema */
+if ($debug) {
+    fwrite(STDERR, "3 - verify SAML schema\n");
+}
 libxml_clear_errors();
 $xp->document->schemaValidate('./schemas/ws-federation.xsd');
 $errors = filter_libxml_errors();
@@ -164,6 +186,9 @@ if ($errors) {
 }
 
 /* 4 - verify local schemas */
+if ($debug) {
+    fwrite(STDERR, "4 - verify local schemas\n");
+}
 libxml_clear_errors();
 $localschemas = glob('./local/*.xsd');
 foreach ($localschemas as $schema) {
@@ -175,6 +200,9 @@ if ($errors) {
 }
 
 /* 5 - use Ian Young's SAML metadata testing rules */
+if ($debug) {
+    fwrite(STDERR, "5 - use Ian Young's SAML metadata testing rules\n");
+}
 libxml_clear_errors();
 $xslt = new XSLTProcessor();
 $rules = glob('./rules/*.xsl');
@@ -192,6 +220,9 @@ if ($errors) {
 }
 
 /* 6 - use local SAML metadata testing rules */
+if ($debug) {
+    fwrite(STDERR, "6 - use local SAML metadata testing rules\n");
+}
 if (file_exists(__DIR__ . '/local/xsltfunc.inc.php')) {
     include_once(__DIR__ . '/local/xsltfunc.inc.php');
     $xslt->registerPHPFunctions(
@@ -215,8 +246,11 @@ if ($errors) {
 }
 
 /* we got this far, so everything is okay! */
+if (substr(PHP_SAPI, 0, 3) !== 'cli') {
+    header('Content-Type: application/json');
+}
 print json_encode(array(
     'pass' => count($GLOBALS['passes']),
     'success' => true,
     'errors' => null
-));
+), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
