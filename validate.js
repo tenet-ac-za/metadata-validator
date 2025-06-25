@@ -523,7 +523,7 @@ $(document).ready(function ()
             $('#validator #dcv').hide();
         }
     });
-    editor.on("dblclick", function () {
+    editor.on('dblclick', function () {
         var pos = editor.getCursorPosition();
         $.each(editor.getSession().getMarkers(), function (index, marker) {
             if (marker.clazz != 'validator-cert-marker')
@@ -536,7 +536,7 @@ $(document).ready(function ()
         });
     });
 
-    $('#validator #mdfile').change(function() {
+    $('#validator #mdfile').on('change', function(e) {
         var file = this.files[0];
         if (file) {
             var reader = new FileReader();
@@ -549,30 +549,33 @@ $(document).ready(function ()
         }
     });
 
-    $('#validator #mdurl').click(function() {
+    $('#validator #mdurl').on('click', function(e) {
         createFetchURLDialog();
     });
 
-    $('#validator #validate').click(function() {
+    $('#validator #validate').click(function(e) {
         sendForValidation();
     });
 
-    $('#validator #normalise').click(function() {
-        sendForNormalisation();
-    }).dblclick(function() {
+    var validateDoubleClickTimer;
+    $('#validator #normalise').on('click', function(e) {
+        clearTimeout(validateDoubleClickTimer);
+        validateDoubleClickTimer = setTimeout(sendForNormalisation, 400, false);
+    }).on('dblclick', function(e) {
+        clearTimeout(validateDoubleClickTimer);
         sendForNormalisation(true);
     });
 
-    $('#validator #dcv').click(function() {
+    $('#validator #dcv').on('click', function(e) {
         createDCVDialog();
     });
 
     /* Ajax global event handlers to display comfort throbber/spinner */
-    $(document).ajaxStart(function() {
+    $(document).on('ajaxStart', function() {
         /* delay starting the spinner, so we don't show it for quick functions */
         spinner = setTimeout(function() { $('#validator #spinner').show(); }, 350);
     });
-    $(document).ajaxStop(function() {
+    $(document).on('ajaxStop', function() {
         clearTimeout(spinner);
         $('#validator #spinner').hide();
     });
