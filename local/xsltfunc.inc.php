@@ -152,10 +152,10 @@ class XsltFunc
      *
      * @param string $cert
      * @param string $fromto
-     * @param string $format per strftime
+     * @param string $format per date()
      * @return string $date
      */
-    public static function getCertDates($cert, $fromto = 'both', $format = '%F')
+    public static function getCertDates($cert, $fromto = 'both', $format = 'Y-m-d')
     {
         $x509data = @openssl_x509_parse(self::pemToX509($cert) ?? '');
         if (empty($x509data)) {
@@ -163,12 +163,12 @@ class XsltFunc
         }
         switch ($fromto) {
             case 'from':
-                return strftime($format, $x509data['validFrom_time_t']);
+                return date($format, $x509data['validFrom_time_t']);
             case 'to':
-                return strftime($format, $x509data['validTo_time_t']);
+                return date($format, $x509data['validTo_time_t']);
             case 'both':
-                return strftime($format, $x509data['validFrom_time_t'])
-                    . ' - ' . strftime($format, $x509data['validTo_time_t']);
+                return date($format, $x509data['validFrom_time_t'])
+                    . ' - ' . date($format, $x509data['validTo_time_t']);
             default:
                 return false;
         }
