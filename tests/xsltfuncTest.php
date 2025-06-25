@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use PHPUnit\Framework\TestCase;
 
 /* It seems the OpenSSL functions don't do timezones properly, so the results here vary depending on system timezone */
@@ -76,7 +78,12 @@ class XsltFuncTest extends TestCase
         $this->assertFalse(XsltFunc::checkURLCert('https://wrong.host.badssl.com/'));
         $this->assertFalse(XsltFunc::checkURLCert('https://sha1-2017.badssl.com/', true));
         $this->assertFalse(XsltFunc::checkURLCert('https://untrusted-root.badssl.com/'));
-        $this->assertMatchesRegularExpression('/(server certificate verification failed|unable to get local issuer certificate|self[- ]signed certificate in certificate chain)/', XsltFunc::checkURLCert('https://untrusted-root.badssl.com/', false, true));
+        $this->assertMatchesRegularExpression(
+            '/(server certificate verification failed|' .
+                'unable to get local issuer certificate|' .
+                'self[- ]signed certificate in certificate chain)/',
+            XsltFunc::checkURLCert('https://untrusted-root.badssl.com/', false, true),
+        );
         $this->assertFalse(XsltFunc::checkURLCert('https://rc4-md5.badssl.com/'));
     }
 

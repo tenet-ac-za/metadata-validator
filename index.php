@@ -8,6 +8,8 @@
  * @license https://github.com/tenet-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
 
+declare(strict_types=1);
+
 include_once(__DIR__ . '/ui/header.inc.php');
 ?>
 <h1>SAML Metadata Validator</h1>

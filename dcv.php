@@ -8,6 +8,8 @@
  * @license https://github.com/tenet-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
 
+declare(strict_types=1);
+
 if (file_exists(__DIR__ . '/local/config.inc.php')) {
     include_once(__DIR__ . '/local/config.inc.php');
 }
@@ -108,9 +110,15 @@ function checkDCVResult(&$dcv_result)
     }
     $valid = true;
     foreach ($dcv_result['domains'] as $domain) {
-        $http = @file_get_contents('http://' . $domain . '/.well-known/pki-validation/' . $dcv_result['entityhash'] . '.txt', false);
+        $http = @file_get_contents(
+            'http://' . $domain . '/.well-known/pki-validation/' . $dcv_result['entityhash'] . '.txt',
+            false,
+        );
         if ($http === false) {
-            $http = @file_get_contents('http://www.' . $domain . '/.well-known/pki-validation/' . $dcv_result['entityhash'] . '.txt', false);
+            $http = @file_get_contents(
+                'http://www.' . $domain . '/.well-known/pki-validation/' . $dcv_result['entityhash'] . '.txt',
+                false,
+            );
         }
         if ($http == false || substr($http, 0, strlen($dcv_result['label'])) != $dcv_result['label']) {
             $valid = false;
@@ -135,7 +143,7 @@ $warnings = [];
  * See if we need to validate the domain from the entityID
  */
 $url = parse_url($_REQUEST['entityID']);
-if ($url['scheme'] == 'http' or $url['scheme'] == 'https') {
+if ($url['scheme'] == 'http' || $url['scheme'] == 'https') {
     $domains[] = getPublicSuffix($url['host']);
 }
 
@@ -188,7 +196,7 @@ $dcv_result = [
     'warnings' => array_values(array_unique($warnings)),
 ];
 
-if (array_key_exists('check', $_REQUEST) and $_REQUEST['check']) {
+if (array_key_exists('check', $_REQUEST) && $_REQUEST['check']) {
     checkDCVResult($dcv_result);
 }
 

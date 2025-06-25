@@ -15,4 +15,10 @@
         <exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
         <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace"/>
     </rule>
+    <!-- Only allow shorthand array syntax -->
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax" />
+    <!-- Require the file to start with a declare(strict_types=1); -->
+    <rule ref="Generic.PHP.RequireStrictTypes" />
+    <!-- Do not allow unnecessary spaces inside arbitrary parentheses -->
+    <rule ref="Generic.WhiteSpace.ArbitraryParenthesesSpacing" />
 </ruleset>

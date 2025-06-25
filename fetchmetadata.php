@@ -12,11 +12,13 @@
  * @license https://github.com/tenet-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
 
+declare(strict_types=1);
+
 /** @var array $SUPPORTED_SCHEMES Array of URI schemes to allow */
-$SUPPORTED_SCHEMES = array('http', 'https');
+$SUPPORTED_SCHEMES = ['http', 'https'];
 
 /** @var array $SUPPORTED_CONTENT_TYPES Array of content types to allow */
-$SUPPORTED_CONTENT_TYPES = array ('application/samlmetadata+xml', 'application/xml', 'text/xml', 'text/plain');
+$SUPPORTED_CONTENT_TYPES =  ['application/samlmetadata+xml', 'application/xml', 'text/xml', 'text/plain'];
 
 /** @var int FETCH_MAX_SIZE Maximum size of a download in bytes */
 define('FETCH_MAX_SIZE', 1024 * 1024);
@@ -48,11 +50,11 @@ if (!in_array(strtolower($url['scheme']), $SUPPORTED_SCHEMES)) {
     badGateway('The following schemes are supported: ' . implode(', ', $SUPPORTED_SCHEMES));
 }
 
-if (array_key_exists('user', $url) or array_key_exists('pass', $url)) {
+if (array_key_exists('user', $url) || array_key_exists('pass', $url)) {
     badGateway('Cannot fetch a password protected resource');
 }
 
-if (strtolower($url['host']) == 'localhost' or in_array('127.0.0.1', gethostbynamel($url['host']))) {
+if (strtolower($url['host']) == 'localhost' || in_array('127.0.0.1', gethostbynamel($url['host']))) {
     badGateway('Please don\'t fetch local resources :-(');
 }
 
@@ -61,11 +63,11 @@ if (strtolower($url['host']) == 'localhost' or in_array('127.0.0.1', gethostbyna
 $curl = curl_init();
 curl_setopt($curl, CURLOPT_URL, $_REQUEST['url']);
 curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
-curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+curl_setopt($curl, CURLOPT_HTTPHEADER, [
     'Via: ' . $_SERVER['SERVER_NAME'],
     'Accept: ' . implode(', ', $SUPPORTED_CONTENT_TYPES),
     'Cache-Control: no-cache',
-));
+]);
 curl_setopt($curl, CURLOPT_TIMEOUT, 10);
 curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 curl_setopt($curl, CURLOPT_MAXREDIRS, 10);
@@ -91,7 +93,8 @@ if (!in_array(preg_replace('/\s*;.*$/', '', curl_getinfo($curl, CURLINFO_CONTENT
 
 http_response_code(curl_getinfo($curl, CURLINFO_RESPONSE_CODE));
 header('Status: ' . curl_getinfo($curl, CURLINFO_RESPONSE_CODE));
-header('Content-Type: text/plain' . preg_replace('/^[^;]+/', '', curl_getinfo($curl, CURLINFO_CONTENT_TYPE))); /* edit wants plain text, not DOM; preserve encoding */
+/* edit wants plain text, not DOM; preserve encoding */
+header('Content-Type: text/plain' . preg_replace('/^[^;]+/', '', curl_getinfo($curl, CURLINFO_CONTENT_TYPE)));
 header('Content-Length: ' . curl_getinfo($curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD));
 header('X-Location: ' . curl_getinfo($curl, CURLINFO_EFFECTIVE_URL));
 print substr($data, curl_getinfo($curl, CURLINFO_HEADER_SIZE));

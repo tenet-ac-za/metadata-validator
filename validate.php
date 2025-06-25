@@ -13,12 +13,14 @@
  * @license https://github.com/tenet-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
 
+declare(strict_types=1);
+
 if (file_exists(__DIR__ . '/local/config.inc.php')) {
     include_once(__DIR__ . '/local/config.inc.php');
 }
 
 /** @var array $namespaces SAML namespaces lookup table */
-$namespaces = array(
+$namespaces = [
     'urn:oasis:names:tc:SAML:2.0:protocol' => 'samlp',
     'urn:oasis:names:tc:SAML:2.0:assertion' => 'saml',
     'urn:mace:shibboleth:metadata:1.0' => 'shibmd',
@@ -37,11 +39,11 @@ $namespaces = array(
     'http://www.w3.org/2001/04/xmlenc#' => 'xenc',
     'urn:oasis:names:tc:SAML:metadata:algsupport' => 'algsupport',
     'http://refeds.org/metadata' => 'remd',
-);
+];
 $secapseman = array_flip($namespaces);
 
 /** @var array $passes Descriptive names for the various passes */
-$GLOBALS['passes'] = array(
+$GLOBALS['passes'] = [
     'pre-flight checks',
     'valid XML (parser)',
     'valid namespaces (parser)',
@@ -49,7 +51,7 @@ $GLOBALS['passes'] = array(
     'verify local metadata schemas',
     'metadata testing rules',
     'local metadata testing rules',
-);
+];
 
 /**
  * array_filter function to exclude certain libXMLError errors
@@ -59,21 +61,33 @@ $GLOBALS['passes'] = array(
 function filter_libxml_errors()
 {
     $errors = libxml_get_errors();
-    $filteredErrors = array();
+    $filteredErrors = [];
     foreach ($errors as $error) {
         if ($error->code == 1209) {
             continue;
         }
-        if ($error->code == 1 and preg_match('/xmlXPathCompOpEval: function .+ not found/', $error->message)) {
+        if (
+            $error->code == 1 &&
+            preg_match('/xmlXPathCompOpEval: function .+ not found/', $error->message)
+        ) {
             continue;
         }
-        if ($error->code == 1 and preg_match('/entity does not have an mdrpi:RegistrationInfo element/', $error->message)) {
+        if (
+            $error->code == 1 &&
+            preg_match('/entity does not have an mdrpi:RegistrationInfo element/', $error->message)
+        ) {
             continue;
         }
-        if ($error->code == 1 and preg_match('/entity has legacy KeyName element/', $error->message)) {
+        if (
+            $error->code == 1 &&
+            preg_match('/entity has legacy KeyName element/', $error->message)
+        ) {
             continue;
         }
-        if ($error->code == 1 and preg_match('/\[ERROR\] regular expression in scope/', $error->message)) {
+        if (
+            $error->code == 1 &&
+            preg_match('/\[ERROR\] regular expression in scope/', $error->message)
+        ) {
             continue;
         }
         $filteredErrors[] = $error;
@@ -100,24 +114,24 @@ function sendResponse($response, $pass = 0)
         $err->message = '[ERROR] ' . $response;
         $err->file = '';
         $err->line = 0;
-        $response = array ($err);
+        $response =  [$err];
     }
     /* if this is only info messages, return success */
     $success = true;
     foreach ($response as $err) {
-        if ($err->code == 1 and preg_match('/\[INFO\]/', $err->message)) {
+        if ($err->code == 1 && preg_match('/\[INFO\]/', $err->message)) {
             continue;
         }
         $success = false;
     }
     // error_log(var_export($response, true));
-    print json_encode(array(
+    print json_encode([
         'pass' => $pass,
         'passdescr' => $GLOBALS['passes'][$pass],
         'passes' => count($GLOBALS['passes']) - 1,
         'success' => $success,
         'errors' => $response
-    ), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     if (! defined('PHPUNIT_COMPOSER_INSTALL') && ! defined('__PHPUNIT_PHAR__')) {
         exit; /* can't unit test this */
     } else {
@@ -125,7 +139,7 @@ function sendResponse($response, $pass = 0)
     }
 }
 
-if (substr(PHP_SAPI, 0, 3) === 'cli') {
+if (substr(PHP_SAPI, 0, 3) === 'cli' && ! defined('PHPUNIT_COMPOSER_INSTALL') && ! defined('__PHPUNIT_PHAR__')) {
     $debug = true;
     fwrite(STDERR, "Reading XML from " . ($argc > 1 ? $argv[1] : 'stdin') . "\n");
     if ($argc > 1) {
@@ -234,7 +248,7 @@ if (file_exists(__DIR__ . '/local/xsltfunc.inc.php')) {
 libxml_clear_errors();
 $localrules = glob('./local/*.xsl');
 foreach ($localrules as $rule) {
-    if (preg_match('/check_framework\.xsl$/', $rule) or preg_match('/ns_norm\.xsl$/', $rule)) {
+    if (preg_match('/check_framework\.xsl$/', $rule) || preg_match('/ns_norm\.xsl$/', $rule)) {
         continue;
     }
     $xslt->importStylesheet(new SimpleXMLElement($rule, 0, true));
@@ -249,8 +263,8 @@ if ($errors) {
 if (substr(PHP_SAPI, 0, 3) !== 'cli') {
     header('Content-Type: application/json');
 }
-print json_encode(array(
+print json_encode([
     'pass' => count($GLOBALS['passes']),
     'success' => true,
     'errors' => null
-), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);

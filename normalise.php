@@ -12,8 +12,10 @@
  * @license https://github.com/tenet-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
 
+declare(strict_types=1);
+
 /** @var array $namespaces SAML namespaces lookup table */
-$namespaces = array(
+$namespaces = [
     'urn:oasis:names:tc:SAML:2.0:protocol' => 'samlp',
     'urn:oasis:names:tc:SAML:2.0:assertion' => 'saml',
     'urn:mace:shibboleth:metadata:1.0' => 'shibmd',
@@ -34,7 +36,7 @@ $namespaces = array(
     'http://ukfederation.org.uk/2006/11/label' => 'ukfedlabel',
     'http://sdss.ac.uk/2006/06/WAYF' => 'wayf',
     'http://refeds.org/metadata' => 'remd',
-);
+];
 
 /**
  * Sort XML namespaces alphabetically with the unqualified space first
@@ -53,7 +55,7 @@ function nssort($a, $b)
     }
 }
 
-if (substr(PHP_SAPI, 0, 3) === 'cli') {
+if (substr(PHP_SAPI, 0, 3) === 'cli' && ! defined('PHPUNIT_COMPOSER_INSTALL') && ! defined('__PHPUNIT_PHAR__')) {
     if ($argc > 1) {
         $xml = file_get_contents($argv[1]);
     } else {
@@ -98,31 +100,35 @@ foreach ($namespaces as $full => $prefix) {
     $xp->registerNamespace($prefix, $full);
     /* remove namespaces that are not in use and are not needed for registration parameters */
     if (
-        !in_array($prefix, array('mdrpi', 'mdattr', 'saml', 'remd', 'mdui')) and
-        $xp->query("//${prefix}:*")->length === 0
+        !in_array($prefix, ['mdrpi', 'mdattr', 'saml', 'remd', 'mdui']) &&
+        $xp->query('//' . $prefix . ':*')->length === 0
     ) {
         $doc->documentElement->removeAttributeNS($full, $prefix);
     }
 }
 
 /* merge like certificates in the most simple cases */
-foreach (array('IDPSSODescriptor', 'SPSSODescriptor', 'AASSODescriptor') as $sso) {
+foreach (['IDPSSODescriptor', 'SPSSODescriptor', 'AASSODescriptor'] as $sso) {
     $e = $xp->query("//md:$sso");
     if ($e->length) {
-        $signing = $xp->query("//md:KeyDescriptor[@use='signing']/ds:KeyInfo/ds:X509Data/ds:X509Certificate", $e->item(0));
-        $encryption = $xp->query("//md:KeyDescriptor[@use='encryption']/ds:KeyInfo/ds:X509Data/ds:X509Certificate", $e->item(0));
-        $unspecified = $xp->query("//md:KeyDescriptor[not(@use)]/ds:KeyInfo/ds:X509Data/ds:X509Certificate", $e->item(0));
+        $signing = $xp->query(
+            "//md:KeyDescriptor[@use='signing']/ds:KeyInfo/ds:X509Data/ds:X509Certificate",
+            $e->item(0),
+        );
+        $encryption = $xp->query(
+            "//md:KeyDescriptor[@use='encryption']/ds:KeyInfo/ds:X509Data/ds:X509Certificate",
+            $e->item(0),
+        );
+        $unspecified = $xp->query(
+            "//md:KeyDescriptor[not(@use)]/ds:KeyInfo/ds:X509Data/ds:X509Certificate",
+            $e->item(0),
+        );
         if (
-            $signing->length == 1 and
-            $encryption->length == 1 and
-            $signing->item(0)->nodeValue == $encryption->item(0)->nodeValue and
-            (
-                $unspecified->length == 0 or
-                (
-                    $unspecified->length == 1 and
-                    $signing->item(0)->nodeValue == $unspecified->item(0)->nodeValue
-                )
-            )
+            $signing->length == 1 &&
+            $encryption->length == 1 &&
+            $signing->item(0)->nodeValue == $encryption->item(0)->nodeValue &&
+                ($unspecified->length == 0 ||
+                    ($unspecified->length == 1 && $signing->item(0)->nodeValue == $unspecified->item(0)->nodeValue))
         ) {
             $encryption->item(0)->parentNode->parentNode->parentNode->parentNode->removeChild(
                 $encryption->item(0)->parentNode->parentNode->parentNode
@@ -182,4 +188,8 @@ preg_match('/<(?:md:)?EntityDescriptor\s+([^>]*)\s*(entityID="[^">]+")\s*([^>]*)
 $nsout = array_filter(explode(' ', $matches[1]));
 $nsout = array_merge($nsout, array_filter(explode(" ", $matches[3])));
 usort($nsout, 'nssort');
-print preg_replace('/<(md:)?EntityDescriptor[^>]+>/', '<\1EntityDescriptor ' . $matches[2] . "\n  " . implode("\n  ", $nsout) . ">", $preoutput);
+print preg_replace(
+    '/<(md:)?EntityDescriptor[^>]+>/',
+    '<\1EntityDescriptor ' . $matches[2] . "\n  " . implode("\n  ", $nsout) . ">",
+    $preoutput,
+);

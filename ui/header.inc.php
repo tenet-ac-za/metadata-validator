@@ -12,6 +12,8 @@
  * @license https://github.com/tenet-ac-za/metadata-validator/blob/master/LICENSE MIT License
  */
 
+declare(strict_types=1);
+
 if (file_exists(dirname(__DIR__) . '/local/config.inc.php')) {
     include_once(dirname(__DIR__) . '/local/config.inc.php');
 }

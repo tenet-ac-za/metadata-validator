@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* set the expected registration authority */
 define('REGISTRATION_AUTHORITY', 'https://example.ac.za');
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (file_exists(__DIR__ . '/local/xsltfunc.inc.php')) {
     include_once(__DIR__ . '/local/xsltfunc.inc.php');
 }
@@ -65,7 +67,9 @@ if (empty($cert)) {
 /* normalise the certificate */
 $pem = trim($cert);
 if (!preg_match('/^-----BEGIN CERTIFICATE/', $pem)) {
-    $pem = "-----BEGIN CERTIFICATE-----\n" . wordwrap(preg_replace('/\s+/', '', $pem), 64, "\n", true) . "\n-----END CERTIFICATE-----\n";
+    $pem = "-----BEGIN CERTIFICATE-----\n";
+    $pem .= wordwrap(preg_replace('/\s+/', '', $pem), 64, "\n", true);
+    $pem .= "\n-----END CERTIFICATE-----\n";
 }
 
 $response = [
