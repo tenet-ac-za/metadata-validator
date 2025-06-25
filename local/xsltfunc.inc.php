@@ -20,9 +20,9 @@ class XsltFunc
      * Take a PEM representation of a certificate and return the x509 structure
      *
      * @param string $x509certdata
-     * @return ?x509cert $x509cert
+     * @return ?OpenSSLCertificate $x509cert
      */
-    private static function pemToX509($x509certdata)
+    private static function pemToX509($x509certdata): ?OpenSSLCertificate
     {
         if (!function_exists('openssl_x509_read')) {
             error_log('pemToX509 needs OpenSSL functions');
@@ -91,18 +91,18 @@ class XsltFunc
      * Return the certificate issuer name
      *
      * @param string $cert
-     * @return string $issuer
+     * @return ?string $issuer
      */
     public static function getCertIssuer($cert)
     {
         $x509data = @openssl_x509_parse(self::pemToX509($cert) ?? '');
         if (empty($x509data)) {
-            return false;
+            return null;
         }
         $issuer = array_key_exists('issuer', $x509data) && is_array($x509data['issuer'])
             ? (array_key_exists('CN', $x509data['issuer'])
                 ? $x509data['issuer']['CN']
-                : join('/', $x509data['issuer'])) : false;
+                : join('/', $x509data['issuer'])) : null;
         return $issuer;
     }
 
@@ -110,18 +110,18 @@ class XsltFunc
      * Return the certificate subject name
      *
      * @param string $cert
-     * @return string $subject
+     * @return ?string $subject
      */
     public static function getCertSubject($cert)
     {
         $x509data = @openssl_x509_parse(self::pemToX509($cert) ?? '');
         if (empty($x509data)) {
-            return false;
+            return null;
         }
         $subject = array_key_exists('subject', $x509data)
             ? (array_key_exists('CN', $x509data['subject'])
                 ? $x509data['subject']['CN']
-                : join('/', $x509data['subject'])) : false;
+                : join('/', $x509data['subject'])) : null;
         return $subject;
     }
 
@@ -153,13 +153,13 @@ class XsltFunc
      * @param string $cert
      * @param string $fromto
      * @param string $format per date()
-     * @return string $date
+     * @return ?string $date
      */
     public static function getCertDates($cert, $fromto = 'both', $format = 'Y-m-d')
     {
         $x509data = @openssl_x509_parse(self::pemToX509($cert) ?? '');
         if (empty($x509data)) {
-            return false;
+            return null;
         }
         switch ($fromto) {
             case 'from':
@@ -170,7 +170,7 @@ class XsltFunc
                 return date($format, $x509data['validFrom_time_t'])
                     . ' - ' . date($format, $x509data['validTo_time_t']);
             default:
-                return false;
+                return null;
         }
     }
 
@@ -178,13 +178,13 @@ class XsltFunc
      * Return the number of bits used in the certificate
      *
      * @param string $cert
-     * @return integer $bits
+     * @return ?integer $bits
      */
     public static function getCertBits($cert)
     {
         $x509key = @openssl_get_publickey(self::pemToX509($cert) ?? '');
         if (empty($x509key)) {
-            return false;
+            return null;
         }
         $x509keydetails = @openssl_pkey_get_details($x509key);
         //error_log(var_export($x509keydetails, true));
@@ -192,7 +192,7 @@ class XsltFunc
             return $x509keydetails['ec']['curve_name'];
         }
         if (!array_key_exists('bits', $x509keydetails)) {
-            return false;
+            return null;
         }
         return (int) $x509keydetails['bits'];
     }
@@ -205,8 +205,6 @@ class XsltFunc
      * accept any cert for https - use checkURLCert to verify it.
      *
      * @param string $url
-     * @param bool $checkstatus
-     * @param string $type
      * @return bool
      */
     public static function checkURL($url)
@@ -239,7 +237,7 @@ class XsltFunc
      *
      * @param string $url
      * @param bool $modern do modern browser compat checks
-     * @return bool
+     * @return bool|string
      */
     public static function checkURLCert($url, $modern = true, $verbose = false)
     {

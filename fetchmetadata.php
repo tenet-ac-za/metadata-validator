@@ -20,7 +20,7 @@ $SUPPORTED_SCHEMES = ['http', 'https'];
 /** @var array $SUPPORTED_CONTENT_TYPES Array of content types to allow */
 $SUPPORTED_CONTENT_TYPES =  ['application/samlmetadata+xml', 'application/xml', 'text/xml', 'text/plain'];
 
-/** @var int FETCH_MAX_SIZE Maximum size of a download in bytes */
+/** FETCH_MAX_SIZE Maximum size of a download in bytes */
 define('FETCH_MAX_SIZE', 1024 * 1024);
 
 /**

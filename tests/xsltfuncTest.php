@@ -38,7 +38,7 @@ class XsltFuncTest extends TestCase
     public function testGetCertIssuer()
     {
         $this->assertStringContainsString('SWITCHaai', XsltFunc::getCertIssuer($this->casigned));
-        $this->assertFalse(XsltFunc::getCertIssuer(''));
+        $this->assertNull(XsltFunc::getCertIssuer(''));
     }
 
     public function testCheckCertValid()
@@ -53,14 +53,14 @@ class XsltFuncTest extends TestCase
         $this->assertEquals('2016-08-26', XsltFunc::getCertDates($this->selfsigned, 'from'));
         $this->assertEquals('2026-08-29', XsltFunc::getCertDates($this->selfsigned, 'to'));
         $this->assertEquals('1472202070 - 1787994070', XsltFunc::getCertDates($this->selfsigned, 'both', 'U'));
-        $this->assertFalse(XsltFunc::getCertDates(''));
+        $this->assertNull(XsltFunc::getCertDates(''));
     }
 
     public function testGetCertBits()
     {
         $this->assertEquals(2048, XsltFunc::getCertBits($this->selfsigned));
         $this->assertEquals(2048, XsltFunc::getCertBits($this->casigned));
-        $this->assertFalse(XsltFunc::getCertBits(''));
+        $this->assertNull(XsltFunc::getCertBits(''));
     }
 
     public function testcheckURL()

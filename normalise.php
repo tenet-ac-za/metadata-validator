@@ -147,7 +147,9 @@ foreach (['IDPSSODescriptor', 'SPSSODescriptor', 'AASSODescriptor'] as $sso) {
                     $signing->item(0)->parentNode->parentNode->parentNode
                 );
             } else {
-                $signing->item(0)->parentNode->parentNode->parentNode->removeAttribute('use');
+                /** @var DOMElement */
+                $keyUse = $signing->item(0)->parentNode->parentNode->parentNode;
+                $keyUse->removeAttribute('use');
             }
         }
         /* remove any legacy ds:KeyName elements */
@@ -169,6 +171,7 @@ if ($roledescriptor->length) {
 }
 $attributes = $xp->query("//md:IDPSSODescriptor/saml:Attribute");
 if ($attributes->length) {
+    /** @var DOMElement $e */
     foreach ($attributes as $e) {
         if (preg_match('{http://schemas\.(xmlsoap\.org|microsoft\.com)/}i', $e->getAttribute('Name'))) {
             $e->parentNode->removeChild($e);

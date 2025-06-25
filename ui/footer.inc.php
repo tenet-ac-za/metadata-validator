@@ -43,7 +43,7 @@ if (file_exists(dirname(__DIR__) . '/local/config.inc.php')) {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.3/jquery-ui.min.js" integrity="sha512-Ww1y9OuQ2kehgVWSD/3nhgfrb424O3802QYP/A5gPXoM4+rRjiKrjHdGxQKrMGQykmsJ/86oGdHszfcVgUr4hA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.33.2/ace.min.js" integrity="sha512-40pej1Lz2wywxd9lNJwJNSp9ekNFyX6wCmOzoaqIuUqexcjAUYqnhbg+fYUuPHzVyr5hshGv5FX8Om7yuTuWnA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script<?= $nonce ?>>
+  <script<?= $nonce ?? '' ?>>
   // see header.inc.php about CSS from JSdelivr
   ace.config.set("useStrictCSP", true);
   </script>
