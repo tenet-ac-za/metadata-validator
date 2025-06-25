@@ -55,7 +55,7 @@
         or on md:AssertionConsumerService.
     -->
     <xsl:template match="@hoksso:ProtocolBinding
-        [not(parent::md:SingleSignOnService)][not(parent::md:AssertionConsumerService)]">
+        [not(parent::md:SingleSignOnService or parent::md:AssertionConsumerService)]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">
                 <xsl:text>hoksso:ProtocolBinding may not appear on </xsl:text>
@@ -138,8 +138,8 @@
     -->
 
     <xsl:template match="md:IDPSSODescriptor
-        [not(contains(@protocolSupportEnumeration, 'urn:oasis:names:tc:SAML:2.0:protocol'))]
-        [md:*/@Binding = 'urn:oasis:names:tc:SAML:2.0:profiles:holder-of-key:SSO:browser']">
+        [not(contains(@protocolSupportEnumeration, 'urn:oasis:names:tc:SAML:2.0:protocol')) and 
+        md:*/@Binding = 'urn:oasis:names:tc:SAML:2.0:profiles:holder-of-key:SSO:browser']">
         <xsl:call-template name="error">
             <xsl:with-param name="m">
                 <xsl:text>holder of key binding requires SAML 2.0 token in AttributeAuthorityDescriptor/@protocolSupportEnumeration</xsl:text>
@@ -148,8 +148,8 @@
     </xsl:template>
 
     <xsl:template match="md:SPSSODescriptor
-        [not(contains(@protocolSupportEnumeration, 'urn:oasis:names:tc:SAML:2.0:protocol'))]
-        [md:*/@Binding = 'urn:oasis:names:tc:SAML:2.0:profiles:holder-of-key:SSO:browser']">
+        [not(contains(@protocolSupportEnumeration, 'urn:oasis:names:tc:SAML:2.0:protocol')) and 
+        md:*/@Binding = 'urn:oasis:names:tc:SAML:2.0:profiles:holder-of-key:SSO:browser']">
         <xsl:call-template name="error">
             <xsl:with-param name="m">
                 <xsl:text>holder of key binding requires SAML 2.0 token in SPSSODescriptor/@protocolSupportEnumeration</xsl:text>

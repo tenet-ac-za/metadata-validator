@@ -32,8 +32,10 @@
     <xsl:template match="md:SPSSODescriptor
         [contains(@protocolSupportEnumeration, 'urn:oasis:names:tc:SAML:2.0:protocol')]
         [md:NameIDFormat]
-        [not(md:NameIDFormat[.='urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'])]
-        [not(md:NameIDFormat[.='urn:oasis:names:tc:SAML:2.0:nameid-format:transient'])]">
+        [not(
+            (md:NameIDFormat[.='urn:oasis:names:tc:SAML:2.0:nameid-format:persistent']) or 
+            (md:NameIDFormat[.='urn:oasis:names:tc:SAML:2.0:nameid-format:transient'])
+        )]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">SP excludes both SAML 2 name identifier formats</xsl:with-param>
         </xsl:call-template>
@@ -124,16 +126,14 @@
     -->
     <xsl:template match="md:IDPSSODescriptor
         [contains(@protocolSupportEnumeration, 'urn:oasis:names:tc:SAML:2.0:protocol')]
-        [not(md:KeyDescriptor[descendant::ds:X509Data][@use='signing'])]
-        [not(md:KeyDescriptor[descendant::ds:X509Data][not(@use)])]">
+        [not((md:KeyDescriptor[descendant::ds:X509Data][@use='signing']) or (md:KeyDescriptor[descendant::ds:X509Data][not(@use)]))]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">SAML 2.0 IdP has no embedded signing key</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
     <xsl:template match="md:AttributeAuthorityDescriptor
         [contains(@protocolSupportEnumeration, 'urn:oasis:names:tc:SAML:2.0:protocol')]
-        [not(md:KeyDescriptor[descendant::ds:X509Data][@use='signing'])]
-        [not(md:KeyDescriptor[descendant::ds:X509Data][not(@use)])]">
+        [not((md:KeyDescriptor[descendant::ds:X509Data][@use='signing']) or (md:KeyDescriptor[descendant::ds:X509Data][not(@use)]))]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">SAML 2.0 AttributeAuthority has no embedded signing key</xsl:with-param>
         </xsl:call-template>
