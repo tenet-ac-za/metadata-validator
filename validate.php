@@ -56,39 +56,31 @@ $GLOBALS['passes'] = [
 /**
  * array_filter function to exclude certain libXMLError errors
  *
- * @return array
+ * @return array{LibXMLError}
  */
-function filter_libxml_errors()
+function filter_libxml_errors(): array
 {
     $errors = libxml_get_errors();
     $filteredErrors = [];
     foreach ($errors as $error) {
-        if ($error->code == 1209) {
-            continue;
+        if ($error->code == 1209) { // XML_XPATH_UNKNOWN_FUNC_ERROR
+           // continue;
         }
-        if (
-            $error->code == 1 &&
-            preg_match('/xmlXPathCompOpEval: function .+ not found/', $error->message)
-        ) {
-            continue;
-        }
-        if (
-            $error->code == 1 &&
-            preg_match('/entity does not have an mdrpi:RegistrationInfo element/', $error->message)
-        ) {
-            continue;
-        }
-        if (
-            $error->code == 1 &&
-            preg_match('/entity has legacy KeyName element/', $error->message)
-        ) {
-            continue;
-        }
-        if (
-            $error->code == 1 &&
-            preg_match('/\[ERROR\] regular expression in scope/', $error->message)
-        ) {
-            continue;
+        if ($error->code == 1) { // XML_ERR_INTERNAL_ERROR (i.e. output from the ukf checks)
+            if (preg_match('/xmlXPathCompOpEval: function .+ not found/', $error->message)) {
+                continue;
+            }
+            if (preg_match('/entity does not have an mdrpi:RegistrationInfo element/', $error->message)) {
+                continue;
+            }
+            if (preg_match('/entity has legacy KeyName element/', $error->message)) {
+                continue;
+            }
+            if (preg_match('/\[ERROR\] regular expression in scope/', $error->message)) {
+                // downgrade to warning
+                $error->message = str_replace('[ERROR]', '[WARN]', $error->message);
+                $error->level = LIBXML_ERR_WARNING;
+            }
         }
         $filteredErrors[] = $error;
     }
@@ -96,11 +88,33 @@ function filter_libxml_errors()
 }
 
 /**
+ * Check if we should stop in the current pass or continue with warnings
+ *
+ * @param array{LibXMLError} $errors
+ * @return bool
+ */
+function has_hard_errors(array $errors): bool
+{
+    foreach ($errors as $error) {
+        if ($error->level == LIBXML_ERR_FATAL) {
+            return true;
+        }
+        if ($error->level !== LIBXML_ERR_NONE && $error->code !== 1) {
+            return true;
+        }
+        if ($error->code == 1 && preg_match('/\[ERROR\]/', $error->message)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * send a JSON encoded version of the libXMLError
  *
  * @param array $response
  */
-function sendResponse($response, $pass = 0)
+function sendResponse($response, $pass = 0): void
 {
     if (substr(PHP_SAPI, 0, 3) !== 'cli') {
         header('Content-Type: application/json');
@@ -127,7 +141,7 @@ function sendResponse($response, $pass = 0)
     // error_log(var_export($response, true));
     print json_encode([
         'pass' => $pass,
-        'passdescr' => $GLOBALS['passes'][$pass],
+        'passdescr' => $GLOBALS['passes'][$pass] ?? 'COMPLETE',
         'passes' => count($GLOBALS['passes']) - 1,
         'success' => $success,
         'errors' => $response
@@ -161,6 +175,9 @@ if (empty($xml)) {
     sendResponse('No input supplied');
 }
 
+// keep a record of the errors as we go
+$previousrrors = [];
+
 /* 1 - valid XML: parse the XML into DOM */
 if ($debug) {
     fwrite(STDERR, "1 - valid XML: parse the XML into DOM\n");
@@ -181,6 +198,7 @@ if ($doc->loadXML($xml, $options) !== true) {
     $errors = filter_libxml_errors();
     sendResponse($errors, 1);
 }
+$previousErrors = filter_libxml_errors() ?? [];
 
 /* 2 - valid namespaces: turn it into an XPath */
 if ($debug) {
@@ -192,8 +210,10 @@ foreach ($namespaces as $full => $prefix) {
     $xp->registerNamespace($prefix, $full);
 }
 $errors = filter_libxml_errors();
-if ($errors) {
+if (has_hard_errors($errors)) {
     sendResponse($errors, 2);
+} else {
+    $previousErrors = array_merge($previousErrors, $errors);
 }
 
 /* 3 - verify SAML schema */
@@ -203,8 +223,10 @@ if ($debug) {
 libxml_clear_errors();
 $xp->document->schemaValidate('./schemas/ws-federation.xsd');
 $errors = filter_libxml_errors();
-if ($errors) {
+if (has_hard_errors($errors)) {
     sendResponse($errors, 3);
+} else {
+    $previousErrors = array_merge($previousErrors, $errors);
 }
 
 /* 4 - verify local schemas */
@@ -217,8 +239,10 @@ foreach ($localschemas as $schema) {
     $xp->document->schemaValidate($schema);
 }
 $errors = filter_libxml_errors();
-if ($errors) {
+if (has_hard_errors($errors)) {
     sendResponse($errors, 4);
+} else {
+    $previousErrors = array_merge($previousErrors, $errors);
 }
 
 /* 5 - use Ian Young's SAML metadata testing rules */
@@ -237,8 +261,10 @@ foreach ($rules as $rule) {
     $xslt->transformToDoc($xp->document);
 }
 $errors = filter_libxml_errors();
-if ($errors) {
+if (has_hard_errors($errors)) {
     sendResponse($errors, 5);
+} else {
+    $previousErrors = array_merge($previousErrors, $errors);
 }
 
 /* 6 - use local SAML metadata testing rules */
@@ -263,16 +289,11 @@ foreach ($localrules as $rule) {
     $xslt->transformToDoc($xp->document);
 }
 $errors = filter_libxml_errors();
-if ($errors) {
+if (has_hard_errors($errors)) {
     sendResponse($errors, 6);
+} else {
+    $previousErrors = array_merge($previousErrors, $errors);
 }
 
 /* we got this far, so everything is okay! */
-if (substr(PHP_SAPI, 0, 3) !== 'cli') {
-    header('Content-Type: application/json');
-}
-print json_encode([
-    'pass' => count($GLOBALS['passes']),
-    'success' => true,
-    'errors' => null
-], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+sendResponse($previousErrors, 7);
