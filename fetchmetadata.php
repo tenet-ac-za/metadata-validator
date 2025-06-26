@@ -87,8 +87,12 @@ if ($data === false) {
     badGateway(curl_error($curl));
 }
 
-if (!in_array(preg_replace('/\s*;.*$/', '', curl_getinfo($curl, CURLINFO_CONTENT_TYPE)), $SUPPORTED_CONTENT_TYPES)) {
-    badGateway('Got unsupported content type. Only accept: ' . implode(', ', $SUPPORTED_CONTENT_TYPES));
+$contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
+if (
+    !is_string($contentType) ||
+    !in_array(preg_replace('/\s*;.*$/', '', $contentType), $SUPPORTED_CONTENT_TYPES)
+) {
+    badGateway('Got unsupported Content-Type. We only accept: ' . implode(', ', $SUPPORTED_CONTENT_TYPES));
 }
 
 http_response_code(curl_getinfo($curl, CURLINFO_RESPONSE_CODE));
