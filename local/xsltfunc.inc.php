@@ -213,11 +213,11 @@ class XsltFunc
             error_log('checkURL needs cURL functions');
             return false;
         }
-        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
-            return false;
-        }
         if (parse_url($url, PHP_URL_SCHEME) == 'data') {
             return true; // data: URLs are always valid
+        }
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+            return false;
         }
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
