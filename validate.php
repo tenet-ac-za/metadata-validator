@@ -256,8 +256,8 @@ foreach ($rules as $rule) {
     if (preg_match('/check_framework\.xsl$/', $rule)) {
         continue;
     }
-    $xslt->setParameter('', 'expectedAuthority', constant('REGISTRATION_AUTHORITY'));
-    $xslt->setParameter('', 'maxLength', strval(constant('LOGO_DATA_URI_MAXLENGTH') ?? 5 * 1000 * 1000));
+    $xslt->setParameter('', 'expectedAuthority', REGISTRATION_AUTHORITY);
+    $xslt->setParameter('', 'maxLength', strval(LOGO_DATA_URI_MAXLENGTH));
     $xslt->importStylesheet(new SimpleXMLElement($rule, 0, true));
     $xslt->transformToDoc($xp->document);
 }
