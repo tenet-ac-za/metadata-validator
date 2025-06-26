@@ -291,11 +291,11 @@
     <!-- Check that mdui::Logos point at web servers that exist -->
     <xsl:template match="mdui:Logo">
         <xsl:choose>
-            <xsl:when test="not(starts-with(text(),'https://'))">
+            <xsl:when test="not(starts-with(text(),'https://')) and not(starts-with(text(),'data:image/')) ">
                 <xsl:call-template name="error">
                     <xsl:with-param name="m">
                         <xsl:value-of select='name()'/>
-                        <xsl:text> location does not start with https://</xsl:text>
+                        <xsl:text> location does not start with https:// or data:image/</xsl:text>
                     </xsl:with-param>
                 </xsl:call-template>
             </xsl:when>

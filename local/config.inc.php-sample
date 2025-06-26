@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 /* set the expected registration authority */
 define('REGISTRATION_AUTHORITY', 'https://example.ac.za');
+/* set the maximum length of a logo (octets) */
+define('LOGO_DATA_URI_MAXLENGTH', 5 * 1000 * 1000);
 
 /* set the local domain */
 define('DOMAIN', 'example.ac.za');

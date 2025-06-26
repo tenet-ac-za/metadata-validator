@@ -257,6 +257,7 @@ foreach ($rules as $rule) {
         continue;
     }
     $xslt->setParameter('', 'expectedAuthority', constant('REGISTRATION_AUTHORITY'));
+    $xslt->setParameter('', 'maxLength', strval(constant('LOGO_DATA_URI_MAXLENGTH') ?? 5 * 1000 * 1000));
     $xslt->importStylesheet(new SimpleXMLElement($rule, 0, true));
     $xslt->transformToDoc($xp->document);
 }

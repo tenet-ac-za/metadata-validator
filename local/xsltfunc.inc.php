@@ -118,7 +118,7 @@ class XsltFunc
         if (empty($x509data)) {
             return null;
         }
-        $subject = array_key_exists('subject', $x509data)
+        $subject = array_key_exists('subject', $x509data) && is_array($x509data['subject'])
             ? (array_key_exists('CN', $x509data['subject'])
                 ? $x509data['subject']['CN']
                 : join('/', $x509data['subject'])) : null;
@@ -215,6 +215,9 @@ class XsltFunc
         }
         if (filter_var($url, FILTER_VALIDATE_URL) === false) {
             return false;
+        }
+        if (parse_url($url, PHP_URL_SCHEME) == 'data') {
+            return true; // data: URLs are always valid
         }
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
