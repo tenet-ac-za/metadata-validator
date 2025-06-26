@@ -68,7 +68,8 @@ class XsltFuncTest extends TestCase
         $this->assertTrue(XsltFunc::checkURL('https://safire.ac.za/'));
         $this->assertFalse(XsltFunc::checkURL('https://invalid-phpunit.safire.ac.za/'));
         $this->assertTrue(XsltFunc::checkURL(
-            'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
+            'data:image/png;base64,' .
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
         ));
         $this->assertFalse(XsltFunc::checkURL('htt://safire.ac.za/'));
         $this->assertFalse(XsltFunc::checkURL('safire.ac.za/'));
