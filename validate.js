@@ -320,7 +320,7 @@ function createDCVDialog()
 /**
  * Fetch metata from a URL (via a proxy)
  */
-function fetchFromURL(url)
+function fetchFromURL(url, validate = false)
 {
     console.log('Fetching metadata from ' + url);
     $.ajax({
@@ -329,6 +329,9 @@ function fetchFromURL(url)
         data: { url: url },
         success: function(data) {
             setEditorValue(data);
+            if (validate) {
+                sendForValidation();
+            }
         },
         error: function(jqxhr) {
             console.log(jqxhr);
@@ -590,4 +593,12 @@ $(document).ready(function ()
         clearTimeout(spinner);
         $('#validator #spinner').hide();
     });
+
+    if ('URLSearchParams' in window) {
+        let searchParams = new URLSearchParams(window.location.search)
+        let url = searchParams.get('url');
+        if (URL.canParse(url)) {
+            fetchFromURL(url, true);
+        }
+    }
 });
