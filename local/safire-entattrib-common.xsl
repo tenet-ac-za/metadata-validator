@@ -94,11 +94,6 @@
                 <xsl:with-param name="m">More than one urn:x-safire.ac.za:quirks EntityAttribute</xsl:with-param>
             </xsl:call-template>
         </xsl:if>
-        <xsl:if test="count(saml:Attribute[@Name='urn:x-safire.ac.za:purpose-is-to'])>1">
-            <xsl:call-template name="error">
-                <xsl:with-param name="m">More than one urn:x-safire.ac.za:purpose-is-to EntityAttribute</xsl:with-param>
-            </xsl:call-template>
-        </xsl:if>
         <xsl:if test="count(saml:Attribute[@Name='urn:x-safire.ac.za:participation-agreement'])>1">
             <xsl:call-template name="error">
                 <xsl:with-param name="m">More than one urn:x-safire.ac.za:participation-agreement EntityAttribute</xsl:with-param>
@@ -107,6 +102,11 @@
         <xsl:if test="count(saml:Attribute[@Name='urn:x-safire.ac.za:hidden'])>1">
             <xsl:call-template name="error">
                 <xsl:with-param name="m">More than one urn:x-safire.ac.za:hidden EntityAttribute</xsl:with-param>
+            </xsl:call-template>
+        </xsl:if>
+        <xsl:if test="count(saml:Attribute[@Name='urn:x-safire.ac.za:theme-colors'])>1">
+            <xsl:call-template name="error">
+                <xsl:with-param name="m">More than one urn:x-safire.ac.za:theme-colors EntityAttribute</xsl:with-param>
             </xsl:call-template>
         </xsl:if>
         <!-- now call child elements -->
@@ -139,11 +139,6 @@
         <xsl:if test="md:Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:consent-disable']">
             <xsl:call-template name="error">
                 <xsl:with-param name="m">urn:x-safire.ac.za:consent-disable should not be set for Identity Providers</xsl:with-param>
-            </xsl:call-template>
-        </xsl:if>
-        <xsl:if test="md:Extensions/mdattr:EntityAttributes/saml:Attribute[@Name='urn:x-safire.ac.za:purpose-is-to']">
-            <xsl:call-template name="error">
-                <xsl:with-param name="m">urn:x-safire.ac.za:purpose-is-to should not be set for Identity Providers</xsl:with-param>
             </xsl:call-template>
         </xsl:if>
         <!-- now process child elements -->
