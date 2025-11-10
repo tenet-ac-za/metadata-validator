@@ -83,6 +83,9 @@
         [. != 'http://refeds.org/category/hide-from-discovery']
         [. != 'http://refeds.org/category/research-and-scholarship']
         [. != 'http://www.geant.net/uri/dataprotection-code-of-conduct/v1']
+        [. != 'https://refeds.org/category/anonymous']
+        [. != 'https://refeds.org/category/pseudonymous']
+        [. != 'https://refeds.org/category/personalized']
         ">
         <xsl:call-template name="error">
             <xsl:with-param name="m">
@@ -99,6 +102,9 @@
         /saml:AttributeValue
         [. != 'http://refeds.org/category/research-and-scholarship']
         [. != 'http://www.geant.net/uri/dataprotection-code-of-conduct/v1']
+        [. != 'https://refeds.org/category/anonymous']
+        [. != 'https://refeds.org/category/pseudonymous']
+        [. != 'https://refeds.org/category/personalized']
         ">
         <xsl:call-template name="error">
             <xsl:with-param name="m">
@@ -114,6 +120,7 @@
     <xsl:template match="mdattr:EntityAttributes/saml:Attribute[@Name='urn:oasis:names:tc:SAML:attribute:assurance-certification']
         /saml:AttributeValue
         [. != 'https://refeds.org/sirtfi']
+        [. != 'https://refeds.org/sirtfi2']
         ">
         <xsl:call-template name="error">
             <xsl:with-param name="m">
