@@ -199,6 +199,7 @@ $preoutput = preg_replace_callback('/<ds:X509Certificate>\s*([^<>]+)\s*<\/ds:X50
 preg_match('/<(?:md:)?EntityDescriptor\s+([^>]*)\s*(entityID="[^">]+")\s*([^>]*)>/i', $preoutput, $matches);
 $nsout = array_filter(explode(' ', $matches[1]));
 $nsout = array_merge($nsout, array_filter(explode(" ", $matches[3])));
+$nsout = array_filter(array_unique($nsout), fn($v) => !preg_match('/^(?:ID|validUntil|cacheDuration)=/', $v));
 usort($nsout, 'nssort');
 print preg_replace(
     '/<(md:)?EntityDescriptor[^>]+>/',
