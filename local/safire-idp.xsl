@@ -68,13 +68,6 @@
         <xsl:apply-templates/>
     </xsl:template>
 
-    <!-- Note about SingleLogoutService -->
-    <xsl:template match="md:SingleLogoutService">
-        <xsl:call-template name="info">
-            <xsl:with-param name="m">SingleLogoutService is not supported properly :-(</xsl:with-param>
-        </xsl:call-template>
-    </xsl:template>
-
     <xsl:template match="md:EntityDescriptor[md:IDPSSODescriptor]">
         <!-- Check ContactPerson requirements -->
         <xsl:if test="count(md:ContactPerson[@contactType='other' and @remd:contactType='http://refeds.org/metadata/contactType/security'])=0">
