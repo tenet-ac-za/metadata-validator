@@ -24,7 +24,10 @@ jobs:
           fetch-depth: 0
 
       - name: Install PHP dependencies
-        run: composer install --prefer-dist --no-progress --ignore-platform-reqs
+        run: |
+          # not sure why super-linter needs these now
+          sudo apt-get install -y php-xml
+          composer install --prefer-dist --no-progress --ignore-platform-reqs
 
       - name: Lint Code Base
         uses: super-linter/super-linter/slim@v8
