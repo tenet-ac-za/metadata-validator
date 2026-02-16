@@ -50,9 +50,9 @@ class XsltFuncTest extends TestCase
 
     public function testGetCertDates()
     {
-        $this->assertEquals('2016-08-26', XsltFunc::getCertDates($this->selfsigned, 'from'));
-        $this->assertEquals('2026-08-29', XsltFunc::getCertDates($this->selfsigned, 'to'));
-        $this->assertEquals('1472202070 - 1787994070', XsltFunc::getCertDates($this->selfsigned, 'both', 'U'));
+        $this->assertEquals('2026-02-16', XsltFunc::getCertDates($this->selfsigned, 'from'));
+        $this->assertEquals('2036-02-18', XsltFunc::getCertDates($this->selfsigned, 'to'));
+        $this->assertEquals('1771256179 - 2086961779', XsltFunc::getCertDates($this->selfsigned, 'both', 'U'));
         $this->assertNull(XsltFunc::getCertDates(''));
     }
 
