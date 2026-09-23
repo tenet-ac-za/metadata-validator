@@ -120,6 +120,7 @@ foreach ($namespaces as $full => $prefix) {
 foreach (['IDPSSODescriptor', 'SPSSODescriptor', 'AASSODescriptor'] as $sso) {
     $e = $xp->query("//md:$sso");
     if ($e->length) {
+        /*
         $signing = $xp->query(
             "//md:KeyDescriptor[@use='signing']/ds:KeyInfo/ds:X509Data/ds:X509Certificate",
             $e->item(0),
@@ -147,11 +148,12 @@ foreach (['IDPSSODescriptor', 'SPSSODescriptor', 'AASSODescriptor'] as $sso) {
                     $signing->item(0)->parentNode->parentNode->parentNode
                 );
             } else {
-                /** @var DOMElement */
+                // @var DOMElement
                 $keyUse = $signing->item(0)->parentNode->parentNode->parentNode;
                 $keyUse->removeAttribute('use');
             }
         }
+        */
         /* remove any legacy ds:KeyName elements */
         $keyname = $xp->query("//md:KeyDescriptor/ds:KeyInfo/ds:KeyName", $e->item(0));
         if ($keyname->length) {
