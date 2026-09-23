@@ -26,6 +26,12 @@
     -->
 
     <!-- Check mdui requirements -->
+    <xsl:template match="md:SPSSODescriptor[not(descendant::md:Extensions)] | md:SPSSODescriptor/md:Extensions[not(descendant::mdui:UIInfo)]">
+        <xsl:call-template name="error">
+            <xsl:with-param name="m">mdui:UIInfo must be provided for service providers</xsl:with-param>
+        </xsl:call-template>
+        <xsl:apply-templates/>
+    </xsl:template>
     <xsl:template match="md:SPSSODescriptor/md:Extensions/mdui:UIInfo[not(descendant::mdui:DisplayName)]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">mdui:DisplayName MUST be set for service providers</xsl:with-param>
@@ -49,6 +55,16 @@
         </xsl:call-template>
         <xsl:apply-templates/>
     </xsl:template>
+    <xsl:template match="md:SPSSODescriptor[not(descendant::md:AttributeConsumingService)]">
+        <xsl:call-template name="error">
+            <xsl:with-param name="m">AttributeConsumingService MUST be set for service providers</xsl:with-param>
+        </xsl:call-template>
+    </xsl:template>
+    <xsl:template match="md:SPSSODescriptor/md:AttributeConsumingService[position()>1]">
+        <xsl:call-template name="warning">
+            <xsl:with-param name="m">more than one AttributeConsumingService element</xsl:with-param>
+        </xsl:call-template>
+    </xsl:template>
     <xsl:template match="md:SPSSODescriptor/md:AttributeConsumingService[not(descendant::md:RequestedAttribute)]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">RequestedAttributes MUST be set for service providers</xsl:with-param>
@@ -57,6 +73,11 @@
     <xsl:template match="md:SPSSODescriptor/md:AttributeConsumingService[not(descendant::md:ServiceName)]">
         <xsl:call-template name="error">
             <xsl:with-param name="m">ServiceName MUST be set for service providers</xsl:with-param>
+        </xsl:call-template>
+    </xsl:template>
+    <xsl:template match="md:SPSSODescriptor/md:AttributeConsumingService[not(descendant::md:ServiceDescription)]">
+        <xsl:call-template name="warning">
+            <xsl:with-param name="m">ServiceDescription should be set for service providers</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
 

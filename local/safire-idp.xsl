@@ -43,6 +43,12 @@
     </xsl:template>
 
     <!-- Check mdui recommendations -->
+    <xsl:template match="md:IDPSSODescriptor[not(md:Extensions/mdui:UIInfo)]">
+        <xsl:call-template name="error">
+            <xsl:with-param name="m">mdui:UIInfo must be provided for identity providers</xsl:with-param>
+        </xsl:call-template>
+        <xsl:apply-templates/>
+    </xsl:template>
     <xsl:template match="md:IDPSSODescriptor/md:Extensions/mdui:UIInfo[not(descendant::mdui:DisplayName)]">
         <xsl:call-template name="warning">
             <xsl:with-param name="m">mdui:DisplayName should be set for identity providers</xsl:with-param>
