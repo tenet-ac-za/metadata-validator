@@ -99,7 +99,9 @@ if ($doc->loadXML($xml, $options) !== true) {
 libxml_clear_errors();
 $xslt = new XSLTProcessor();
 $normalise = isset($_GET['prefix']) ? 'ns_norm_withmd.xsl' : 'ns_norm.xsl';
-$xslt->importStylesheet(new SimpleXMLElement(__DIR__ . '/rules/' . $normalise, 0, true));
+$stylesheet = new DOMDocument();
+$stylesheet->load(__DIR__ . '/rules/' . $normalise, $options);
+$xslt->importStylesheet($stylesheet);
 $doc = $xslt->transformToDoc($doc);
 
 /* get some XPath */

@@ -45,12 +45,12 @@ $secapseman = array_flip($namespaces);
 /** @var array $passes Descriptive names for the various passes */
 $GLOBALS['passes'] = [
     'pre-flight checks',
-    'valid XML (parser)',
-    'valid namespaces (parser)',
-    'verify SAML metadata schema',
-    'verify local metadata schemas',
-    'metadata testing rules',
-    'local metadata testing rules',
+    'XML well-formedness (parser)',
+    'XML namespace validity (parser)',
+    'SAML metadata schema validity (generic SAML schemas)',
+    'SAML metadata schema validity (local schemas)',
+    'Metadata validation & testing rules',
+    'Metadata validation & testing rules (local)',
 ];
 
 /**
@@ -176,7 +176,7 @@ if (empty($xml)) {
 }
 
 // keep a record of the errors as we go
-$previousrrors = [];
+$previousErrors = [];
 
 /* 1 - valid XML: parse the XML into DOM */
 if ($debug) {
@@ -198,7 +198,7 @@ if ($doc->loadXML($xml, $options) !== true) {
     $errors = filter_libxml_errors();
     sendResponse($errors, 1);
 }
-$previousErrors = filter_libxml_errors() ?? [];
+$previousErrors = [...$previousErrors, ...filter_libxml_errors()];
 
 /* 2 - valid namespaces: turn it into an XPath */
 if ($debug) {
@@ -213,7 +213,7 @@ $errors = filter_libxml_errors();
 if (has_hard_errors($errors)) {
     sendResponse($errors, 2);
 } else {
-    $previousErrors = array_merge($previousErrors, $errors);
+    $previousErrors = [...$previousErrors, ...$errors];
 }
 
 /* 3 - verify SAML schema */
@@ -226,7 +226,7 @@ $errors = filter_libxml_errors();
 if (has_hard_errors($errors)) {
     sendResponse($errors, 3);
 } else {
-    $previousErrors = array_merge($previousErrors, $errors);
+    $previousErrors = [...$previousErrors, ...$errors];
 }
 
 /* 4 - verify local schemas */
@@ -242,7 +242,7 @@ $errors = filter_libxml_errors();
 if (has_hard_errors($errors)) {
     sendResponse($errors, 4);
 } else {
-    $previousErrors = array_merge($previousErrors, $errors);
+    $previousErrors = [...$previousErrors, ...$errors];
 }
 
 /* 5 - use Ian Young's SAML metadata testing rules */
@@ -258,14 +258,16 @@ foreach ($rules as $rule) {
     }
     $xslt->setParameter('', 'expectedAuthority', REGISTRATION_AUTHORITY);
     $xslt->setParameter('', 'maxLength', strval(LOGO_DATA_URI_MAXLENGTH));
-    $xslt->importStylesheet(new SimpleXMLElement($rule, 0, true));
+    $stylesheet = new DOMDocument();
+    $stylesheet->load($rule, $options);
+    $xslt->importStylesheet($stylesheet);
     $xslt->transformToDoc($xp->document);
 }
 $errors = filter_libxml_errors();
 if (has_hard_errors($errors)) {
     sendResponse($errors, 5);
 } else {
-    $previousErrors = array_merge($previousErrors, $errors);
+    $previousErrors = [...$previousErrors, ...$errors];
 }
 
 /* 6 - use local SAML metadata testing rules */
@@ -286,14 +288,16 @@ foreach ($localrules as $rule) {
     if (preg_match('/check_framework\.xsl$/', $rule) || preg_match('/ns_norm\.xsl$/', $rule)) {
         continue;
     }
-    $xslt->importStylesheet(new SimpleXMLElement($rule, 0, true));
+    $stylesheet = new DOMDocument();
+    $stylesheet->load($rule, $options);
+    $xslt->importStylesheet($stylesheet);
     $xslt->transformToDoc($xp->document);
 }
 $errors = filter_libxml_errors();
 if (has_hard_errors($errors)) {
     sendResponse($errors, 6);
 } else {
-    $previousErrors = array_merge($previousErrors, $errors);
+    $previousErrors = [...$previousErrors, ...$errors];
 }
 
 /* we got this far, so everything is okay! */
