@@ -65,6 +65,8 @@
         [@Name != 'http://macedir.org/entity-category-support']
         [@Name != 'urn:oasis:names:tc:SAML:attribute:assurance-certification']
         [@Name != 'https://refeds.org/entity-selection-profile']
+        [@Name != 'urn:oasis:names:tc:SAML:profiles:subject-id:req']
+        [@Name != 'urn:oasis:names:tc:SAML:profiles:pairwise-id:req']
         [not(starts-with(@Name, 'urn:x-safire.ac.za'))]
         ">
         <xsl:call-template name="error">
